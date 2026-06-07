@@ -2,11 +2,11 @@
    applications, inspect details + logo, approve to issue credentials, or
    reject. Admin-only. */
 import React from 'react';
-import { ProponentLogo as AppLogo, Badge as AppBadge, Button as AppBtn, IconButton as AppIconBtn, FuelBadge as AppFuel, Icon as AppIcon, Avatar as AppAvatar } from '../designSystem.jsx';
+import { ProponentLogo, Badge, Button, IconButton, FuelBadge, Icon, Avatar } from '../designSystem.jsx';
 import { VC_DATA } from '../data.js';
 import { PageHeader } from '../components/layout.jsx';
 
-const { useState: appUse } = React;
+const { useState } = React;
 
 const STATUS_META = {
   pending: { tone: 'warning', label: 'Pending review', icon: 'clock' },
@@ -16,10 +16,10 @@ const STATUS_META = {
 
 function ApplicationsScreen() {
   const D = VC_DATA;
-  const [apps, setApps] = appUse(D.APPLICATIONS);
-  const [filter, setFilter] = appUse('all');
-  const [open, setOpen] = appUse(null);
-  const [credentials, setCredentials] = appUse(null);
+  const [apps, setApps] = useState(D.APPLICATIONS);
+  const [filter, setFilter] = useState('all');
+  const [open, setOpen] = useState(null);
+  const [credentials, setCredentials] = useState(null);
 
   const counts = { all: apps.length, pending: apps.filter(a => a.status === 'pending').length, approved: apps.filter(a => a.status === 'approved').length, rejected: apps.filter(a => a.status === 'rejected').length };
   const rows = filter === 'all' ? apps : apps.filter(a => a.status === filter);
@@ -42,7 +42,7 @@ function ApplicationsScreen() {
   return (
     <div>
       <PageHeader title="Applications" sub={`${counts.pending} awaiting review · proponent access requests`}
-        actions={<AppBtn variant="secondary" iconLeft="download">Export queue</AppBtn>} />
+        actions={<Button variant="secondary" iconLeft="download">Export queue</Button>} />
 
       <div style={{ display: 'inline-flex', gap: 2, padding: 3, background: 'var(--grey-100)', borderRadius: 'var(--radius-sm)', marginBottom: 16 }}>
         {[['all', 'All', counts.all], ['pending', 'Pending', counts.pending], ['approved', 'Approved', counts.approved], ['rejected', 'Rejected', counts.rejected]].map(([k, l, n]) => (
@@ -65,16 +65,16 @@ function ApplicationsScreen() {
               <tr key={a.id} onClick={() => setOpen(a)} style={{ borderBottom: i === rows.length - 1 ? 'none' : '1px solid var(--border-subtle)', cursor: 'pointer' }}>
                 <td style={{ padding: '12px 16px' }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 11 }}>
-                    <AppLogo name={a.legalName} src={a.logo} size={34} />
+                    <ProponentLogo name={a.legalName} src={a.logo} size={34} />
                     <div><div style={{ fontWeight: 700, color: 'var(--ink-900)' }}>{a.legalName}</div><div style={{ fontSize: 'var(--fs-2xs)', color: 'var(--text-muted)' }}>{a.contactName} · {a.contactEmail}</div></div>
                   </div>
                 </td>
                 <td style={{ padding: '12px 16px', fontFamily: 'var(--font-data)', color: 'var(--text-secondary)' }}>{a.id}</td>
                 <td style={{ padding: '12px 16px', color: 'var(--text-secondary)' }}>{a.country}</td>
-                <td style={{ padding: '12px 16px' }}><div style={{ display: 'flex', gap: 5, flexWrap: 'wrap' }}>{a.fuels.map(f => <AppFuel key={f} fuel={f} short size="sm" showIcon={false} />)}</div></td>
+                <td style={{ padding: '12px 16px' }}><div style={{ display: 'flex', gap: 5, flexWrap: 'wrap' }}>{a.fuels.map(f => <FuelBadge key={f} fuel={f} short size="sm" showIcon={false} />)}</div></td>
                 <td style={{ padding: '12px 16px', fontFamily: 'var(--font-data)', color: 'var(--text-secondary)' }}>{a.submitted}</td>
-                <td style={{ padding: '12px 16px' }}><AppBadge tone={m.tone} variant="soft" icon={m.icon}>{m.label}</AppBadge></td>
-                <td style={{ padding: '12px 16px', textAlign: 'right' }}><AppIcon name="chevronRight" size={16} style={{ color: 'var(--text-muted)' }} /></td>
+                <td style={{ padding: '12px 16px' }}><Badge tone={m.tone} variant="soft" icon={m.icon}>{m.label}</Badge></td>
+                <td style={{ padding: '12px 16px', textAlign: 'right' }}><Icon name="chevronRight" size={16} style={{ color: 'var(--text-muted)' }} /></td>
               </tr>
             );
           })}</tbody>
@@ -104,17 +104,17 @@ function ApplicationDrawer({ app, onClose, onApprove, onReject }) {
       <div onClick={onClose} style={{ position: 'absolute', inset: 0, background: 'rgba(15,24,20,0.42)' }} />
       <div style={{ position: 'relative', width: 480, maxWidth: '100%', height: '100%', background: 'var(--white)', boxShadow: 'var(--shadow-lg)', display: 'flex', flexDirection: 'column' }}>
         <header style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '18px 20px', borderBottom: '1px solid var(--border-subtle)', flex: 'none' }}>
-          <AppLogo name={app.legalName} src={app.logo} size={40} />
+          <ProponentLogo name={app.legalName} src={app.logo} size={40} />
           <div style={{ flex: 1, minWidth: 0 }}>
             <div style={{ fontSize: 'var(--fs-h3)', fontWeight: 700, color: 'var(--ink-900)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{app.legalName}</div>
             <div style={{ fontSize: 'var(--fs-2xs)', color: 'var(--text-muted)', fontFamily: 'var(--font-data)' }}>{app.id}</div>
           </div>
-          <AppIconBtn icon="x" label="Close" onClick={onClose} />
+          <IconButton icon="x" label="Close" onClick={onClose} />
         </header>
         <div style={{ flex: 1, overflowY: 'auto', padding: 20 }}>
-          <AppBadge tone={m.tone} variant="soft" icon={m.icon} style={{ marginBottom: 16 }}>{m.label}</AppBadge>
+          <Badge tone={m.tone} variant="soft" icon={m.icon} style={{ marginBottom: 16 }}>{m.label}</Badge>
           {app.status === 'rejected' && app.rejectReason && (
-            <div style={{ display: 'flex', gap: 8, padding: '10px 12px', borderRadius: 'var(--radius-md)', background: 'var(--danger-050)', marginBottom: 16, fontSize: 'var(--fs-xs)', color: 'var(--danger-600)' }}><AppIcon name="alert" size={15} style={{ flex: 'none', marginTop: 1 }} />{app.rejectReason}</div>
+            <div style={{ display: 'flex', gap: 8, padding: '10px 12px', borderRadius: 'var(--radius-md)', background: 'var(--danger-050)', marginBottom: 16, fontSize: 'var(--fs-xs)', color: 'var(--danger-600)' }}><Icon name="alert" size={15} style={{ flex: 'none', marginTop: 1 }} />{app.rejectReason}</div>
           )}
           <DrawerSection title="Organisation">
             <DetailRow label="Legal name" value={app.legalName} />
@@ -131,7 +131,7 @@ function ApplicationDrawer({ app, onClose, onApprove, onReject }) {
             <DetailRow label="Phone" value={app.contactPhone} />
           </DrawerSection>
           <DrawerSection title="Project profile">
-            <div style={{ display: 'flex', gap: 5, flexWrap: 'wrap', padding: '8px 0', borderBottom: '1px solid var(--border-subtle)' }}>{app.fuels.map(f => <AppFuel key={f} fuel={f} short size="sm" />)}</div>
+            <div style={{ display: 'flex', gap: 5, flexWrap: 'wrap', padding: '8px 0', borderBottom: '1px solid var(--border-subtle)' }}>{app.fuels.map(f => <FuelBadge key={f} fuel={f} short size="sm" />)}</div>
             <DetailRow label="End-use" value={app.endUse} />
             <DetailRow label="Regions" value={app.regions} />
             <DetailRow label="Est. devices" value={app.estDevices} />
@@ -141,16 +141,16 @@ function ApplicationDrawer({ app, onClose, onApprove, onReject }) {
           <DrawerSection title="Documents">
             {app.docs.length ? app.docs.map((d, i) => (
               <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '8px 0', borderBottom: '1px solid var(--border-subtle)' }}>
-                <AppIcon name="file" size={16} style={{ color: 'var(--brand-primary)' }} /><span style={{ flex: 1, fontSize: 'var(--fs-sm)', color: 'var(--ink-900)' }}>{d}</span><AppIcon name="download" size={15} style={{ color: 'var(--text-muted)' }} />
+                <Icon name="file" size={16} style={{ color: 'var(--brand-primary)' }} /><span style={{ flex: 1, fontSize: 'var(--fs-sm)', color: 'var(--ink-900)' }}>{d}</span><Icon name="download" size={15} style={{ color: 'var(--text-muted)' }} />
               </div>
             )) : <div style={{ fontSize: 'var(--fs-sm)', color: 'var(--text-muted)', padding: '8px 0' }}>No documents attached.</div>}
           </DrawerSection>
         </div>
         {app.status === 'pending' && (
           <footer style={{ display: 'flex', gap: 10, padding: '14px 20px', borderTop: '1px solid var(--border-subtle)', background: 'var(--grey-050)', flex: 'none' }}>
-            <AppBtn variant="danger" iconLeft="x" onClick={onReject}>Reject</AppBtn>
+            <Button variant="danger" iconLeft="x" onClick={onReject}>Reject</Button>
             <div style={{ flex: 1 }} />
-            <AppBtn iconLeft="check" onClick={onApprove}>Approve & issue credentials</AppBtn>
+            <Button iconLeft="check" onClick={onApprove}>Approve & issue credentials</Button>
           </footer>
         )}
       </div>
@@ -174,7 +174,7 @@ function CredField({ label, value, mono }) {
         <div style={{ fontSize: 'var(--fs-2xs)', fontWeight: 700, letterSpacing: '.06em', textTransform: 'uppercase', color: 'var(--text-muted)' }}>{label}</div>
         <div style={{ fontSize: 'var(--fs-sm)', fontWeight: 600, color: 'var(--ink-900)', fontFamily: mono ? 'var(--font-data)' : 'var(--font-sans)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{value}</div>
       </div>
-      <AppIcon name="file" size={15} style={{ color: 'var(--text-muted)', flex: 'none' }} />
+      <Icon name="file" size={15} style={{ color: 'var(--text-muted)', flex: 'none' }} />
     </div>
   );
 }
@@ -185,7 +185,7 @@ function CredentialsModal({ creds, onClose }) {
       <div onClick={onClose} style={{ position: 'absolute', inset: 0, background: 'rgba(15,24,20,0.5)' }} />
       <div style={{ position: 'relative', width: 480, maxWidth: '100%', background: 'var(--white)', borderRadius: 'var(--radius-lg)', boxShadow: 'var(--shadow-lg)', overflow: 'hidden' }}>
         <div style={{ padding: '24px 24px 20px', textAlign: 'center', borderBottom: '1px solid var(--border-subtle)' }}>
-          <span style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: 48, height: 48, borderRadius: 999, background: 'var(--success-050)', color: 'var(--success-500)', marginBottom: 12 }}><AppIcon name="checkCircle" size={26} /></span>
+          <span style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: 48, height: 48, borderRadius: 999, background: 'var(--success-050)', color: 'var(--success-500)', marginBottom: 12 }}><Icon name="checkCircle" size={26} /></span>
           <h2 style={{ fontSize: 'var(--fs-h2)', fontWeight: 800, color: 'var(--ink-900)' }}>Credentials issued</h2>
           <p style={{ fontSize: 'var(--fs-sm)', color: 'var(--text-secondary)', marginTop: 6 }}>{creds.app.legalName} has been approved. Share these with {creds.app.contactName}.</p>
         </div>
@@ -196,8 +196,8 @@ function CredentialsModal({ creds, onClose }) {
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '14px 20px', borderTop: '1px solid var(--border-subtle)' }}>
           <span style={{ fontSize: 'var(--fs-xs)', color: 'var(--text-muted)', flex: 1 }}>An invite email with a reset link is sent automatically.</span>
-          <AppBtn variant="secondary" onClick={onClose}>Done</AppBtn>
-          <AppBtn iconLeft="bell" onClick={onClose}>Send invite</AppBtn>
+          <Button variant="secondary" onClick={onClose}>Done</Button>
+          <Button iconLeft="bell" onClick={onClose}>Send invite</Button>
         </div>
       </div>
     </div>

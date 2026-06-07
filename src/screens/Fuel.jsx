@@ -1,16 +1,16 @@
 /* Verst Carbon dMRV — Fuel type analytics view. */
 import React from 'react';
-import { FuelBadge as FFuel, KpiCard as FKpi, TimeSeriesChart as FChart, Badge as FBadge, Button as FButton, Breadcrumb as FCrumb, Icon as FIcon } from '../designSystem.jsx';
+import { FuelBadge, KpiCard, TimeSeriesChart, Badge, Button, Breadcrumb, Icon } from '../designSystem.jsx';
 import { VC_DATA } from '../data.js';
 import { Panel, PageHeader } from '../components/layout.jsx';
 import { DefList } from './DeviceDetail.jsx';
 
-const { useState: fUse } = React;
+const { useState } = React;
 
 function FuelScreen({ role, scope }) {
   const D = VC_DATA;
   const fuels = D.fuelsFor(scope);
-  const [active, setActive] = fUse(fuels[0]);
+  const [active, setActive] = useState(fuels[0]);
   const devices = D.scopeDevices(scope).filter(d => d.fuel === active);
   const unit = D.FUEL_UNIT[active];
   const method = D.FUEL_METHOD[active];
@@ -25,10 +25,10 @@ function FuelScreen({ role, scope }) {
       <PageHeader
         title="Fuels"
         sub="Per-fuel quantification aligned to Gold Standard monitoring"
-        breadcrumb={scope !== 'all' && role === 'admin' ? <FCrumb items={[{ label: 'All proponents', href: '#' }, { label: D.proponentName(scope) }, { label: 'Fuels' }]} /> : null}
+        breadcrumb={scope !== 'all' && role === 'admin' ? <Breadcrumb items={[{ label: 'All proponents', href: '#' }, { label: D.proponentName(scope) }, { label: 'Fuels' }]} /> : null}
         actions={<React.Fragment>
-          <FButton variant="secondary" iconLeft="download">Export CSV</FButton>
-          <FButton iconLeft="file">Monitoring report (PDF)</FButton>
+          <Button variant="secondary" iconLeft="download">Export CSV</Button>
+          <Button iconLeft="file">Monitoring report (PDF)</Button>
         </React.Fragment>}
       />
 
@@ -36,24 +36,24 @@ function FuelScreen({ role, scope }) {
       <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', marginBottom: 18 }}>
         {fuels.map(f => (
           <button key={f} onClick={() => setActive(f)} style={{ padding: 0, background: 'none', border: 'none', cursor: 'pointer', outline: f === active ? '2px solid var(--brand-primary)' : 'none', outlineOffset: 2, borderRadius: 999, opacity: f === active ? 1 : 0.6 }}>
-            <FFuel fuel={f} />
+            <FuelBadge fuel={f} />
           </button>
         ))}
       </div>
 
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: 14, marginBottom: 18 }}>
-        <FKpi label={'Fuel consumed'} value={consumed.toLocaleString()} unit={unit} icon="flame" delta="4.4%" deltaDirection="up" hint="this period" />
-        <FKpi label="Usage days" value={usageDays.toLocaleString()} icon="clock" delta="2.1%" deltaDirection="up" />
-        <FKpi label="Cooking sessions" value={sessions.toLocaleString()} icon="activity" delta="5.8%" deltaDirection="up" />
-        <FKpi label="Active devices" value={devices.length} icon="cpu" hint={D.FUEL_LABEL[active]} />
+        <KpiCard label={'Fuel consumed'} value={consumed.toLocaleString()} unit={unit} icon="flame" delta="4.4%" deltaDirection="up" hint="this period" />
+        <KpiCard label="Usage days" value={usageDays.toLocaleString()} icon="clock" delta="2.1%" deltaDirection="up" />
+        <KpiCard label="Cooking sessions" value={sessions.toLocaleString()} icon="activity" delta="5.8%" deltaDirection="up" />
+        <KpiCard label="Active devices" value={devices.length} icon="cpu" hint={D.FUEL_LABEL[active]} />
       </div>
 
       <Panel title={'Consumption — ' + D.FUEL_LABEL[active]} sub={`Aggregated ${unit} per hour · current monitoring period`} style={{ marginBottom: 18 }}
         actions={<div style={{ display: 'flex', gap: 8 }}>
-          <FBadge tone={method === 'sensor-direct' ? 'brand' : 'warning'} variant="soft" icon={method === 'sensor-direct' ? 'checkCircle' : 'activity'}>{method === 'sensor-direct' ? 'Sensor-direct' : 'Hybrid quantification'}</FBadge>
-          <FBadge tone="neutral" variant="outline">{D.FUEL_SENSOR[active]}</FBadge>
+          <Badge tone={method === 'sensor-direct' ? 'brand' : 'warning'} variant="soft" icon={method === 'sensor-direct' ? 'checkCircle' : 'activity'}>{method === 'sensor-direct' ? 'Sensor-direct' : 'Hybrid quantification'}</Badge>
+          <Badge tone="neutral" variant="outline">{D.FUEL_SENSOR[active]}</Badge>
         </div>}>
-        <FChart yUnit={unit + '/h'} series={[{ name: D.FUEL_LABEL[active], color: window.fuelColor(active), data: series }]} height={240} />
+        <TimeSeriesChart yUnit={unit + '/h'} series={[{ name: D.FUEL_LABEL[active], color: window.fuelColor(active), data: series }]} height={240} />
       </Panel>
 
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 18 }}>
@@ -74,7 +74,7 @@ function FuelScreen({ role, scope }) {
               <div key={p.id} style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '12px 16px', borderBottom: i === arr.length - 1 ? 'none' : '1px solid var(--border-subtle)' }}>
                 <span style={{ flex: 1, fontSize: 'var(--fs-sm)', fontWeight: 600, color: 'var(--ink-900)' }}>{p.name}</span>
                 <span style={{ fontSize: 'var(--fs-xs)', color: 'var(--text-muted)' }}>{p.country}</span>
-                <FBadge tone="neutral">{c} devices</FBadge>
+                <Badge tone="neutral">{c} devices</Badge>
               </div>
             );
           })}

@@ -1,15 +1,15 @@
 /* Verst Carbon dMRV — Device detail. Header + tabbed sections. */
 import React from 'react';
-import { Tabs as TTabs, TimeSeriesChart as TChart, FuelBadge as TFuel, StatusDot as TStatus, Badge as TBadge, Button as TButton, IconButton as TIconBtn, SignalBars as TSignal, LevelMeter as TLevel, Breadcrumb as TCrumb, Icon as TIcon, Alert as TAlert } from '../designSystem.jsx';
+import { Tabs, TimeSeriesChart, FuelBadge, StatusDot, Badge, Button, IconButton, SignalBars, LevelMeter, Breadcrumb, Icon, Alert } from '../designSystem.jsx';
 import { VC_DATA } from '../data.js';
 import { Panel, CategoryTag } from '../components/layout.jsx';
 
-const { useState: ddUse } = React;
+const { useState } = React;
 
 function DeviceDetailScreen({ role, scope, imei, onBack }) {
   const D = VC_DATA;
   const d = D.DEVICES.find(x => x.imei === imei) || D.DEVICES[0];
-  const [tab, setTab] = ddUse('telemetry');
+  const [tab, setTab] = useState('telemetry');
   const sessions = D.cookingSessions(d.imei.charCodeAt(8));
   const series = D.telemetry(d.sensor, d.imei.charCodeAt(6));
   const yUnit = { Thermocouple: '°C', 'Energy meter': 'kWh', 'Flow meter': 'm³/h', 'Load cell': 'kg' }[d.sensor];
@@ -18,7 +18,7 @@ function DeviceDetailScreen({ role, scope, imei, onBack }) {
   return (
     <div>
       <div style={{ marginBottom: 14 }}>
-        <TCrumb items={[
+        <Breadcrumb items={[
           ...(role === 'admin' ? [{ label: scope === 'all' ? 'All proponents' : D.proponentName(scope), href: '#' }] : []),
           { label: 'Devices', href: '#' },
           { label: D.fmtImei(d.imei) },
@@ -27,31 +27,31 @@ function DeviceDetailScreen({ role, scope, imei, onBack }) {
 
       {/* header */}
       <div style={{ display: 'flex', alignItems: 'flex-start', gap: 16, marginBottom: 18 }}>
-        <span style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: 52, height: 52, borderRadius: 12, background: 'var(--green-050)', color: 'var(--brand-primary)', flex: 'none' }}><TIcon name="cpu" size={26} /></span>
+        <span style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: 52, height: 52, borderRadius: 12, background: 'var(--green-050)', color: 'var(--brand-primary)', flex: 'none' }}><Icon name="cpu" size={26} /></span>
         <div style={{ flex: 1, minWidth: 0 }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 10, flexWrap: 'wrap' }}>
             <h1 style={{ fontSize: 22, fontWeight: 800, color: 'var(--ink-900)', fontFamily: 'var(--font-data)', letterSpacing: '0', whiteSpace: 'nowrap' }}>{D.fmtImei(d.imei)}</h1>
-            <TFuel fuel={d.fuel} />
+            <FuelBadge fuel={d.fuel} />
             <CategoryTag category={d.category} />
-            <TStatus status={d.status} showLabel pulse={d.status === 'online'} />
+            <StatusDot status={d.status} showLabel pulse={d.status === 'online'} />
           </div>
           <div style={{ fontSize: 'var(--fs-sm)', color: 'var(--text-secondary)', marginTop: 4 }}>{d.model} ({d.modelId}) · {d.sensor} sensor · {d.site} · {d.town}</div>
         </div>
         <div style={{ display: 'flex', gap: 8, flex: 'none' }}>
-          <TButton variant="secondary" iconLeft="download">Export</TButton>
-          <TButton variant="secondary" iconLeft="settings">Configure</TButton>
+          <Button variant="secondary" iconLeft="download">Export</Button>
+          <Button variant="secondary" iconLeft="settings">Configure</Button>
         </div>
       </div>
 
       {/* quick stats */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: 14, marginBottom: 18 }}>
-        <MiniStat label="Battery" value={d.battery + '%'} extra={<TLevel value={d.battery} width={80} showValue={false} />} />
-        <MiniStat label="TEG output" value={(0.4 + d.teg / 100 * 1.6).toFixed(1) + ' V'} extra={<TLevel value={d.teg} width={80} showValue={false} />} />
-        <MiniStat label="Signal" value={['None', 'Weak', 'Fair', 'Good', 'Strong'][d.signal]} extra={<TSignal level={d.signal} />} />
+        <MiniStat label="Battery" value={d.battery + '%'} extra={<LevelMeter value={d.battery} width={80} showValue={false} />} />
+        <MiniStat label="TEG output" value={(0.4 + d.teg / 100 * 1.6).toFixed(1) + ' V'} extra={<LevelMeter value={d.teg} width={80} showValue={false} />} />
+        <MiniStat label="Signal" value={['None', 'Weak', 'Fair', 'Good', 'Strong'][d.signal]} extra={<SignalBars level={d.signal} />} />
         <MiniStat label="Last seen" value={window.lastSeenText(d.lastSeenMin)} extra={<span style={{ fontSize: 11, color: 'var(--text-muted)' }}>{d.status === 'online' ? 'Reporting normally' : 'Awaiting telemetry'}</span>} />
       </div>
 
-      <TTabs value={tab} onChange={setTab} style={{ marginBottom: 18 }} tabs={[
+      <Tabs value={tab} onChange={setTab} style={{ marginBottom: 18 }} tabs={[
         { value: 'telemetry', label: 'Telemetry', icon: 'activity' },
         { value: 'sessions', label: 'Cooking sessions', count: sessions.length },
         { value: 'household', label: 'End-use' },
@@ -60,8 +60,8 @@ function DeviceDetailScreen({ role, scope, imei, onBack }) {
       ]} />
 
       {tab === 'telemetry' && (
-        <Panel title={'Telemetry — ' + seriesName.toLowerCase()} sub={`${d.sensor} node · last 24 hours`} actions={<TBadge tone="brand" variant="soft">{D.FUEL_METHOD[d.fuel] === 'sensor-direct' ? 'Sensor-direct' : 'Hybrid quantification'}</TBadge>}>
-          <TChart yUnit={yUnit} series={[{ name: seriesName, color: window.fuelColor(d.fuel), data: series }]} height={250} />
+        <Panel title={'Telemetry — ' + seriesName.toLowerCase()} sub={`${d.sensor} node · last 24 hours`} actions={<Badge tone="brand" variant="soft">{D.FUEL_METHOD[d.fuel] === 'sensor-direct' ? 'Sensor-direct' : 'Hybrid quantification'}</Badge>}>
+          <TimeSeriesChart yUnit={yUnit} series={[{ name: seriesName, color: window.fuelColor(d.fuel), data: series }]} height={250} />
         </Panel>
       )}
 
@@ -95,9 +95,9 @@ function DeviceDetailScreen({ role, scope, imei, onBack }) {
           </Panel>
           <Panel title="Linked devices">
             <div style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '4px 0' }}>
-              <span style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: 36, height: 36, borderRadius: 8, background: 'var(--green-050)', color: 'var(--brand-primary)' }}><TIcon name="cpu" size={18} /></span>
+              <span style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: 36, height: 36, borderRadius: 8, background: 'var(--green-050)', color: 'var(--brand-primary)' }}><Icon name="cpu" size={18} /></span>
               <div style={{ flex: 1 }}><div style={{ fontWeight: 600, fontFamily: 'var(--font-data)', fontSize: 'var(--fs-sm)' }}>{D.fmtImei(d.imei)}</div><div style={{ fontSize: 'var(--fs-xs)', color: 'var(--text-muted)' }}>{d.model}</div></div>
-              <TStatus status={d.status} />
+              <StatusDot status={d.status} />
             </div>
           </Panel>
         </div>
@@ -121,7 +121,7 @@ function DeviceDetailScreen({ role, scope, imei, onBack }) {
             <DefList items={[['Model', d.model], ['Config ID', d.modelId], ['Sensor type', d.sensor], ['Secure element', '0x' + d.imei.slice(-6).toUpperCase()], ['Sampling interval', '60 s'], ['Reporting interval', '15 min'], ['Firmware', 'v2.4.1']]} />
           </Panel>
           <Panel title="Quantification">
-            <TAlert tone="neutral" icon="file" title="Raw telemetry is immutable" style={{ marginBottom: 14 }}>Stored values are append-only and cannot be edited — only quantified.</TAlert>
+            <Alert tone="neutral" icon="file" title="Raw telemetry is immutable" style={{ marginBottom: 14 }}>Stored values are append-only and cannot be edited — only quantified.</Alert>
             <DefList items={[['Fuel type', D.FUEL_LABEL[d.fuel]], ['Method', D.FUEL_METHOD[d.fuel] === 'sensor-direct' ? 'Sensor-direct' : 'Hybrid (sensor + survey)'], ['Reporting unit', D.FUEL_UNIT[d.fuel]], ['Standard', 'Gold Standard — Metered & Measured']]} />
           </Panel>
         </div>
@@ -160,7 +160,7 @@ function Timeline({ items }) {
       {items.map((it, i) => (
         <div key={i} style={{ display: 'flex', gap: 12, paddingBottom: i === items.length - 1 ? 6 : 0 }}>
           <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-            <span style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: 28, height: 28, borderRadius: 999, background: '#fff', border: '1.5px solid ' + toneCol[it.tone], color: toneCol[it.tone], flex: 'none' }}><TIcon name={it.icon} size={14} /></span>
+            <span style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: 28, height: 28, borderRadius: 999, background: '#fff', border: '1.5px solid ' + toneCol[it.tone], color: toneCol[it.tone], flex: 'none' }}><Icon name={it.icon} size={14} /></span>
             {i < items.length - 1 && <span style={{ width: 1.5, flex: 1, minHeight: 22, background: 'var(--border-subtle)' }} />}
           </div>
           <div style={{ paddingTop: 3, paddingBottom: 14 }}>

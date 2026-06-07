@@ -1,11 +1,11 @@
 /* Verst Carbon dMRV — Dashboard. Admin "all proponents" + scoped variant.
    Proponent role uses the same layout with no switcher. */
 import React from 'react';
-import { KpiCard as DKpi, StackedBarChart, Badge as DBadge, Breadcrumb as DCrumb, Button as DButton, Icon as DIcon, FuelBadge as DFuel } from '../designSystem.jsx';
+import { KpiCard, StackedBarChart, Badge, Breadcrumb, Button, Icon, FuelBadge } from '../designSystem.jsx';
 import { VC_DATA } from '../data.js';
 import { Panel, PageHeader, FuelChips, MapPanel } from '../components/layout.jsx';
 
-const { useState: dUse } = React;
+const { useState } = React;
 
 function fuelColor(f) {
   return { biomass: 'var(--fuel-biomass)', electric: 'var(--fuel-electric)', lpg: 'var(--fuel-lpg)', ethanol: 'var(--fuel-ethanol)', pellets: 'var(--fuel-pellets)', biogas: 'var(--fuel-biogas)', biochar: 'var(--fuel-biochar)' }[f];
@@ -16,7 +16,7 @@ function DashboardScreen({ role, scope, onScopeChange, onNav }) {
   const devices = D.scopeDevices(scope);
   const alerts = D.scopeAlerts(scope);
   const allFuels = D.fuelsFor(scope);
-  const [fuelSel, setFuelSel] = dUse([]);
+  const [fuelSel, setFuelSel] = useState([]);
   const scoped = scope !== 'all' && role === 'admin';
 
   const shown = fuelSel.length ? devices.filter(d => fuelSel.includes(d.fuel)) : devices;
@@ -48,10 +48,10 @@ function DashboardScreen({ role, scope, onScopeChange, onNav }) {
           : role === 'proponent'
             ? `${D.proponentName(scope)} · current monitoring period (1–7 Jun 2026)`
             : 'All proponents · current monitoring period (1–7 Jun 2026)'}
-        breadcrumb={scoped ? <DCrumb items={[{ label: 'All proponents', href: '#' }, { label: D.proponentName(scope) }]} /> : null}
+        breadcrumb={scoped ? <Breadcrumb items={[{ label: 'All proponents', href: '#' }, { label: D.proponentName(scope) }]} /> : null}
         actions={<React.Fragment>
-          <DButton variant="secondary" iconLeft="download">Export</DButton>
-          <DButton iconLeft="file" onClick={() => onNav('reports')}>Monitoring report</DButton>
+          <Button variant="secondary" iconLeft="download">Export</Button>
+          <Button iconLeft="file" onClick={() => onNav('reports')}>Monitoring report</Button>
         </React.Fragment>}
       />
 
@@ -63,16 +63,16 @@ function DashboardScreen({ role, scope, onScopeChange, onNav }) {
 
       {/* KPI row */}
       <div style={{ display: 'grid', gridTemplateColumns: scope === 'all' ? 'repeat(5,1fr)' : 'repeat(4,1fr)', gap: 14, marginBottom: 18 }}>
-        <DKpi label="Active devices" value={shown.length.toLocaleString()} icon="cpu" delta="3.2%" deltaDirection="up" hint="vs last period" />
-        <DKpi label="Devices online" value={online} unit={'of ' + shown.length} icon="wifi" delta={(offline + fault) + ' down'} deltaDirection={offline + fault > 0 ? 'down' : 'flat'} />
-        {scope === 'all' && <DKpi label="Proponents" value={D.PROPONENTS.length} icon="users" hint="2 onboarding" />}
-        <DKpi label="Fuel consumed" value={consumption.toLocaleString()} unit="kg-eq" icon="flame" delta="4.4%" deltaDirection="up" />
-        <DKpi label="Estimated emissions" value={tco2e.toLocaleString()} unit="tCO₂e" icon="leaf" delta="6.1%" deltaDirection="up" />
+        <KpiCard label="Active devices" value={shown.length.toLocaleString()} icon="cpu" delta="3.2%" deltaDirection="up" hint="vs last period" />
+        <KpiCard label="Devices online" value={online} unit={'of ' + shown.length} icon="wifi" delta={(offline + fault) + ' down'} deltaDirection={offline + fault > 0 ? 'down' : 'flat'} />
+        {scope === 'all' && <KpiCard label="Proponents" value={D.PROPONENTS.length} icon="users" hint="2 onboarding" />}
+        <KpiCard label="Fuel consumed" value={consumption.toLocaleString()} unit="kg-eq" icon="flame" delta="4.4%" deltaDirection="up" />
+        <KpiCard label="Estimated emissions" value={tco2e.toLocaleString()} unit="tCO₂e" icon="leaf" delta="6.1%" deltaDirection="up" />
       </div>
 
       {/* Chart + map */}
       <div style={{ display: 'grid', gridTemplateColumns: '1.35fr 1fr', gap: 18, marginBottom: 18 }}>
-        <Panel title={chartTitle} sub="Active devices · current monitoring period" actions={<DBadge tone="brand" variant="soft">{shown.length} devices</DBadge>}>
+        <Panel title={chartTitle} sub="Active devices · current monitoring period" actions={<Badge tone="brand" variant="soft">{shown.length} devices</Badge>}>
           <StackedBarChart yUnit="devices" data={chartData} height={236} />
           <div style={{ display: 'flex', gap: 14, flexWrap: 'wrap', marginTop: 12, paddingTop: 12, borderTop: '1px solid var(--border-subtle)' }}>
             {allFuels.map(f => (
@@ -96,8 +96,8 @@ function DashboardScreen({ role, scope, onScopeChange, onNav }) {
         return (
           <Panel title="End-use across fuels" sub="Household vs institutional deployments, every fuel type" style={{ marginBottom: 18 }}
             actions={<div style={{ display: 'flex', gap: 14, alignItems: 'center' }}>
-              <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6, fontSize: 'var(--fs-xs)', color: 'var(--text-secondary)', fontWeight: 600 }}><span style={{ width: 10, height: 10, borderRadius: 2, background: 'var(--grey-400)' }} /><DIcon name="home" size={13} />{tot.household} households</span>
-              <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6, fontSize: 'var(--fs-xs)', color: 'var(--text-secondary)', fontWeight: 600 }}><span style={{ width: 10, height: 10, borderRadius: 2, background: 'var(--fuel-electric)' }} /><DIcon name="building" size={13} />{tot.institution} institutions</span>
+              <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6, fontSize: 'var(--fs-xs)', color: 'var(--text-secondary)', fontWeight: 600 }}><span style={{ width: 10, height: 10, borderRadius: 2, background: 'var(--grey-400)' }} /><Icon name="home" size={13} />{tot.household} households</span>
+              <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6, fontSize: 'var(--fs-xs)', color: 'var(--text-secondary)', fontWeight: 600 }}><span style={{ width: 10, height: 10, borderRadius: 2, background: 'var(--fuel-electric)' }} /><Icon name="building" size={13} />{tot.institution} institutions</span>
             </div>}>
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '14px 32px' }}>
               {catFuels.map(f => {
@@ -106,7 +106,7 @@ function DashboardScreen({ role, scope, onScopeChange, onNav }) {
                 const total = hh + inst || 1;
                 return (
                   <div key={f} style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-                    <div style={{ width: 150, flex: 'none' }}><DFuel fuel={f} short /></div>
+                    <div style={{ width: 150, flex: 'none' }}><FuelBadge fuel={f} short /></div>
                     <div style={{ flex: 1, display: 'flex', height: 10, borderRadius: 999, overflow: 'hidden', background: 'var(--grey-100)' }}>
                       <span style={{ width: (hh / total * 100) + '%', background: 'var(--grey-400)' }} />
                       <span style={{ width: (inst / total * 100) + '%', background: 'var(--fuel-electric)' }} />
@@ -134,20 +134,20 @@ function DashboardScreen({ role, scope, onScopeChange, onNav }) {
 }
 
 function AlertRow({ a, role, scope, last, proponentName }) {
-  const [h, setH] = dUse(false);
+  const [h, setH] = useState(false);
   const icon = a.type === 'offline' ? 'wifi' : a.type === 'battery' ? 'battery' : 'activity';
   const tone = a.severity;
   const col = tone === 'danger' ? 'var(--danger-500)' : 'var(--warning-500)';
   const bg = tone === 'danger' ? 'var(--danger-050)' : 'var(--warning-050)';
   return (
     <div onMouseEnter={() => setH(true)} onMouseLeave={() => setH(false)} style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '12px 16px', borderBottom: last ? 'none' : '1px solid var(--border-subtle)', background: h ? 'var(--surface-hover)' : 'transparent' }}>
-      <span style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: 30, height: 30, borderRadius: 8, background: bg, color: col, flex: 'none' }}><DIcon name={icon} size={16} /></span>
+      <span style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: 30, height: 30, borderRadius: 8, background: bg, color: col, flex: 'none' }}><Icon name={icon} size={16} /></span>
       <div style={{ flex: 1, minWidth: 0 }}>
         <div style={{ fontSize: 'var(--fs-sm)', fontWeight: 600, color: 'var(--ink-900)' }}>{a.title}</div>
         <div style={{ fontSize: 'var(--fs-xs)', color: 'var(--text-secondary)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{a.detail}</div>
       </div>
-      {role === 'admin' && scope === 'all' && <DBadge tone="neutral" size="sm">{proponentName(a.proponent)}</DBadge>}
-      <DBadge tone={tone} size="sm" variant="soft">{a.type}</DBadge>
+      {role === 'admin' && scope === 'all' && <Badge tone="neutral" size="sm">{proponentName(a.proponent)}</Badge>}
+      <Badge tone={tone} size="sm" variant="soft">{a.type}</Badge>
       <span style={{ fontSize: 'var(--fs-xs)', color: 'var(--text-muted)', minWidth: 48, textAlign: 'right' }}>{a.time}</span>
     </div>
   );

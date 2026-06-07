@@ -3,11 +3,11 @@
    logo, primary contact, project profile, documents, then submits and
    receives an application reference. Verst issues credentials on approval. */
 import React from 'react';
-import { Input as WInput, Select as WSelect, Checkbox as WCheck, Button as WButton, IconButton as WIconBtn, FuelBadge as WFuel, Icon as WIcon, ProponentLogo as WLogo, Badge as WBadge } from '../designSystem.jsx';
+import { Input, Select, Checkbox, Button, IconButton, FuelBadge, Icon, ProponentLogo, Badge } from '../designSystem.jsx';
 import { VC_DATA } from '../data.js';
 import { Logo } from '../components/shell.jsx';
 
-const { useState: wUse } = React;
+const { useState } = React;
 
 const STEPS = [
   { key: 'org', label: 'Organisation', icon: 'building', hint: 'Legal entity & branding' },
@@ -19,9 +19,9 @@ const STEPS = [
 
 function ApplicationWizard({ onClose, onSubmitted }) {
   const D = VC_DATA;
-  const [step, setStep] = wUse(0);
-  const [logoSrc, setLogoSrc] = wUse(null);
-  const [form, setForm] = wUse({
+  const [step, setStep] = useState(0);
+  const [logoSrc, setLogoSrc] = useState(null);
+  const [form, setForm] = useState({
     legalName: '', tradingName: '', regNo: '', country: '', founded: '', website: '',
     contactName: '', contactTitle: '', contactEmail: '', contactPhone: '', role: 'manager',
     fuels: [], endUse: 'both', regions: '', estDevices: '', standard: '', methodology: '',
@@ -50,7 +50,7 @@ function ApplicationWizard({ onClose, onSubmitted }) {
         <div style={{ width: 1, height: 24, background: 'var(--border-subtle)' }} />
         <span style={{ fontSize: 'var(--fs-sm)', fontWeight: 600, color: 'var(--text-secondary)' }}>Proponent application</span>
         <div style={{ flex: 1 }} />
-        <WButton variant="ghost" size="sm" iconLeft="x" onClick={onClose}>Exit</WButton>
+        <Button variant="ghost" size="sm" iconLeft="x" onClick={onClose}>Exit</Button>
       </header>
 
       <div style={{ display: 'flex', flex: 1, minHeight: 0 }}>
@@ -63,7 +63,7 @@ function ApplicationWizard({ onClose, onSubmitted }) {
               return (
                 <button key={s.key} onClick={() => i <= step && setStep(i)} style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '10px 10px', borderRadius: 'var(--radius-sm)', border: 'none', cursor: i <= step ? 'pointer' : 'default', textAlign: 'left', background: active ? 'var(--surface-selected)' : 'transparent' }}>
                   <span style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: 28, height: 28, flex: 'none', borderRadius: 999, background: done ? 'var(--brand-primary)' : active ? 'var(--white)' : 'var(--grey-100)', border: active ? '1.5px solid var(--brand-primary)' : '1.5px solid transparent', color: done ? '#fff' : active ? 'var(--brand-primary)' : 'var(--text-muted)', fontFamily: 'var(--font-data)', fontSize: 13, fontWeight: 700 }}>
-                    {done ? <WIcon name="check" size={15} strokeWidth={3} /> : i + 1}
+                    {done ? <Icon name="check" size={15} strokeWidth={3} /> : i + 1}
                   </span>
                   <span style={{ minWidth: 0 }}>
                     <span style={{ display: 'block', fontSize: 'var(--fs-sm)', fontWeight: active ? 700 : 600, color: active ? 'var(--green-700)' : done ? 'var(--ink-900)' : 'var(--text-secondary)' }}>{s.label}</span>
@@ -75,7 +75,7 @@ function ApplicationWizard({ onClose, onSubmitted }) {
           </div>
           <div style={{ flex: 1 }} />
           <div style={{ display: 'flex', gap: 10, alignItems: 'flex-start', padding: 12, borderRadius: 'var(--radius-md)', background: 'var(--green-050)' }}>
-            <WIcon name="leaf" size={16} style={{ color: 'var(--brand-primary)', marginTop: 1, flex: 'none' }} />
+            <Icon name="leaf" size={16} style={{ color: 'var(--brand-primary)', marginTop: 1, flex: 'none' }} />
             <span style={{ fontSize: 'var(--fs-2xs)', color: 'var(--green-700)', lineHeight: 1.45 }}>Credentials are issued by the Verst team after your application is reviewed. You’ll receive a workspace and admin login by email.</span>
           </div>
         </aside>
@@ -95,14 +95,14 @@ function ApplicationWizard({ onClose, onSubmitted }) {
             {step === 4 && <ReviewStep form={form} logoSrc={logoSrc} setStep={setStep} fuelLabel={D.FUEL_LABEL} />}
 
             <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginTop: 28, paddingTop: 20, borderTop: '1px solid var(--border-subtle)' }}>
-              <WButton variant="secondary" iconLeft={step === 0 ? 'x' : 'chevronRight'} onClick={back} style={step !== 0 ? { transform: 'scaleX(-1)' } : null}>
+              <Button variant="secondary" iconLeft={step === 0 ? 'x' : 'chevronRight'} onClick={back} style={step !== 0 ? { transform: 'scaleX(-1)' } : null}>
                 <span style={step !== 0 ? { display: 'inline-block', transform: 'scaleX(-1)' } : null}>{step === 0 ? 'Cancel' : 'Back'}</span>
-              </WButton>
+              </Button>
               <div style={{ flex: 1 }} />
               {!stepValid[step] && <span style={{ fontSize: 'var(--fs-xs)', color: 'var(--text-muted)' }}>Complete required fields to continue</span>}
-              <WButton iconRight={last ? null : 'chevronRight'} iconLeft={last ? 'check' : null} disabled={!stepValid[step]} onClick={next}>
+              <Button iconRight={last ? null : 'chevronRight'} iconLeft={last ? 'check' : null} disabled={!stepValid[step]} onClick={next}>
                 {last ? 'Submit application' : 'Continue'}
-              </WButton>
+              </Button>
             </div>
           </div>
         </main>
@@ -128,15 +128,15 @@ function OrgStep({ form, set, logoSrc, setLogoSrc, countries }) {
           <span style={{ fontSize: 'var(--fs-2xs)', color: 'var(--text-muted)', maxWidth: 96 }}>PNG or SVG, square</span>
         </div>
         <div style={{ flex: 1, display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 18 }}>
-          <Field full><WInput label="Full legal company name" required placeholder="e.g. Savanna Stoves Cooperative" value={form.legalName} onChange={e => set('legalName', e.target.value)} /></Field>
-          <Field><WInput label="Trading / brand name" placeholder="e.g. Savanna Stoves" value={form.tradingName} onChange={e => set('tradingName', e.target.value)} /></Field>
-          <Field><WInput label="Company registration no." placeholder="Registration number" value={form.regNo} onChange={e => set('regNo', e.target.value)} /></Field>
+          <Field full><Input label="Full legal company name" required placeholder="e.g. Savanna Stoves Cooperative" value={form.legalName} onChange={e => set('legalName', e.target.value)} /></Field>
+          <Field><Input label="Trading / brand name" placeholder="e.g. Savanna Stoves" value={form.tradingName} onChange={e => set('tradingName', e.target.value)} /></Field>
+          <Field><Input label="Company registration no." placeholder="Registration number" value={form.regNo} onChange={e => set('regNo', e.target.value)} /></Field>
         </div>
       </div>
       <Grid>
-        <Field><WSelect label="Country of incorporation" required placeholder="Select country" value={form.country} onChange={e => set('country', e.target.value)} options={countries.map(c => ({ value: c, label: c }))} /></Field>
-        <Field><WInput label="Year established" placeholder="e.g. 2020" value={form.founded} onChange={e => set('founded', e.target.value)} /></Field>
-        <Field full><WInput label="Website" iconLeft="activity" placeholder="https://" value={form.website} onChange={e => set('website', e.target.value)} /></Field>
+        <Field><Select label="Country of incorporation" required placeholder="Select country" value={form.country} onChange={e => set('country', e.target.value)} options={countries.map(c => ({ value: c, label: c }))} /></Field>
+        <Field><Input label="Year established" placeholder="e.g. 2020" value={form.founded} onChange={e => set('founded', e.target.value)} /></Field>
+        <Field full><Input label="Website" iconLeft="activity" placeholder="https://" value={form.website} onChange={e => set('website', e.target.value)} /></Field>
       </Grid>
     </div>
   );
@@ -147,11 +147,11 @@ function ContactStep({ form, set }) {
     <div style={{ display: 'flex', flexDirection: 'column', gap: 18 }}>
       <div style={{ fontSize: 'var(--fs-sm)', color: 'var(--text-secondary)' }}>This person becomes the proponent workspace’s first administrator once credentials are issued.</div>
       <Grid>
-        <Field><WInput label="Full name" required iconLeft="user" placeholder="Primary contact" value={form.contactName} onChange={e => set('contactName', e.target.value)} /></Field>
-        <Field><WInput label="Job title" placeholder="e.g. Programme Director" value={form.contactTitle} onChange={e => set('contactTitle', e.target.value)} /></Field>
-        <Field><WInput label="Work email" required type="email" placeholder="name@company.org" value={form.contactEmail} onChange={e => set('contactEmail', e.target.value)} error={form.contactEmail && !/.+@.+\..+/.test(form.contactEmail) ? 'Enter a valid email' : null} hint="Becomes the login for this workspace" /></Field>
-        <Field><WInput label="Phone" placeholder="+000 000 000 000" value={form.contactPhone} onChange={e => set('contactPhone', e.target.value)} /></Field>
-        <Field><WSelect label="Preferred role" value={form.role} onChange={e => set('role', e.target.value)} options={[{ value: 'manager', label: 'Project manager' }, { value: 'engineer', label: 'Field engineer lead' }]} /></Field>
+        <Field><Input label="Full name" required iconLeft="user" placeholder="Primary contact" value={form.contactName} onChange={e => set('contactName', e.target.value)} /></Field>
+        <Field><Input label="Job title" placeholder="e.g. Programme Director" value={form.contactTitle} onChange={e => set('contactTitle', e.target.value)} /></Field>
+        <Field><Input label="Work email" required type="email" placeholder="name@company.org" value={form.contactEmail} onChange={e => set('contactEmail', e.target.value)} error={form.contactEmail && !/.+@.+\..+/.test(form.contactEmail) ? 'Enter a valid email' : null} hint="Becomes the login for this workspace" /></Field>
+        <Field><Input label="Phone" placeholder="+000 000 000 000" value={form.contactPhone} onChange={e => set('contactPhone', e.target.value)} /></Field>
+        <Field><Select label="Preferred role" value={form.role} onChange={e => set('role', e.target.value)} options={[{ value: 'manager', label: 'Project manager' }, { value: 'engineer', label: 'Field engineer lead' }]} /></Field>
       </Grid>
     </div>
   );
@@ -168,7 +168,7 @@ function ProjectStep({ form, set, toggleFuel, fuels, standards }) {
             const on = form.fuels.includes(f);
             return (
               <button key={f} onClick={() => toggleFuel(f)} style={{ display: 'inline-flex', alignItems: 'center', gap: 7, padding: '7px 12px', borderRadius: 'var(--radius-pill)', cursor: 'pointer', background: on ? 'var(--green-tint)' : 'var(--white)', border: '1.5px solid ' + (on ? 'var(--brand-primary)' : 'var(--border-default)'), color: on ? 'var(--green-700)' : 'var(--text-body)', fontFamily: 'var(--font-sans)', fontSize: 'var(--fs-sm)', fontWeight: 600 }}>
-                {on ? <WIcon name="check" size={14} strokeWidth={3} /> : <WIcon name="plus" size={14} />}
+                {on ? <Icon name="check" size={14} strokeWidth={3} /> : <Icon name="plus" size={14} />}
                 {D.FUEL_LABEL[f]}
               </button>
             );
@@ -180,16 +180,16 @@ function ProjectStep({ form, set, toggleFuel, fuels, standards }) {
         <div style={{ display: 'flex', gap: 8 }}>
           {[['household', 'Households', 'home'], ['institution', 'Institutions', 'building'], ['both', 'Both', 'users']].map(([k, l, ic]) => (
             <button key={k} onClick={() => set('endUse', k)} style={{ display: 'inline-flex', alignItems: 'center', gap: 7, padding: '9px 16px', borderRadius: 'var(--radius-sm)', cursor: 'pointer', background: form.endUse === k ? 'var(--surface-selected)' : 'var(--white)', border: '1.5px solid ' + (form.endUse === k ? 'var(--brand-primary)' : 'var(--border-default)'), color: form.endUse === k ? 'var(--green-700)' : 'var(--text-body)', fontFamily: 'var(--font-sans)', fontSize: 'var(--fs-sm)', fontWeight: 600 }}>
-              <WIcon name={ic} size={15} />{l}
+              <Icon name={ic} size={15} />{l}
             </button>
           ))}
         </div>
       </div>
       <Grid>
-        <Field><WInput label="Regions of operation" iconLeft="mapPin" placeholder="e.g. Kano, Kaduna" value={form.regions} onChange={e => set('regions', e.target.value)} /></Field>
-        <Field><WInput label="Estimated devices at launch" suffix="units" placeholder="e.g. 1,200" value={form.estDevices} onChange={e => set('estDevices', e.target.value)} /></Field>
-        <Field><WSelect label="Carbon standard" required placeholder="Select standard" value={form.standard} onChange={e => set('standard', e.target.value)} options={standards.map(s => ({ value: s, label: s }))} /></Field>
-        <Field><WSelect label="Quantification methodology" placeholder="Select method" value={form.methodology} onChange={e => set('methodology', e.target.value)} options={[{ value: 'Metered & Measured', label: 'Metered & Measured' }, { value: 'Sensor-direct metering', label: 'Sensor-direct metering' }, { value: 'Hybrid (sensor + survey)', label: 'Hybrid (sensor + survey)' }]} /></Field>
+        <Field><Input label="Regions of operation" iconLeft="mapPin" placeholder="e.g. Kano, Kaduna" value={form.regions} onChange={e => set('regions', e.target.value)} /></Field>
+        <Field><Input label="Estimated devices at launch" suffix="units" placeholder="e.g. 1,200" value={form.estDevices} onChange={e => set('estDevices', e.target.value)} /></Field>
+        <Field><Select label="Carbon standard" required placeholder="Select standard" value={form.standard} onChange={e => set('standard', e.target.value)} options={standards.map(s => ({ value: s, label: s }))} /></Field>
+        <Field><Select label="Quantification methodology" placeholder="Select method" value={form.methodology} onChange={e => set('methodology', e.target.value)} options={[{ value: 'Metered & Measured', label: 'Metered & Measured' }, { value: 'Sensor-direct metering', label: 'Sensor-direct metering' }, { value: 'Hybrid (sensor + survey)', label: 'Hybrid (sensor + survey)' }]} /></Field>
       </Grid>
     </div>
   );
@@ -198,7 +198,7 @@ function ProjectStep({ form, set, toggleFuel, fuels, standards }) {
 function DocBox({ label, hint, checked, onClick }) {
   return (
     <button onClick={onClick} style={{ display: 'flex', alignItems: 'center', gap: 12, width: '100%', padding: '14px 16px', borderRadius: 'var(--radius-md)', cursor: 'pointer', textAlign: 'left', background: checked ? 'var(--green-050)' : 'var(--white)', border: '1px solid ' + (checked ? 'var(--brand-primary)' : 'var(--border-default)') }}>
-      <span style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: 34, height: 34, flex: 'none', borderRadius: 8, background: checked ? 'var(--brand-primary)' : 'var(--grey-100)', color: checked ? '#fff' : 'var(--text-muted)' }}><WIcon name={checked ? 'check' : 'download'} size={16} strokeWidth={checked ? 3 : 2} /></span>
+      <span style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: 34, height: 34, flex: 'none', borderRadius: 8, background: checked ? 'var(--brand-primary)' : 'var(--grey-100)', color: checked ? '#fff' : 'var(--text-muted)' }}><Icon name={checked ? 'check' : 'download'} size={16} strokeWidth={checked ? 3 : 2} /></span>
       <span style={{ flex: 1 }}>
         <span style={{ display: 'block', fontSize: 'var(--fs-sm)', fontWeight: 600, color: 'var(--ink-900)' }}>{label}</span>
         <span style={{ display: 'block', fontSize: 'var(--fs-xs)', color: 'var(--text-muted)' }}>{hint}</span>
@@ -215,8 +215,8 @@ function DocsStep({ form, set }) {
       <DocBox label="Project Design Document (PDD)" hint="PDF · methodology & baseline" checked={form.docPdd} onClick={() => set('docPdd', !form.docPdd)} />
       <div style={{ height: 4 }} />
       <div style={{ display: 'flex', flexDirection: 'column', gap: 14, padding: '16px', borderRadius: 'var(--radius-md)', background: 'var(--grey-050)', border: '1px solid var(--border-subtle)' }}>
-        <WCheck checked={form.ackData} onChange={e => set('ackData', e.target.checked)} label="I confirm the information provided is accurate and I am authorised to represent this organisation." />
-        <WCheck checked={form.ackImmutable} onChange={e => set('ackImmutable', e.target.checked)} label="I understand that raw telemetry captured on the platform is immutable and used for carbon quantification." />
+        <Checkbox checked={form.ackData} onChange={e => set('ackData', e.target.checked)} label="I confirm the information provided is accurate and I am authorised to represent this organisation." />
+        <Checkbox checked={form.ackImmutable} onChange={e => set('ackImmutable', e.target.checked)} label="I understand that raw telemetry captured on the platform is immutable and used for carbon quantification." />
       </div>
     </div>
   );
@@ -236,12 +236,12 @@ function ReviewStep({ form, logoSrc, setStep, fuelLabel }) {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 18 }}>
       <div style={{ display: 'flex', alignItems: 'center', gap: 14, padding: 16, borderRadius: 'var(--radius-md)', background: 'var(--white)', border: '1px solid var(--border-subtle)' }}>
-        <WLogo name={form.legalName || 'New proponent'} src={logoSrc} size={52} />
+        <ProponentLogo name={form.legalName || 'New proponent'} src={logoSrc} size={52} />
         <div style={{ flex: 1 }}>
           <div style={{ fontSize: 'var(--fs-h3)', fontWeight: 700, color: 'var(--ink-900)' }}>{form.legalName || 'Company name'}</div>
           <div style={{ fontSize: 'var(--fs-xs)', color: 'var(--text-muted)' }}>{form.tradingName ? form.tradingName + ' · ' : ''}{form.country || 'Country'}</div>
         </div>
-        <div style={{ display: 'flex', gap: 5, flexWrap: 'wrap', justifyContent: 'flex-end', maxWidth: 240 }}>{form.fuels.map(f => <WFuel key={f} fuel={f} short size="sm" />)}</div>
+        <div style={{ display: 'flex', gap: 5, flexWrap: 'wrap', justifyContent: 'flex-end', maxWidth: 240 }}>{form.fuels.map(f => <FuelBadge key={f} fuel={f} short size="sm" />)}</div>
       </div>
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0 28px' }}>
         <Section title="Organisation" onEdit={() => setStep(0)}>
@@ -290,7 +290,7 @@ function ApplicationSubmitted({ application, onDone }) {
       </header>
       <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 24 }}>
         <div style={{ width: 560, maxWidth: '100%', background: 'var(--white)', border: '1px solid var(--border-subtle)', borderRadius: 'var(--radius-lg)', boxShadow: 'var(--shadow-md)', padding: 36, textAlign: 'center' }}>
-          <span style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: 56, height: 56, borderRadius: 999, background: 'var(--success-050)', color: 'var(--success-500)', marginBottom: 18 }}><WIcon name="checkCircle" size={30} /></span>
+          <span style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: 56, height: 56, borderRadius: 999, background: 'var(--success-050)', color: 'var(--success-500)', marginBottom: 18 }}><Icon name="checkCircle" size={30} /></span>
           <h1 style={{ fontSize: 'var(--fs-h1)', fontWeight: 800, color: 'var(--ink-900)' }}>Application submitted</h1>
           <p style={{ fontSize: 'var(--fs-body)', color: 'var(--text-secondary)', marginTop: 8, marginBottom: 22 }}>Thanks, {application.contactName || 'there'}. The Verst Carbon team will review {application.legalName || 'your application'} and issue workspace credentials by email.</p>
           <div style={{ display: 'flex', alignItems: 'center', gap: 14, padding: '16px 18px', borderRadius: 'var(--radius-md)', background: 'var(--grey-050)', border: '1px solid var(--border-subtle)', textAlign: 'left', marginBottom: 14 }}>
@@ -299,10 +299,10 @@ function ApplicationSubmitted({ application, onDone }) {
               <div style={{ fontSize: 'var(--fs-2xs)', fontWeight: 700, letterSpacing: '.06em', textTransform: 'uppercase', color: 'var(--text-muted)' }}>Reference</div>
               <div style={{ fontSize: 'var(--fs-h3)', fontWeight: 800, color: 'var(--ink-900)', fontFamily: 'var(--font-data)' }}>{application.id}</div>
             </div>
-            <WBadge tone="warning" variant="soft" icon="clock">Pending review</WBadge>
+            <Badge tone="warning" variant="soft" icon="clock">Pending review</Badge>
           </div>
           <div style={{ display: 'flex', gap: 10, justifyContent: 'center' }}>
-            <WButton variant="secondary" iconLeft="user" onClick={onDone}>Back to sign in</WButton>
+            <Button variant="secondary" iconLeft="user" onClick={onDone}>Back to sign in</Button>
           </div>
         </div>
       </div>

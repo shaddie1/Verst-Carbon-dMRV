@@ -1,8 +1,8 @@
 /* Verst Carbon dMRV — shared layout parts used across screens. */
 import React from 'react';
-import { FuelBadge, Icon as PIcon, Button as PButton } from '../designSystem.jsx';
+import { FuelBadge, Icon, Button } from '../designSystem.jsx';
 
-const { useState: pUse } = React;
+const { useState } = React;
 
 function Panel({ title, sub, actions, children, pad = true, style = {} }) {
   return (
@@ -104,7 +104,7 @@ function CategoryTag({ category, size = 'md' }) {
   const bg = inst ? 'var(--fuel-electric-soft)' : 'var(--grey-100)';
   return (
     <span style={{ display: 'inline-flex', alignItems: 'center', gap: small ? 4 : 5, height: small ? 18 : 22, padding: small ? '0 8px' : '0 9px', background: bg, color: fg, borderRadius: 'var(--radius-pill)', fontFamily: 'var(--font-sans)', fontSize: small ? 'var(--fs-2xs)' : 'var(--fs-xs)', fontWeight: 600, lineHeight: 1, whiteSpace: 'nowrap' }}>
-      <PIcon name={inst ? 'building' : 'home'} size={small ? 11 : 12} />
+      <Icon name={inst ? 'building' : 'home'} size={small ? 11 : 12} />
       {inst ? 'Institution' : 'Household'}
     </span>
   );

@@ -15,19 +15,19 @@ import { ProponentsScreen } from './screens/Proponents.jsx';
 import { ApplicationWizard, ApplicationSubmitted } from './screens/ApplicationWizard.jsx';
 import { ApplicationsScreen } from './screens/ApplicationsReview.jsx';
 
-const { useState: aUse } = React;
+const { useState } = React;
 
 function App() {
   const D = VC_DATA;
-  const [authed, setAuthed] = aUse(false);
-  const [role, setRole] = aUse('admin');
-  const [scope, setScope] = aUse('all');
-  const [route, setRoute] = aUse('dashboard');
-  const [device, setDevice] = aUse(null);
-  const [register, setRegister] = aUse(false);
-  const [toast, setToast] = aUse(true);
-  const [preAuth, setPreAuth] = aUse('login'); // 'login' | 'apply' | 'submitted'
-  const [submittedApp, setSubmittedApp] = aUse(null);
+  const [authed, setAuthed] = useState(false);
+  const [role, setRole] = useState('admin');
+  const [scope, setScope] = useState('all');
+  const [route, setRoute] = useState('dashboard');
+  const [device, setDevice] = useState(null);
+  const [register, setRegister] = useState(false);
+  const [toast, setToast] = useState(true);
+  const [preAuth, setPreAuth] = useState('login'); // 'login' | 'apply' | 'submitted'
+  const [submittedApp, setSubmittedApp] = useState(null);
 
   React.useEffect(() => {
     const h = (window.location.hash || '').replace('#', '');
@@ -141,7 +141,7 @@ function AlertsScreen({ role, scope }) {
 
 function HouseholdsScreen({ role, scope }) {
   const D = VC_DATA;
-  const [cat, setCat] = aUse('all');
+  const [cat, setCat] = useState('all');
   const devices = D.scopeDevices(scope);
   const map = {};
   devices.forEach(d => { (map[d.site] = map[d.site] || []).push(d); });
@@ -210,7 +210,7 @@ function SettingsScreen({ role }) {
 }
 
 function Toggle({ label, on }) {
-  const [v, setV] = aUse(!!on);
+  const [v, setV] = useState(!!on);
   return (
     <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '4px 0' }}>
       <span style={{ fontSize: 'var(--fs-sm)', color: 'var(--text-body)' }}>{label}</span>
