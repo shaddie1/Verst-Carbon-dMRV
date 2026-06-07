@@ -3,7 +3,7 @@
 import React from 'react';
 import { FuelBadge, StatusDot, SignalBars, LevelMeter, Input, Select, Button, IconButton, Checkbox, Badge, Icon, Breadcrumb, EmptyState } from '../designSystem.jsx';
 import { VC_DATA } from '../data.js';
-import { PageHeader, CategoryTag } from '../components/layout.jsx';
+import { PageHeader, CategoryTag, lastSeenText } from '../components/layout.jsx';
 
 const { useState } = React;
 
@@ -128,7 +128,7 @@ function Row({ d, cols, selected, onToggle, onOpen, proponentName, fmtImei }) {
       <td style={{ padding: '10px 12px', whiteSpace: 'nowrap', color: 'var(--text-secondary)' }}>{d.site}</td>
       <td style={{ padding: '10px 12px' }}><CategoryTag category={d.category} size="sm" /></td>
       <td style={{ padding: '10px 12px' }}><StatusDot status={d.status} showLabel pulse={d.status === 'online'} /></td>
-      <td style={{ padding: '10px 12px', whiteSpace: 'nowrap', color: d.status === 'offline' ? 'var(--danger-600)' : 'var(--text-secondary)' }}>{window.lastSeenText(d.lastSeenMin)}</td>
+      <td style={{ padding: '10px 12px', whiteSpace: 'nowrap', color: d.status === 'offline' ? 'var(--danger-600)' : 'var(--text-secondary)' }}>{lastSeenText(d.lastSeenMin)}</td>
       <td style={{ padding: '10px 12px' }}><LevelMeter value={d.battery} width={56} /></td>
       <td style={{ padding: '10px 12px' }}><SignalBars level={d.signal} /></td>
       <td style={{ padding: '10px 12px' }} onClick={e => e.stopPropagation()}><IconButton icon="more" size="sm" label="Row actions" /></td>
@@ -136,6 +136,5 @@ function Row({ d, cols, selected, onToggle, onOpen, proponentName, fmtImei }) {
   );
 }
 
-Object.assign(window, { DevicesScreen });
 
 export { DevicesScreen, Th, Row };

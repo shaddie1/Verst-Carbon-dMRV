@@ -110,6 +110,5 @@ function CategoryTag({ category, size = 'md' }) {
   );
 }
 
-Object.assign(window, { Panel, PageHeader, FuelChips, MapPanel, lastSeenText, CategoryTag });
 
 export { Panel, PageHeader, FuelChips, MapPanel, lastSeenText, CategoryTag };

@@ -103,6 +103,5 @@ function InviteUserModal({ onClose }) {
   );
 }
 
-Object.assign(window, { ProponentsScreen });
 
 export { ProponentsScreen, ProponentRow, InviteUserModal };

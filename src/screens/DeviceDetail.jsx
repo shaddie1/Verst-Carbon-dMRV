@@ -2,7 +2,8 @@
 import React from 'react';
 import { Tabs, TimeSeriesChart, FuelBadge, StatusDot, Badge, Button, IconButton, SignalBars, LevelMeter, Breadcrumb, Icon, Alert } from '../designSystem.jsx';
 import { VC_DATA } from '../data.js';
-import { Panel, CategoryTag } from '../components/layout.jsx';
+import { Panel, CategoryTag, lastSeenText } from '../components/layout.jsx';
+import { fuelColor } from './Dashboard.jsx';
 
 const { useState } = React;
 
@@ -48,7 +49,7 @@ function DeviceDetailScreen({ role, scope, imei, onBack }) {
         <MiniStat label="Battery" value={d.battery + '%'} extra={<LevelMeter value={d.battery} width={80} showValue={false} />} />
         <MiniStat label="TEG output" value={(0.4 + d.teg / 100 * 1.6).toFixed(1) + ' V'} extra={<LevelMeter value={d.teg} width={80} showValue={false} />} />
         <MiniStat label="Signal" value={['None', 'Weak', 'Fair', 'Good', 'Strong'][d.signal]} extra={<SignalBars level={d.signal} />} />
-        <MiniStat label="Last seen" value={window.lastSeenText(d.lastSeenMin)} extra={<span style={{ fontSize: 11, color: 'var(--text-muted)' }}>{d.status === 'online' ? 'Reporting normally' : 'Awaiting telemetry'}</span>} />
+        <MiniStat label="Last seen" value={lastSeenText(d.lastSeenMin)} extra={<span style={{ fontSize: 11, color: 'var(--text-muted)' }}>{d.status === 'online' ? 'Reporting normally' : 'Awaiting telemetry'}</span>} />
       </div>
 
       <Tabs value={tab} onChange={setTab} style={{ marginBottom: 18 }} tabs={[
@@ -61,7 +62,7 @@ function DeviceDetailScreen({ role, scope, imei, onBack }) {
 
       {tab === 'telemetry' && (
         <Panel title={'Telemetry — ' + seriesName.toLowerCase()} sub={`${d.sensor} node · last 24 hours`} actions={<Badge tone="brand" variant="soft">{D.FUEL_METHOD[d.fuel] === 'sensor-direct' ? 'Sensor-direct' : 'Hybrid quantification'}</Badge>}>
-          <TimeSeriesChart yUnit={yUnit} series={[{ name: seriesName, color: window.fuelColor(d.fuel), data: series }]} height={250} />
+          <TimeSeriesChart yUnit={yUnit} series={[{ name: seriesName, color: fuelColor(d.fuel), data: series }]} height={250} />
         </Panel>
       )}
 
@@ -173,6 +174,5 @@ function Timeline({ items }) {
   );
 }
 
-Object.assign(window, { DeviceDetailScreen });
 
 export { DeviceDetailScreen, MiniStat, DefList, Timeline };

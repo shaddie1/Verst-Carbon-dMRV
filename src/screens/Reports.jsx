@@ -92,6 +92,5 @@ function ReportsScreen({ role, scope }) {
   );
 }
 
-Object.assign(window, { ReportsScreen });
 
 export { ReportsScreen };

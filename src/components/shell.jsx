@@ -153,6 +153,5 @@ function SideItem({ label, icon, badge, active, onClick }) {
   );
 }
 
-Object.assign(window, { Logo, TopNav, Sidebar, ProponentSwitcher, MenuItem });
 
 export { Logo, ProponentSwitcher, MenuItem, TopNav, Sidebar, SideItem };

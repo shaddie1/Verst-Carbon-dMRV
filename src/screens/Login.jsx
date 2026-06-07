@@ -69,6 +69,5 @@ function LoginScreen({ onLogin, onApply }) {
   );
 }
 
-Object.assign(window, { LoginScreen });
 
 export { LoginScreen };

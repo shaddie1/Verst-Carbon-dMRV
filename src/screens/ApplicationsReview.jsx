@@ -204,6 +204,5 @@ function CredentialsModal({ creds, onClose }) {
   );
 }
 
-Object.assign(window, { ApplicationsScreen });
 
 export { STATUS_META, ApplicationsScreen, DetailRow, ApplicationDrawer, DrawerSection, CredField, CredentialsModal };

@@ -311,10 +311,8 @@ function ApplicationSubmitted({ application, onDone }) {
 }
 
 function ApplicationLogoRef({ application }) {
-  const { ProponentLogo } = window.VerstCarbonDesignSystem_d4048d;
   return <ProponentLogo name={application.legalName || 'New proponent'} src={application.logo} size={44} />;
 }
 
-Object.assign(window, { ApplicationWizard, ApplicationSubmitted });
 
 export { STEPS, ApplicationWizard, Field, Grid, OrgStep, ContactStep, ProjectStep, DocBox, DocsStep, ReviewRow, ReviewStep, Section, ApplicationSubmitted, ApplicationLogoRef };

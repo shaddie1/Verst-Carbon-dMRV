@@ -4,6 +4,7 @@ import { FuelBadge, KpiCard, TimeSeriesChart, Badge, Button, Breadcrumb, Icon } 
 import { VC_DATA } from '../data.js';
 import { Panel, PageHeader } from '../components/layout.jsx';
 import { DefList } from './DeviceDetail.jsx';
+import { fuelColor } from './Dashboard.jsx';
 
 const { useState } = React;
 
@@ -53,7 +54,7 @@ function FuelScreen({ role, scope }) {
           <Badge tone={method === 'sensor-direct' ? 'brand' : 'warning'} variant="soft" icon={method === 'sensor-direct' ? 'checkCircle' : 'activity'}>{method === 'sensor-direct' ? 'Sensor-direct' : 'Hybrid quantification'}</Badge>
           <Badge tone="neutral" variant="outline">{D.FUEL_SENSOR[active]}</Badge>
         </div>}>
-        <TimeSeriesChart yUnit={unit + '/h'} series={[{ name: D.FUEL_LABEL[active], color: window.fuelColor(active), data: series }]} height={240} />
+        <TimeSeriesChart yUnit={unit + '/h'} series={[{ name: D.FUEL_LABEL[active], color: fuelColor(active), data: series }]} height={240} />
       </Panel>
 
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 18 }}>
@@ -84,6 +85,5 @@ function FuelScreen({ role, scope }) {
   );
 }
 
-Object.assign(window, { FuelScreen });
 
 export { FuelScreen };

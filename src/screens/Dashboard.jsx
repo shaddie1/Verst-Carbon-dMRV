@@ -153,6 +153,5 @@ function AlertRow({ a, role, scope, last, proponentName }) {
   );
 }
 
-Object.assign(window, { DashboardScreen, fuelColor });
 
 export { fuelColor, DashboardScreen, AlertRow };

@@ -63,6 +63,5 @@ function RegisterDeviceModal({ role, scope, onClose }) {
   );
 }
 
-Object.assign(window, { RegisterDeviceModal });
 
 export { RegisterDeviceModal };
