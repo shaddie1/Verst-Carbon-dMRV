@@ -4,12 +4,13 @@ import React from 'react';
 import { FuelBadge, StatusDot, SignalBars, LevelMeter, Input, Select, Button, IconButton, Checkbox, Badge, Icon, Breadcrumb, EmptyState } from '../designSystem.jsx';
 import { VC_DATA } from '../data.js';
 import { PageHeader, CategoryTag, lastSeenText } from '../components/layout.jsx';
+import { useDevices } from '../store.jsx';
 
 const { useState } = React;
 
 function DevicesScreen({ role, scope, onOpenDevice, onRegister }) {
   const D = VC_DATA;
-  const all = D.scopeDevices(scope);
+  const all = useDevices(scope); // store-backed: reflects newly registered devices
   const fuels = D.fuelsFor(scope);
   const [q, setQ] = useState('');
   const [fuel, setFuel] = useState('');

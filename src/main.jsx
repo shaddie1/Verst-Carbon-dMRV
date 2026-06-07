@@ -6,9 +6,12 @@ import './styles/tokens.css';
 import './styles/app.css';
 import './imageSlot.js';
 import { App } from './App.jsx';
+import { DataProvider } from './store.jsx';
 
 createRoot(document.getElementById('root')).render(
   <BrowserRouter>
-    <App />
+    <DataProvider>
+      <App />
+    </DataProvider>
   </BrowserRouter>
 );

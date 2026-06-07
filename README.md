@@ -57,6 +57,17 @@ maps their existing callbacks (`onNav`, `onOpenDevice`, `onBack`, …) onto
 > this automatically; on static hosts configure a catch-all rewrite to
 > `/index.html`.
 
+## Data store
+
+`src/store.jsx` is a small React-context store over the in-memory `VC_DATA`
+mock. Today it exposes `addDevice` and a `useDevices(scope)` hook (the Devices
+list and Register-device modal use it, so a newly registered device appears
+immediately). This is the **seam for a real data layer**: swap the bodies of
+`addDevice` / `useDevices` for API calls + async state and the screens keep
+their shape. The Register-device modal (`src/screens/RegisterDeviceModal.jsx`)
+is a worked example of a fully functional screen — controlled fields, IMEI
+validation (15 digits + uniqueness), fuel-filtered models, and a success state.
+
 ## How it's wired
 
 Plain ES modules — every file `import`s what it needs and `export`s its
