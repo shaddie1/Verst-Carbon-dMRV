@@ -1,6 +1,9 @@
-/* Verst Carbon dMRV — App: routing, role & proponent scope, modals, toast. */
+/* Verst Carbon dMRV — App: URL routing (react-router), role & proponent scope,
+   modals, toast. Screens keep their callback props; this file maps those
+   callbacks onto navigation so the screen modules stay unchanged. */
 import React from 'react';
-import { Toast as AToast, Button as AButton, Badge as ABadge, Icon as AIcon, FuelBadge as AFuel, StatusDot as AStatus, EmptyState as AEmpty, Switch as ASwitch } from './designSystem.jsx';
+import { Routes, Route, Navigate, Outlet, useNavigate, useParams, useLocation } from 'react-router-dom';
+import { Toast, Button, Badge, Icon, FuelBadge, StatusDot, EmptyState, Switch } from './designSystem.jsx';
 import { VC_DATA } from './data.js';
 import { TopNav, Sidebar } from './components/shell.jsx';
 import { Panel, PageHeader, CategoryTag } from './components/layout.jsx';
@@ -17,88 +20,133 @@ import { ApplicationsScreen } from './screens/ApplicationsReview.jsx';
 
 const { useState } = React;
 
+// Top-level keys used by the sidebar / breadcrumbs map 1:1 to the URL path.
+const deviceHref = (imei) => `/devices/${encodeURIComponent(imei)}`;
+
 function App() {
   const D = VC_DATA;
+  const navigate = useNavigate();
+
+  // Session state (role/scope/auth are app state, not part of the URL).
   const [authed, setAuthed] = useState(false);
   const [role, setRole] = useState('admin');
   const [scope, setScope] = useState('all');
-  const [route, setRoute] = useState('dashboard');
-  const [device, setDevice] = useState(null);
   const [register, setRegister] = useState(false);
   const [toast, setToast] = useState(true);
-  const [preAuth, setPreAuth] = useState('login'); // 'login' | 'apply' | 'submitted'
   const [submittedApp, setSubmittedApp] = useState(null);
-
-  React.useEffect(() => {
-    const h = (window.location.hash || '').replace('#', '');
-    if (!h) return;
-    const [r, rt, dv] = h.split('/');
-    if (r === 'apply') { setPreAuth('apply'); return; }
-    if (r === 'admin' || r === 'proponent') {
-      setRole(r); setScope(r === 'admin' ? 'all' : 'sahel');
-      setAuthed(true);
-      if (rt) setRoute(rt);
-      if (dv) setDevice(decodeURIComponent(dv));
-    }
-  }, []);
 
   function login(r) {
     setRole(r);
     setScope(r === 'admin' ? 'all' : 'sahel');
-    setRoute('dashboard'); setDevice(null); setAuthed(true);
+    setAuthed(true);
+    navigate('/dashboard');
   }
-  function nav(key) { setRoute(key); setDevice(null); }
-  const user = role === 'admin' ? { name: 'Verst Operator', org: 'Verst Carbon', role: 'admin' } : { name: 'Amara Okeke', org: 'Sahel Clean Cooking', role: 'proponent' };
-  const alertCount = D.scopeAlerts(scope).length;
-
-  if (!authed) {
-    if (preAuth === 'apply') {
-      const nextRef = 'VC-APP-2026-' + String(43 + Math.floor(Math.random() * 50)).padStart(4, '0');
-      return <ApplicationWizard onClose={() => setPreAuth('login')} onSubmitted={(form) => { setSubmittedApp({ ...form, id: nextRef }); setPreAuth('submitted'); }} />;
-    }
-    if (preAuth === 'submitted') {
-      return <ApplicationSubmitted application={submittedApp} onDone={() => { setPreAuth('login'); setSubmittedApp(null); }} />;
-    }
-    return (
-      <div style={{ width: '100%', height: '100%' }}>
-        <LoginScreen onLogin={login} onApply={() => setPreAuth('apply')} />
-      </div>
-    );
+  function logout() {
+    setAuthed(false);
+    navigate('/login');
+  }
+  // Proponent picker jumps the admin into a single proponent's scope.
+  function pickProponent(id) {
+    setScope(id);
+    navigate('/dashboard');
   }
 
-  let screen;
-  if (device) screen = <DeviceDetailScreen role={role} scope={scope} imei={device} onBack={() => setDevice(null)} />;
-  else if (route === 'dashboard') screen = <DashboardScreen role={role} scope={scope} onScopeChange={setScope} onNav={nav} />;
-  else if (route === 'devices') screen = <DevicesScreen role={role} scope={scope} onOpenDevice={setDevice} onRegister={() => setRegister(true)} />;
-  else if (route === 'fuels') screen = <FuelScreen role={role} scope={scope} />;
-  else if (route === 'reports') screen = <ReportsScreen role={role} scope={scope} />;
-  else if (route === 'proponents') screen = <ProponentsScreen onScopeChange={(id) => { setScope(id); setRoute('dashboard'); }} />;
-  else if (route === 'applications') screen = <ApplicationsScreen />;
-  else if (route === 'alerts') screen = <AlertsScreen role={role} scope={scope} />;
-  else if (route === 'households') screen = <HouseholdsScreen role={role} scope={scope} />;
-  else screen = <SettingsScreen role={role} />;
+  const user = role === 'admin'
+    ? { name: 'Verst Operator', org: 'Verst Carbon', role: 'admin' }
+    : { name: 'Amara Okeke', org: 'Sahel Clean Cooking', role: 'proponent' };
+
+  const requireAuth = (el) => (authed ? el : <Navigate to="/login" replace />);
+
+  return (
+    <Routes>
+      {/* public / pre-auth */}
+      <Route path="/login" element={
+        authed ? <Navigate to="/dashboard" replace /> : (
+          <div style={{ width: '100%', height: '100%' }}>
+            <LoginScreen onLogin={login} onApply={() => navigate('/apply')} />
+          </div>
+        )
+      } />
+      <Route path="/apply" element={
+        <ApplicationWizard
+          onClose={() => navigate('/login')}
+          onSubmitted={(form) => {
+            const ref = 'VC-APP-2026-' + String(43 + Math.floor(Math.random() * 50)).padStart(4, '0');
+            setSubmittedApp({ ...form, id: ref });
+            navigate('/apply/submitted');
+          }}
+        />
+      } />
+      <Route path="/apply/submitted" element={
+        submittedApp
+          ? <ApplicationSubmitted application={submittedApp} onDone={() => { setSubmittedApp(null); navigate('/login'); }} />
+          : <Navigate to="/apply" replace />
+      } />
+
+      {/* authed app shell + nested screens */}
+      <Route element={requireAuth(
+        <Shell
+          role={role} scope={scope} user={user}
+          onScopeChange={setScope}
+          alertCount={D.scopeAlerts(scope).length}
+          toast={toast} onToastDismiss={() => setToast(false)}
+          register={register} onRegisterClose={() => setRegister(false)}
+          onRole={login} onLogout={logout}
+        />
+      )}>
+        <Route path="/dashboard" element={<DashboardScreen role={role} scope={scope} onScopeChange={setScope} onNav={(k) => navigate('/' + k)} />} />
+        <Route path="/devices" element={<DevicesScreen role={role} scope={scope} onOpenDevice={(imei) => navigate(deviceHref(imei))} onRegister={() => setRegister(true)} />} />
+        <Route path="/devices/:imei" element={<DeviceDetailRoute role={role} scope={scope} />} />
+        <Route path="/fuels" element={<FuelScreen role={role} scope={scope} />} />
+        <Route path="/reports" element={<ReportsScreen role={role} scope={scope} />} />
+        <Route path="/proponents" element={<ProponentsScreen onScopeChange={pickProponent} />} />
+        <Route path="/applications" element={<ApplicationsScreen />} />
+        <Route path="/alerts" element={<AlertsScreen role={role} scope={scope} />} />
+        <Route path="/households" element={<HouseholdsScreen role={role} scope={scope} />} />
+        <Route path="/settings" element={<SettingsScreen role={role} />} />
+      </Route>
+
+      <Route path="*" element={<Navigate to={authed ? '/dashboard' : '/login'} replace />} />
+    </Routes>
+  );
+}
+
+/* Authed chrome: top nav + sidebar + the active screen (<Outlet/>), plus the
+   global register modal, offline toast and the demo role switcher. */
+function Shell({ role, scope, user, onScopeChange, alertCount, toast, onToastDismiss, register, onRegisterClose, onRole, onLogout }) {
+  const navigate = useNavigate();
+  const { pathname } = useLocation();
+  const active = pathname.split('/')[1] || 'dashboard';
+  const onDashboard = active === 'dashboard';
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', width: '100%', height: '100%', background: 'var(--surface-app)', overflow: 'hidden' }}>
-      <TopNav role={role} scope={scope} onScopeChange={setScope} alertCount={alertCount} user={user} onBell={() => nav('alerts')} />
+      <TopNav role={role} scope={scope} onScopeChange={onScopeChange} alertCount={alertCount} user={user} onBell={() => navigate('/alerts')} />
       <div style={{ display: 'flex', flex: 1, minHeight: 0 }}>
-        <Sidebar role={role} active={device ? 'devices' : route} onNav={nav} alertCount={alertCount} />
+        <Sidebar role={role} active={active} onNav={(k) => navigate('/' + k)} alertCount={alertCount} />
         <main style={{ flex: 1, minWidth: 0, overflowY: 'auto', padding: '24px 28px' }}>
-          <div style={{ maxWidth: 1240, margin: '0 auto' }}>{screen}</div>
+          <div style={{ maxWidth: 1240, margin: '0 auto' }}><Outlet /></div>
         </main>
       </div>
 
-      {register && <RegisterDeviceModal role={role} scope={scope} onClose={() => setRegister(false)} />}
+      {register && <RegisterDeviceModal role={role} scope={scope} onClose={onRegisterClose} />}
 
-      {toast && route === 'dashboard' && !device && (
+      {toast && onDashboard && (
         <div style={{ position: 'absolute', right: 24, bottom: 24, zIndex: 80 }}>
-          <AToast tone="danger" title="Device offline > 72h" message={(role === 'admin' && scope === 'all' ? 'Sahel Clean Cooking · ' : '') + 'IMEI 35693…809 last seen 3 days ago · Kaolack'} action={{ label: 'View device', onClick: () => { setRoute('devices'); setToast(false); } }} onDismiss={() => setToast(false)} />
+          <Toast tone="danger" title="Device offline > 72h" message={(role === 'admin' && scope === 'all' ? 'Sahel Clean Cooking · ' : '') + 'IMEI 35693…809 last seen 3 days ago · Kaolack'} action={{ label: 'View device', onClick: () => { navigate('/devices'); onToastDismiss(); } }} onDismiss={onToastDismiss} />
         </div>
       )}
 
-      <RoleSwitcher role={role} onRole={(r) => login(r)} onLogout={() => setAuthed(false)} />
+      <RoleSwitcher role={role} onRole={onRole} onLogout={onLogout} />
     </div>
   );
+}
+
+/* Reads :imei from the URL and renders the device detail screen. */
+function DeviceDetailRoute({ role, scope }) {
+  const { imei } = useParams();
+  const navigate = useNavigate();
+  return <DeviceDetailScreen role={role} scope={scope} imei={decodeURIComponent(imei)} onBack={() => navigate('/devices')} />;
 }
 
 /* Floating reviewer control to flip admin / proponent */
@@ -109,15 +157,7 @@ function RoleSwitcher({ role, onRole, onLogout }) {
       {[['admin', 'Admin'], ['proponent', 'Proponent']].map(([k, l]) => (
         <button key={k} onClick={() => onRole(k)} style={{ padding: '5px 11px', borderRadius: 999, border: 'none', cursor: 'pointer', fontFamily: 'var(--font-sans)', fontSize: 12, fontWeight: 600, background: role === k ? 'var(--brand-primary)' : 'transparent', color: role === k ? '#fff' : 'rgba(255,255,255,0.7)' }}>{l}</button>
       ))}
-      <button onClick={onLogout} title="Sign out" style={{ display: 'inline-flex', padding: 5, marginLeft: 2, borderRadius: 999, border: 'none', cursor: 'pointer', background: 'transparent', color: 'rgba(255,255,255,0.7)' }}><AIcon name="logout" size={15} /></button>
-    </div>
-  );
-}
-
-function RoleHint() {
-  return (
-    <div style={{ position: 'absolute', left: '50%', bottom: 22, transform: 'translateX(-50%)', fontSize: 12, color: 'var(--text-muted)', background: 'rgba(255,255,255,0.9)', padding: '6px 12px', borderRadius: 999, border: '1px solid var(--border-subtle)' }}>
-      Demo login — pick a role below the form. Role is normally resolved automatically after sign-in.
+      <button onClick={onLogout} title="Sign out" style={{ display: 'inline-flex', padding: 5, marginLeft: 2, borderRadius: 999, border: 'none', cursor: 'pointer', background: 'transparent', color: 'rgba(255,255,255,0.7)' }}><Icon name="logout" size={15} /></button>
     </div>
   );
 }
@@ -129,10 +169,10 @@ function AlertsScreen({ role, scope }) {
   return (
     <div>
       <PageHeader title="Alerts" sub={`${alerts.length} active · device offline > 72h, sensor anomalies, battery / TEG faults`}
-        actions={<AButton variant="secondary" iconLeft="check">Acknowledge all</AButton>} />
+        actions={<Button variant="secondary" iconLeft="check">Acknowledge all</Button>} />
       <Panel pad={false}>
         {alerts.length === 0
-          ? <AEmpty icon="checkCircle" title="All clear" description="No active alerts for this proponent right now." />
+          ? <EmptyState icon="checkCircle" title="All clear" description="No active alerts for this proponent right now." />
           : alerts.map((a, i) => <AlertRow key={a.id} a={a} role={role} scope={scope} last={i === alerts.length - 1} proponentName={D.proponentName} />)}
       </Panel>
     </div>
@@ -152,7 +192,7 @@ function HouseholdsScreen({ role, scope }) {
   return (
     <div>
       <PageHeader title="Households & institutions" sub={`${counts.household} households · ${counts.institution} institutions across all fuels`}
-        actions={<AButton iconLeft="plus">Add site</AButton>} />
+        actions={<Button iconLeft="plus">Add site</Button>} />
       <div style={{ display: 'inline-flex', gap: 2, padding: 3, background: 'var(--grey-100)', borderRadius: 'var(--radius-sm)', marginBottom: 16 }}>
         {[['all', 'All', counts.all], ['household', 'Households', counts.household], ['institution', 'Institutions', counts.institution]].map(([k, l, n]) => (
           <button key={k} onClick={() => setCat(k)} style={{ display: 'inline-flex', alignItems: 'center', gap: 6, padding: '6px 12px', border: 'none', borderRadius: 'var(--radius-xs)', cursor: 'pointer', fontFamily: 'var(--font-sans)', fontSize: 'var(--fs-sm)', fontWeight: 600, background: cat === k ? 'var(--white)' : 'transparent', color: cat === k ? 'var(--ink-900)' : 'var(--text-secondary)', boxShadow: cat === k ? 'var(--shadow-xs)' : 'none' }}>
@@ -176,9 +216,9 @@ function HouseholdsScreen({ role, scope }) {
                 <td style={{ padding: '11px 16px' }}><CategoryTag category={hh.category} size="sm" /></td>
                 <td style={{ padding: '11px 16px', color: 'var(--text-secondary)' }}>{hh.town}</td>
                 {cols && <td style={{ padding: '11px 16px', color: 'var(--text-body)' }}>{D.proponentName(hh.proponent)}</td>}
-                <td style={{ padding: '11px 16px' }}><div style={{ display: 'flex', gap: 5 }}>{fuels.map(f => <AFuel key={f} fuel={f} short size="sm" showIcon={false} />)}</div></td>
+                <td style={{ padding: '11px 16px' }}><div style={{ display: 'flex', gap: 5 }}>{fuels.map(f => <FuelBadge key={f} fuel={f} short size="sm" showIcon={false} />)}</div></td>
                 <td style={{ padding: '11px 16px', fontFamily: 'var(--font-data)', color: 'var(--text-body)' }}>{hh.devices.length}</td>
-                <td style={{ padding: '11px 16px' }}><AStatus status={online ? 'online' : 'offline'} showLabel /></td>
+                <td style={{ padding: '11px 16px' }}><StatusDot status={online ? 'online' : 'offline'} showLabel /></td>
               </tr>
             );
           })}</tbody>
@@ -214,11 +254,9 @@ function Toggle({ label, on }) {
   return (
     <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '4px 0' }}>
       <span style={{ fontSize: 'var(--fs-sm)', color: 'var(--text-body)' }}>{label}</span>
-      <ASwitch checked={v} onChange={e => setV(e.target.checked)} />
+      <Switch checked={v} onChange={e => setV(e.target.checked)} />
     </div>
   );
 }
 
-Object.assign(window, { App, AlertsScreen, HouseholdsScreen, SettingsScreen });
-
-export { App, RoleSwitcher, RoleHint, AlertsScreen, HouseholdsScreen, SettingsScreen, Toggle };
+export { App, Shell, DeviceDetailRoute, RoleSwitcher, AlertsScreen, HouseholdsScreen, SettingsScreen, Toggle };

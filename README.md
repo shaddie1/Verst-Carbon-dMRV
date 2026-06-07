@@ -39,6 +39,24 @@ src/
 public/fonts/       Raleway + Inter woff2 files (referenced by tokens.css)
 ```
 
+## Routing
+
+Client-side routing uses **react-router** (`BrowserRouter`). Each screen has a
+real URL — `/dashboard`, `/devices`, `/devices/:imei`, `/fuels`, `/reports`,
+`/proponents`, `/applications`, `/alerts`, `/households`, `/settings`, plus the
+public `/login`, `/apply`, `/apply/submitted`. Unauthenticated visits to a
+protected route redirect to `/login`; unknown paths redirect home.
+
+Auth, role (`admin`/`proponent`) and proponent scope are in-memory React state
+(reset on reload), not in the URL. The screen modules are unchanged — `App.jsx`
+maps their existing callbacks (`onNav`, `onOpenDevice`, `onBack`, …) onto
+`navigate()`.
+
+> Deployment note: because routes use the History API, the host must serve
+> `index.html` for unknown paths (SPA fallback). `vite dev`/`vite preview` do
+> this automatically; on static hosts configure a catch-all rewrite to
+> `/index.html`.
+
 ## How it's wired
 
 Plain ES modules — every file `import`s what it needs and `export`s its
