@@ -50,6 +50,12 @@ county). Its dark/amber theme lives in `src/poa/poa.css`, scoped under `.poa`
 so it never touches the green dMRV design tokens. "Implementing Partner Login"
 and "Apply" route into the existing dMRV app (`/login`, `/apply`).
 
+It is themed in the **Verst Carbon** brand palette (forest green `#008037`,
+moss, deep-forest dark sections; white top nav). The nav/footer use the Verst
+Carbon logo: drop the logo file at **`public/verst-carbon-logo.png`** and it is
+picked up automatically; until then a brand-coloured `VerstCarbon` wordmark
+fallback is shown.
+
 > Placeholders pending real data: footer contact details and the Implementing
 > Partner directory entries. Sub-pages (Apply portal, Partners, Resources, LSC,
 > Grievances) currently anchor-scroll within the landing; they can be built out

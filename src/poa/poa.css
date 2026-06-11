@@ -1,20 +1,28 @@
 /* Kenya National Clean Cooking PoA — public landing theme.
-   Mirrors the Uganda NCCCFF site: dark ink hero + amber/gold accents,
-   Nunito Sans. Everything is scoped under .poa so it never touches the
+   Verst Carbon brand palette: forest-green primary on white, deep-forest
+   dark sections, moss accents. Scoped under .poa so it never touches the
    green dMRV design tokens used by the authenticated platform. */
 @import url('https://fonts.googleapis.com/css2?family=Nunito+Sans:opsz,wght@6..12,400;6..12,600;6..12,700;6..12,800;6..12,900&display=swap');
 
 .poa {
-  /* palette lifted from the reference site */
-  --poa-ink: #14181f;
-  --poa-ink-2: #1d2330;
-  --poa-amber: #b45309;
-  --poa-amber-600: #92400e;
-  --poa-gold: #fcd34d;
-  --poa-muted: #6a7181;
-  --poa-line: #e8eaed;
+  /* Verst Carbon brand greens */
+  --poa-green: #008037;     /* primary forest green */
+  --poa-green-600: #006c2e;
+  --poa-green-700: #005825; /* deep forest */
+  --poa-moss: #589630;      /* secondary moss */
+  --poa-leaf: #7faf5e;      /* light moss — accents on dark */
+  --poa-moss-soft: #c7dcb5;
+  --poa-deep: #04331a;      /* dark (forest) section background */
+
+  --poa-ink: #14181f;       /* near-black headings/text on light */
+  --poa-muted: #5c615e;
+  --poa-line: #e4e6e5;
   --poa-surface: #ffffff;
-  --poa-bg: #f9fafb;
+  --poa-bg: #f6f7f6;
+
+  /* aliases kept so existing var() refs resolve to brand greens */
+  --poa-amber: var(--poa-green);
+  --poa-gold: var(--poa-leaf);
 
   font-family: 'Nunito Sans', system-ui, Avenir, Helvetica, Arial, sans-serif;
   color: var(--poa-ink);
@@ -36,20 +44,20 @@
 /* eyebrow / section labels */
 .poa-eyebrow {
   font-size: 12px; font-weight: 800; letter-spacing: 0.14em; text-transform: uppercase;
-  color: var(--poa-amber);
+  color: var(--poa-green);
 }
 .poa-eyebrow.muted { color: var(--poa-muted); }
 
-/* hero */
+/* hero — forest-green gradient with a brighter moss glow */
 .poa-hero {
   position: relative; overflow: hidden;
   background:
-    radial-gradient(900px 420px at 78% -10%, rgba(180,83,9,0.55), transparent 60%),
-    radial-gradient(700px 360px at 92% 18%, rgba(252,211,77,0.18), transparent 55%),
-    linear-gradient(160deg, #0c0f15 0%, #14181f 55%, #0c0f15 100%);
+    radial-gradient(900px 420px at 80% -10%, rgba(88,150,48,0.55), transparent 60%),
+    radial-gradient(700px 360px at 94% 22%, rgba(127,175,94,0.30), transparent 55%),
+    linear-gradient(160deg, #032915 0%, #064a26 52%, #03210f 100%);
   color: #fff;
 }
-.poa-hero .poa-amber-text { color: var(--poa-gold); }
+.poa-hero .poa-amber-text { color: #9fd97a; }  /* light moss highlight */
 
 /* buttons */
 .poa-btn {
@@ -59,36 +67,36 @@
   transition: transform 120ms ease, background 120ms ease, border-color 120ms ease;
 }
 .poa-btn:hover { transform: translateY(-1px); }
-.poa-btn--primary { background: linear-gradient(180deg, #c2620f, #b45309); color: #fff; box-shadow: 0 8px 24px rgba(180,83,9,0.35); }
-.poa-btn--primary:hover { background: linear-gradient(180deg, #d06d12, #a44a08); }
-.poa-btn--ghost { background: rgba(255,255,255,0.06); color: #fff; border-color: rgba(255,255,255,0.18); }
+.poa-btn--primary { background: linear-gradient(180deg, #03953f, #006c2e); color: #fff; box-shadow: 0 8px 24px rgba(0,128,55,0.30); }
+.poa-btn--primary:hover { background: linear-gradient(180deg, #04a847, #005825); }
+.poa-btn--ghost { background: rgba(255,255,255,0.06); color: #fff; border-color: rgba(255,255,255,0.22); }
 .poa-btn--ghost:hover { background: rgba(255,255,255,0.12); }
-.poa-btn--dark { background: var(--poa-ink); color: #fff; }
-.poa-btn--dark:hover { background: #20262f; }
+.poa-btn--dark { background: var(--poa-green); color: #fff; }
+.poa-btn--dark:hover { background: var(--poa-green-600); }
 
 /* cards */
 .poa-card {
   background: var(--poa-surface); border: 1px solid var(--poa-line); border-radius: 16px;
   transition: transform 140ms ease, box-shadow 140ms ease, border-color 140ms ease;
 }
-.poa-card:hover { transform: translateY(-2px); box-shadow: 0 16px 40px rgba(20,24,31,0.08); border-color: #dfe2e6; }
+.poa-card:hover { transform: translateY(-2px); box-shadow: 0 16px 40px rgba(16,24,20,0.08); border-color: #d4dccd; }
 
 .poa-pill {
   display: inline-flex; align-items: center; gap: 7px; padding: 6px 12px; border-radius: 999px;
-  font-size: 12px; font-weight: 700; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.16);
+  font-size: 12px; font-weight: 700; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.18);
 }
 
-.poa-link { font-weight: 800; color: var(--poa-amber); }
-.poa-link:hover { color: var(--poa-amber-600); }
+.poa-link { font-weight: 800; color: var(--poa-green); }
+.poa-link:hover { color: var(--poa-green-700); }
 
-/* sticky top nav */
+/* sticky top nav — white, brand on the left */
 .poa-nav {
   position: sticky; top: 0; z-index: 50;
-  background: rgba(12,15,21,0.92); backdrop-filter: blur(8px);
-  border-bottom: 1px solid rgba(255,255,255,0.08); color: #fff;
+  background: rgba(255,255,255,0.92); backdrop-filter: blur(8px);
+  border-bottom: 1px solid var(--poa-line); color: var(--poa-ink);
 }
-.poa-nav a.poa-navlink { color: rgba(255,255,255,0.72); font-weight: 700; font-size: 14px; }
-.poa-nav a.poa-navlink:hover { color: #fff; }
+.poa-nav a.poa-navlink { color: var(--poa-muted); font-weight: 700; font-size: 14px; }
+.poa-nav a.poa-navlink:hover { color: var(--poa-green); }
 
 @media (max-width: 860px) {
   .poa-hide-sm { display: none !important; }

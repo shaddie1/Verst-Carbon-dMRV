@@ -1,17 +1,23 @@
 /* Kenya National Clean Cooking PoA — public landing page.
    A faithful adaptation of Uganda's NCCCFF site (ugandapoa.verst.earth) for
-   the Republic of Kenya. Same Gold Standard GS4GG multi-fuel PoA structure;
-   Kenya specifics: Ministry of Energy & Petroleum (MoEP) as coordinating
-   entity, KEBS device certification, PoA-KE-2026, counties (not districts).
-   Contact details + partner directory are placeholders pending real data. */
+   the Republic of Kenya, themed in Verst Carbon brand greens. Same Gold
+   Standard GS4GG multi-fuel PoA structure; Kenya specifics: Ministry of
+   Energy & Petroleum (MoEP) as coordinating entity, KEBS device
+   certification, PoA-KE-2026, counties (not districts). Contact details +
+   partner directory are placeholders pending real data. */
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Icon } from '../designSystem.jsx';
 import './poa.css';
 
-const INK = '#14181f';
-const AMBER = '#b45309';
-const MUTED = '#6a7181';
+const { useState } = React;
+
+const INK = '#14181f';        // near-black text on light surfaces
+const GREEN = '#008037';      // Verst forest green (primary)
+const GREEN_700 = '#005825';
+const DEEP = '#04331a';       // deep-forest dark section background
+const LEAF = '#7faf5e';       // light moss accent on dark
+const MUTED = '#5c615e';
 
 const NAV = [
   { label: 'Programme', href: '#programme' },
@@ -124,11 +130,31 @@ function PoaLanding() {
   );
 }
 
+/* Verst Carbon brand lockup. Uses /verst-carbon-logo.png when present;
+   falls back to a brand-coloured wordmark so the nav looks right even
+   before the asset is dropped into /public. */
+function Brand({ height = 30, white = false }) {
+  const [err, setErr] = useState(false);
+  if (!err && !white) {
+    return <img src="/verst-carbon-logo.png" alt="Verst Carbon" style={{ height, width: 'auto', display: 'block' }} onError={() => setErr(true)} />;
+  }
+  return (
+    <span style={{ display: 'inline-flex', alignItems: 'center', gap: 9 }}>
+      <span style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: height, height, borderRadius: 8, background: GREEN, color: '#fff', flex: 'none' }}>
+        <Icon name="sprout" size={Math.round(height * 0.62)} />
+      </span>
+      <span style={{ fontSize: Math.round(height * 0.6), fontWeight: 900, letterSpacing: '-0.01em', color: white ? '#fff' : INK }}>
+        Verst<span style={{ color: white ? LEAF : GREEN }}>Carbon</span>
+      </span>
+    </span>
+  );
+}
+
 /* ---- shared bits ---- */
 function SectionHead({ eyebrow, title, sub, light }) {
   return (
     <div style={{ maxWidth: 720, marginBottom: 40 }}>
-      <div className="poa-eyebrow" style={light ? { color: 'var(--poa-gold)' } : null}>{eyebrow}</div>
+      <div className="poa-eyebrow" style={light ? { color: LEAF } : null}>{eyebrow}</div>
       <h2 style={{ fontSize: 38, fontWeight: 900, marginTop: 12, color: light ? '#fff' : INK }}>{title}</h2>
       {sub && <p style={{ marginTop: 14, fontSize: 17, lineHeight: 1.55, color: light ? 'rgba(255,255,255,0.7)' : MUTED }}>{sub}</p>}
     </div>
@@ -140,17 +166,20 @@ const section = (extra = {}) => ({ padding: '88px 0', ...extra });
 function TopNav({ navigate }) {
   return (
     <header className="poa-nav">
-      <div className="poa-shell" style={{ display: 'flex', alignItems: 'center', gap: 18, height: 64 }}>
-        <a href="#top" style={{ display: 'flex', flexDirection: 'column', lineHeight: 1.15 }}>
-          <span style={{ fontWeight: 900, fontSize: 15 }}>National Clean Cooking Carbon Financing <span style={{ color: 'var(--poa-gold)' }}>(NCCCFF)</span></span>
-          <span style={{ fontSize: 11, color: 'rgba(255,255,255,0.55)', fontWeight: 700, letterSpacing: '0.04em' }}>Clean Cooking PoA · MoEP · Gold Standard GS4GG</span>
+      <div className="poa-shell" style={{ display: 'flex', alignItems: 'center', gap: 16, height: 66 }}>
+        <a onClick={() => navigate('/')} style={{ display: 'flex', alignItems: 'center', gap: 12, cursor: 'pointer' }}>
+          <Brand height={30} />
+          <span className="poa-hide-sm" style={{ paddingLeft: 12, borderLeft: '1px solid var(--poa-line)', fontSize: 11.5, fontWeight: 700, color: 'var(--poa-muted)', lineHeight: 1.3 }}>
+            Kenya National Clean Cooking PoA<br />MoEP · Gold Standard GS4GG
+          </span>
         </a>
-        <nav className="poa-hide-sm" style={{ display: 'flex', alignItems: 'center', gap: 22, marginLeft: 'auto' }}>
+        <div style={{ flex: 1 }} />
+        <nav className="poa-hide-sm" style={{ display: 'flex', alignItems: 'center', gap: 22 }}>
           {NAV.map(n => n.to
             ? <a key={n.label} className="poa-navlink" onClick={() => navigate(n.to)} style={{ cursor: 'pointer' }}>{n.label}</a>
             : <a key={n.label} className="poa-navlink" href={n.href}>{n.label}</a>)}
         </nav>
-        <button className="poa-btn poa-btn--primary" style={{ padding: '9px 16px', marginLeft: 'auto' }} onClick={() => navigate('/login')}>
+        <button className="poa-btn poa-btn--primary" style={{ padding: '9px 16px' }} onClick={() => navigate('/login')}>
           Implementing Partner Login
         </button>
       </div>
@@ -163,14 +192,14 @@ function Hero({ navigate }) {
   return (
     <section className="poa-hero" id="top">
       <div className="poa-shell" style={{ padding: '92px 24px 84px', position: 'relative', zIndex: 1 }}>
-        <div className="poa-eyebrow">Republic of Kenya · MoEP</div>
+        <div className="poa-eyebrow" style={{ color: LEAF }}>Republic of Kenya · MoEP</div>
         <h1 style={{ fontSize: 60, fontWeight: 900, marginTop: 18, maxWidth: 880 }}>
           National Clean Cooking <span className="poa-amber-text">Carbon Financing Framework</span>
         </h1>
         <p style={{ marginTop: 14, fontSize: 16, fontWeight: 700, color: 'rgba(255,255,255,0.6)' }}>
           incorporating the Kenya National Clean Cooking Programme of Activities
         </p>
-        <p style={{ marginTop: 24, fontSize: 18, lineHeight: 1.6, maxWidth: 720, color: 'rgba(255,255,255,0.78)' }}>
+        <p style={{ marginTop: 24, fontSize: 18, lineHeight: 1.6, maxWidth: 720, color: 'rgba(255,255,255,0.8)' }}>
           Kenya's sovereign, multi-fuel Programme of Activities under Gold Standard GS4GG — mobilising
           carbon finance to accelerate the transition to low-carbon clean cooking for households and
           institutions across the Republic of Kenya.
@@ -192,23 +221,23 @@ function Hero({ navigate }) {
 /* ---- programme summary bar ---- */
 function ProgrammeBar() {
   return (
-    <section id="programme" style={{ background: '#0c0f15', color: '#fff', borderTop: '1px solid rgba(255,255,255,0.06)' }}>
+    <section id="programme" style={{ background: DEEP, color: '#fff' }}>
       <div className="poa-shell" style={{ padding: '40px 24px' }}>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: 22 }}>
           {FACTS.map(([k, v]) => (
             <div key={k}>
-              <div style={{ fontSize: 11, fontWeight: 800, letterSpacing: '0.12em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.45)' }}>{k}</div>
+              <div style={{ fontSize: 11, fontWeight: 800, letterSpacing: '0.12em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.5)' }}>{k}</div>
               <div style={{ marginTop: 7, fontSize: 14, fontWeight: 700, color: 'rgba(255,255,255,0.92)' }}>{v}</div>
             </div>
           ))}
         </div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 14, flexWrap: 'wrap', marginTop: 30, paddingTop: 26, borderTop: '1px solid rgba(255,255,255,0.08)' }}>
-          <span className="poa-pill" style={{ background: 'rgba(180,83,9,0.18)', borderColor: 'rgba(252,211,77,0.35)', color: 'var(--poa-gold)' }}>In Design Submission · PoA-KE-2026</span>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 14, flexWrap: 'wrap', marginTop: 30, paddingTop: 26, borderTop: '1px solid rgba(255,255,255,0.1)' }}>
+          <span className="poa-pill" style={{ background: 'rgba(127,175,94,0.16)', borderColor: 'rgba(127,175,94,0.4)', color: LEAF }}>In Design Submission · PoA-KE-2026</span>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(150px,1fr))', gap: 18, flex: 1, minWidth: 280 }}>
             {METRICS.map(([k, v]) => (
               <div key={k}>
                 <div style={{ fontSize: 30, fontWeight: 900, color: '#fff', fontVariantNumeric: 'tabular-nums' }}>{v}</div>
-                <div style={{ fontSize: 12, fontWeight: 700, color: 'rgba(255,255,255,0.5)' }}>{k}</div>
+                <div style={{ fontSize: 12, fontWeight: 700, color: 'rgba(255,255,255,0.55)' }}>{k}</div>
               </div>
             ))}
           </div>
@@ -229,8 +258,8 @@ function Process() {
           {STAGES.map(s => (
             <div key={s.n} className="poa-card" style={{ padding: 24 }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-                <span style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: 38, height: 38, borderRadius: 10, background: 'rgba(180,83,9,0.1)', color: AMBER }}><Icon name={s.icon} size={20} /></span>
-                <span style={{ fontSize: 13, fontWeight: 900, color: AMBER }}>{String(s.n).padStart(2, '0')}</span>
+                <span style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: 38, height: 38, borderRadius: 10, background: 'rgba(0,128,55,0.1)', color: GREEN }}><Icon name={s.icon} size={20} /></span>
+                <span style={{ fontSize: 13, fontWeight: 900, color: GREEN }}>{String(s.n).padStart(2, '0')}</span>
               </div>
               <h3 style={{ fontSize: 19, fontWeight: 800, marginTop: 16 }}>{s.title}</h3>
               <p style={{ marginTop: 10, fontSize: 14, lineHeight: 1.55, color: MUTED }}>{s.body}</p>
@@ -277,7 +306,7 @@ function Methodologies() {
             <div key={m.code} className="poa-card" style={{ padding: 24 }}>
               <div style={{ display: 'flex', alignItems: 'baseline', gap: 8 }}>
                 <span style={{ fontSize: 22, fontWeight: 900, color: INK }}>{m.code}</span>
-                {m.ver && <span style={{ fontSize: 13, fontWeight: 800, color: AMBER }}>{m.ver}</span>}
+                {m.ver && <span style={{ fontSize: 13, fontWeight: 800, color: GREEN }}>{m.ver}</span>}
               </div>
               <div style={{ marginTop: 8, fontSize: 14, fontWeight: 800, color: INK }}>{m.title}</div>
               <p style={{ marginTop: 8, fontSize: 13.5, lineHeight: 1.5, color: MUTED }}>{m.body}</p>
@@ -298,7 +327,7 @@ function WhoCanApply({ navigate }) {
     'Each application is reviewed by the CME against the PoA eligibility criteria.',
   ];
   return (
-    <section style={section({ background: INK, color: '#fff' })} id="apply">
+    <section style={section({ background: DEEP, color: '#fff' })} id="apply">
       <div className="poa-shell" style={{ display: 'grid', gridTemplateColumns: 'minmax(0,1fr) minmax(0,1fr)', gap: 48, alignItems: 'center' }}>
         <div>
           <SectionHead light eyebrow="Who can apply" title="Who Can Apply"
@@ -307,9 +336,9 @@ function WhoCanApply({ navigate }) {
         </div>
         <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
           {points.map((p, i) => (
-            <div key={i} style={{ display: 'flex', gap: 12, padding: 16, borderRadius: 12, background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)' }}>
-              <Icon name="checkCircle" size={20} style={{ color: 'var(--poa-gold)', flex: 'none' }} />
-              <span style={{ fontSize: 14.5, lineHeight: 1.5, color: 'rgba(255,255,255,0.82)' }}>{p}</span>
+            <div key={i} style={{ display: 'flex', gap: 12, padding: 16, borderRadius: 12, background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)' }}>
+              <Icon name="checkCircle" size={20} style={{ color: LEAF, flex: 'none' }} />
+              <span style={{ fontSize: 14.5, lineHeight: 1.5, color: 'rgba(255,255,255,0.85)' }}>{p}</span>
             </div>
           ))}
         </div>
@@ -331,7 +360,7 @@ function Sdgs() {
               <span style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: 48, height: 48, borderRadius: 10, background: s.color, color: '#fff', fontWeight: 900, fontSize: 18, flex: 'none' }}>{s.n}</span>
               <div>
                 <h3 style={{ fontSize: 16, fontWeight: 800 }}>{s.title}</h3>
-                <div style={{ marginTop: 4, fontSize: 12.5, fontWeight: 700, color: AMBER }}>{s.target}</div>
+                <div style={{ marginTop: 4, fontSize: 12.5, fontWeight: 700, color: GREEN }}>{s.target}</div>
                 <p style={{ marginTop: 8, fontSize: 13, lineHeight: 1.5, color: MUTED }}>{s.metric}</p>
               </div>
             </div>
@@ -352,7 +381,7 @@ function Governance() {
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px,1fr))', gap: 18 }}>
           {GOVERNANCE.map(g => (
             <div key={g.title} className="poa-card" style={{ padding: 22 }}>
-              <div style={{ fontSize: 11, fontWeight: 800, letterSpacing: '0.1em', color: AMBER }}>{g.tag}</div>
+              <div style={{ fontSize: 11, fontWeight: 800, letterSpacing: '0.1em', color: GREEN }}>{g.tag}</div>
               <h3 style={{ fontSize: 17, fontWeight: 800, marginTop: 10 }}>{g.title}</h3>
               <p style={{ marginTop: 8, fontSize: 13.5, lineHeight: 1.5, color: MUTED }}>{g.body}</p>
             </div>
@@ -362,7 +391,7 @@ function Governance() {
           <div style={{ fontSize: 11, fontWeight: 800, letterSpacing: '0.1em', color: MUTED }}>PROGRAMME MANAGEMENT UNIT · Day-to-day delivery</div>
           <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', marginTop: 12 }}>
             {['Programme Coordinator', 'dMRV Officer', 'Safeguards & Stakeholder Engagement Officer', 'Carbon Finance & Issuance Officer'].map(r => (
-              <span key={r} className="poa-pill" style={{ background: '#f3f4f6', borderColor: 'var(--poa-line)', color: INK }}>{r}</span>
+              <span key={r} className="poa-pill" style={{ background: '#eef3e8', borderColor: 'var(--poa-line)', color: INK }}>{r}</span>
             ))}
           </div>
         </div>
@@ -374,17 +403,17 @@ function Governance() {
 /* ---- modules ---- */
 function Modules() {
   return (
-    <section style={section({ background: INK, color: '#fff' })} id="modules">
+    <section style={section({ background: DEEP, color: '#fff' })} id="modules">
       <div className="poa-shell">
         <SectionHead light eyebrow="Programme modules" title="Everything in one place"
           sub="Open access to the programme's documents, consultations, accountability channels and public carbon registry." />
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px,1fr))', gap: 18 }}>
           {MODULES.map(m => (
-            <div key={m.title} style={{ padding: 22, borderRadius: 16, background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)' }}>
-              <span style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: 42, height: 42, borderRadius: 10, background: 'rgba(252,211,77,0.14)', color: 'var(--poa-gold)' }}><Icon name={m.icon} size={22} /></span>
+            <div key={m.title} style={{ padding: 22, borderRadius: 16, background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)' }}>
+              <span style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: 42, height: 42, borderRadius: 10, background: 'rgba(127,175,94,0.16)', color: LEAF }}><Icon name={m.icon} size={22} /></span>
               <h3 style={{ fontSize: 17, fontWeight: 800, marginTop: 14 }}>{m.title}</h3>
-              <p style={{ marginTop: 8, fontSize: 13.5, lineHeight: 1.5, color: 'rgba(255,255,255,0.62)' }}>{m.body}</p>
-              <div style={{ marginTop: 12, fontSize: 13, fontWeight: 800, color: 'var(--poa-gold)' }}>Open →</div>
+              <p style={{ marginTop: 8, fontSize: 13.5, lineHeight: 1.5, color: 'rgba(255,255,255,0.65)' }}>{m.body}</p>
+              <div style={{ marginTop: 12, fontSize: 13, fontWeight: 800, color: LEAF }}>Open →</div>
             </div>
           ))}
         </div>
@@ -428,7 +457,7 @@ function Consultations() {
         </div>
         <div className="poa-card" style={{ padding: 24, background: 'var(--poa-bg)' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-            <Icon name="users" size={22} style={{ color: AMBER }} />
+            <Icon name="users" size={22} style={{ color: GREEN }} />
             <div style={{ fontWeight: 800 }}>Public feedback window</div>
           </div>
           <p style={{ marginTop: 12, fontSize: 14, lineHeight: 1.55, color: MUTED }}>
@@ -444,7 +473,7 @@ function Consultations() {
 /* ---- grievance ---- */
 function Grievance() {
   return (
-    <section style={section({ background: INK, color: '#fff' })} id="grievance">
+    <section style={section({ background: DEEP, color: '#fff' })} id="grievance">
       <div className="poa-shell" style={{ maxWidth: 820 }}>
         <SectionHead light eyebrow="Grievance redress" title="Voice your concern"
           sub="Anyone affected by the programme may raise a grievance — online, anonymously, or through the Process Book, SMS/WhatsApp and hotline. Every case is logged, assigned an SLA, and resolved transparently with documented responses you can track." />
@@ -467,12 +496,12 @@ function Partners() {
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px,1fr))', gap: 16 }}>
           {PARTNERS.map(p => (
             <div key={p.id} className="poa-card" style={{ padding: 20, display: 'flex', gap: 16, alignItems: 'center' }}>
-              <span style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: 46, height: 46, borderRadius: 12, background: 'rgba(180,83,9,0.1)', color: AMBER, fontWeight: 900, fontSize: 18, flex: 'none' }}>{p.letter}</span>
+              <span style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: 46, height: 46, borderRadius: 12, background: 'rgba(0,128,55,0.1)', color: GREEN, fontWeight: 900, fontSize: 18, flex: 'none' }}>{p.letter}</span>
               <div style={{ flex: 1, minWidth: 0 }}>
                 <div style={{ fontWeight: 800, fontSize: 15 }}>{p.name}</div>
                 <div style={{ fontSize: 12, color: MUTED, fontWeight: 700 }}>{p.id}</div>
                 <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', marginTop: 8 }}>
-                  {p.fuels.map(f => <span key={f} className="poa-pill" style={{ background: '#f3f4f6', borderColor: 'var(--poa-line)', color: INK, fontSize: 11 }}>{f}</span>)}
+                  {p.fuels.map(f => <span key={f} className="poa-pill" style={{ background: '#eef3e8', borderColor: 'var(--poa-line)', color: INK, fontSize: 11 }}>{f}</span>)}
                 </div>
               </div>
               <div style={{ textAlign: 'right', flex: 'none' }}>
@@ -491,11 +520,11 @@ function Partners() {
 /* ---- CTA band ---- */
 function CtaBand({ navigate }) {
   return (
-    <section style={{ background: 'linear-gradient(160deg, #0c0f15, #14181f)', color: '#fff' }}>
+    <section style={{ background: `linear-gradient(160deg, ${DEEP}, ${GREEN_700})`, color: '#fff' }}>
       <div className="poa-shell" style={{ padding: '72px 24px' }}>
-        <div className="poa-card" style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.1)', padding: 36, textAlign: 'center' }}>
+        <div className="poa-card" style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.12)', padding: 36, textAlign: 'center' }}>
           <h2 style={{ fontSize: 34, fontWeight: 900 }}>Ready to join the PoA?</h2>
-          <p style={{ marginTop: 12, fontSize: 16, lineHeight: 1.55, color: 'rgba(255,255,255,0.7)', maxWidth: 620, margin: '12px auto 0' }}>
+          <p style={{ marginTop: 12, fontSize: 16, lineHeight: 1.55, color: 'rgba(255,255,255,0.72)', maxWidth: 620, margin: '12px auto 0' }}>
             Applications are reviewed within 5 business days. Once approved, you receive your proponent
             account and can immediately start registering devices.
           </p>
@@ -513,12 +542,13 @@ function CtaBand({ navigate }) {
 function Footer({ navigate }) {
   const links = ['Overview', 'Apply as Implementing Partner', 'Implementing Partner Directory', 'Resources', 'Stakeholder Consultations', 'Grievance Redress', 'Public Registry', 'Track Application'];
   return (
-    <footer style={{ background: '#0c0f15', color: '#fff', borderTop: '1px solid rgba(255,255,255,0.08)' }}>
+    <footer style={{ background: DEEP, color: '#fff', borderTop: '1px solid rgba(255,255,255,0.1)' }}>
       <div className="poa-shell" style={{ padding: '56px 24px', display: 'grid', gridTemplateColumns: 'minmax(0,1.4fr) minmax(0,1fr) minmax(0,1fr)', gap: 40 }}>
         <div>
-          <div style={{ fontSize: 12, fontWeight: 800, letterSpacing: '0.12em', color: 'var(--poa-gold)' }}>KENYA NATIONAL</div>
-          <div style={{ fontSize: 24, fontWeight: 900, marginTop: 4 }}>CLEAN COOKING POA</div>
-          <p style={{ marginTop: 14, fontSize: 13.5, lineHeight: 1.6, color: 'rgba(255,255,255,0.6)', maxWidth: 360 }}>
+          <Brand height={30} white />
+          <div style={{ fontSize: 12, fontWeight: 800, letterSpacing: '0.12em', color: LEAF, marginTop: 16 }}>KENYA NATIONAL</div>
+          <div style={{ fontSize: 22, fontWeight: 900, marginTop: 2 }}>CLEAN COOKING POA</div>
+          <p style={{ marginTop: 14, fontSize: 13.5, lineHeight: 1.6, color: 'rgba(255,255,255,0.62)', maxWidth: 360 }}>
             The National Clean Cooking Carbon Financing Framework and Multi-Fuel Programme of Activities —
             hosted by MoEP under Gold Standard GS4GG, consolidating six fuel pathways under a single
             programme boundary.
@@ -529,27 +559,27 @@ function Footer({ navigate }) {
           </div>
         </div>
         <div>
-          <div style={{ fontSize: 12, fontWeight: 800, letterSpacing: '0.12em', color: 'rgba(255,255,255,0.45)' }}>PROGRAMME</div>
+          <div style={{ fontSize: 12, fontWeight: 800, letterSpacing: '0.12em', color: 'rgba(255,255,255,0.5)' }}>PROGRAMME</div>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 9, marginTop: 14 }}>
             {links.map(l => <a key={l} className="poa-navlink" href="#top" style={{ fontSize: 13.5 }}>{l}</a>)}
           </div>
         </div>
         <div>
-          <div style={{ fontSize: 12, fontWeight: 800, letterSpacing: '0.12em', color: 'rgba(255,255,255,0.45)' }}>COORDINATING ENTITY</div>
-          <div style={{ marginTop: 14, fontSize: 13.5, lineHeight: 1.7, color: 'rgba(255,255,255,0.7)' }}>
+          <div style={{ fontSize: 12, fontWeight: 800, letterSpacing: '0.12em', color: 'rgba(255,255,255,0.5)' }}>COORDINATING ENTITY</div>
+          <div style={{ marginTop: 14, fontSize: 13.5, lineHeight: 1.7, color: 'rgba(255,255,255,0.72)' }}>
             Clean Cooking Unit<br />
             Ministry of Energy &amp; Petroleum<br />
             Kawi House, Popo Road, Nairobi<br />
             +254 20 310112<br />
             info@energy.go.ke
           </div>
-          <div style={{ marginTop: 16, fontSize: 12, color: 'rgba(255,255,255,0.45)' }}>
+          <div style={{ marginTop: 16, fontSize: 12, color: 'rgba(255,255,255,0.5)' }}>
             Gold Standard registry — for grievances against the registered PoA, methodology or VVB: help@goldstandard.org
           </div>
         </div>
       </div>
-      <div style={{ borderTop: '1px solid rgba(255,255,255,0.08)' }}>
-        <div className="poa-shell" style={{ padding: '18px 24px', display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap', gap: 10, fontSize: 12, color: 'rgba(255,255,255,0.45)' }}>
+      <div style={{ borderTop: '1px solid rgba(255,255,255,0.1)' }}>
+        <div className="poa-shell" style={{ padding: '18px 24px', display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap', gap: 10, fontSize: 12, color: 'rgba(255,255,255,0.5)' }}>
           <span>© 2026 Republic of Kenya · Ministry of Energy &amp; Petroleum</span>
           <span style={{ cursor: 'pointer' }} onClick={() => navigate('/login')}>Implementing Partner Login →</span>
         </div>
