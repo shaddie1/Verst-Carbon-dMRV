@@ -19,6 +19,7 @@ import { ProponentsScreen } from './screens/Proponents.jsx';
 import { ApplicationWizard, ApplicationSubmitted } from './screens/ApplicationWizard.jsx';
 import { ApplicationsScreen } from './screens/ApplicationsReview.jsx';
 import { PoaLanding } from './poa/PoaLanding.jsx';
+import { StakeholderGaps } from './poa/StakeholderGaps.jsx';
 
 const { useState } = React;
 
@@ -61,8 +62,9 @@ function App() {
 
   return (
     <Routes>
-      {/* public Kenya PoA landing */}
+      {/* public Kenya PoA landing + stakeholder pages */}
       <Route path="/" element={<PoaLanding />} />
+      <Route path="/poa/stakeholders" element={<StakeholderGaps />} />
 
       {/* public / pre-auth */}
       <Route path="/login" element={

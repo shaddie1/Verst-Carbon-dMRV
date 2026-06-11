@@ -56,10 +56,21 @@ Carbon logo: drop the logo file at **`public/verst-carbon-logo.png`** and it is
 picked up automatically; until then a brand-coloured `VerstCarbon` wordmark
 fallback is shown.
 
-> Placeholders pending real data: footer contact details and the Implementing
-> Partner directory entries. Sub-pages (Apply portal, Partners, Resources, LSC,
-> Grievances) currently anchor-scroll within the landing; they can be built out
-> as dedicated routes next.
+### Stakeholder Impact Gaps (`/poa/stakeholders`)
+
+A public stakeholder page (`src/poa/StakeholderGaps.jsx`) showing, per
+implementing partner (VPA), the 5-year target vs the projected run-rate reach,
+the resulting gap, and an **interactive set of support levers**. Each lever maps
+to a stakeholder group (carbon buyers, county governments, NGOs/CBOs, donors);
+toggling it fills the gap bar toward the target so stakeholders can see exactly
+how their support closes the gap. Figures are illustrative placeholders.
+
+Shared nav/footer/theme for all public PoA pages live in `src/poa/chrome.jsx`.
+
+> Placeholders pending real data: footer contact details, the Implementing
+> Partner directory, and all gap/target figures. Other sub-pages (Apply portal,
+> Partners, Resources, LSC, Grievances) currently anchor-scroll within the
+> landing; they can be built out as dedicated routes next.
 
 ## Routing
 
