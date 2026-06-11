@@ -280,7 +280,7 @@ function SdgIcon({ n, color }) {
   if (err) {
     return <span style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: 56, height: 56, borderRadius: 10, background: color, color: '#fff', fontWeight: 900, fontSize: 20, flex: 'none' }}>{n}</span>;
   }
-  return <img src={`/sdg/sdg-${n}.png`} alt={`SDG ${n}`} onError={() => setErr(true)} style={{ width: 56, height: 56, borderRadius: 8, display: 'block', flex: 'none', objectFit: 'cover' }} />;
+  return <img src={`/sdg/sdg-${n}.jpg`} alt={`SDG ${n}`} onError={() => setErr(true)} style={{ width: 56, height: 56, borderRadius: 8, display: 'block', flex: 'none', objectFit: 'cover' }} />;
 }
 
 /* ---- SDGs ---- */
