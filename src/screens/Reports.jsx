@@ -3,6 +3,7 @@
 import React from 'react';
 import { Select, Button, Badge, Alert, Breadcrumb, Icon, FuelBadge } from '../designSystem.jsx';
 import { VC_DATA } from '../data.js';
+import { useDevices } from '../store.jsx';
 import { Panel, PageHeader } from '../components/layout.jsx';
 
 const { useState } = React;
@@ -10,7 +11,7 @@ const { useState } = React;
 function ReportsScreen({ role, scope }) {
   const D = VC_DATA;
   const fuels = D.fuelsFor(scope);
-  const devices = D.scopeDevices(scope);
+  const devices = useDevices(scope);
 
   const rows = fuels.map(f => {
     const ds = devices.filter(d => d.fuel === f);

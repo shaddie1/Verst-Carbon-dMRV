@@ -5,6 +5,7 @@ import React from 'react';
 import { Routes, Route, Navigate, Outlet, useNavigate, useParams, useLocation } from 'react-router-dom';
 import { Toast, Button, Badge, Icon, FuelBadge, StatusDot, EmptyState, Switch } from './designSystem.jsx';
 import { VC_DATA } from './data.js';
+import { useDevices } from './store.jsx';
 import { TopNav, Sidebar } from './components/shell.jsx';
 import { Panel, PageHeader, CategoryTag } from './components/layout.jsx';
 import { LoginScreen } from './screens/Login.jsx';
@@ -182,7 +183,7 @@ function AlertsScreen({ role, scope }) {
 function HouseholdsScreen({ role, scope }) {
   const D = VC_DATA;
   const [cat, setCat] = useState('all');
-  const devices = D.scopeDevices(scope);
+  const devices = useDevices(scope);
   const map = {};
   devices.forEach(d => { (map[d.site] = map[d.site] || []).push(d); });
   let list = Object.keys(map).map(h => ({ id: h, devices: map[h], town: map[h][0].town, proponent: map[h][0].proponent, category: map[h][0].category }));

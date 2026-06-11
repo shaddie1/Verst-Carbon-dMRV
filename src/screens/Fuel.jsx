@@ -2,6 +2,7 @@
 import React from 'react';
 import { FuelBadge, KpiCard, TimeSeriesChart, Badge, Button, Breadcrumb, Icon } from '../designSystem.jsx';
 import { VC_DATA } from '../data.js';
+import { useDevices } from '../store.jsx';
 import { Panel, PageHeader } from '../components/layout.jsx';
 import { DefList } from './DeviceDetail.jsx';
 import { fuelColor } from './Dashboard.jsx';
@@ -12,7 +13,7 @@ function FuelScreen({ role, scope }) {
   const D = VC_DATA;
   const fuels = D.fuelsFor(scope);
   const [active, setActive] = useState(fuels[0]);
-  const devices = D.scopeDevices(scope).filter(d => d.fuel === active);
+  const devices = useDevices(scope).filter(d => d.fuel === active);
   const unit = D.FUEL_UNIT[active];
   const method = D.FUEL_METHOD[active];
   const consumed = Math.round(devices.length * 38 + 240);

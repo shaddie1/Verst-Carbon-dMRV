@@ -3,6 +3,7 @@
 import React from 'react';
 import { KpiCard, StackedBarChart, Badge, Breadcrumb, Button, Icon, FuelBadge } from '../designSystem.jsx';
 import { VC_DATA } from '../data.js';
+import { useDevices } from '../store.jsx';
 import { Panel, PageHeader, FuelChips, MapPanel } from '../components/layout.jsx';
 
 const { useState } = React;
@@ -13,7 +14,7 @@ function fuelColor(f) {
 
 function DashboardScreen({ role, scope, onScopeChange, onNav }) {
   const D = VC_DATA;
-  const devices = D.scopeDevices(scope);
+  const devices = useDevices(scope);
   const alerts = D.scopeAlerts(scope);
   const allFuels = D.fuelsFor(scope);
   const [fuelSel, setFuelSel] = useState([]);
