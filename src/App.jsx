@@ -18,6 +18,7 @@ import { ReportsScreen } from './screens/Reports.jsx';
 import { ProponentsScreen } from './screens/Proponents.jsx';
 import { ApplicationWizard, ApplicationSubmitted } from './screens/ApplicationWizard.jsx';
 import { ApplicationsScreen } from './screens/ApplicationsReview.jsx';
+import { PoaLanding } from './poa/PoaLanding.jsx';
 
 const { useState } = React;
 
@@ -60,6 +61,9 @@ function App() {
 
   return (
     <Routes>
+      {/* public Kenya PoA landing */}
+      <Route path="/" element={<PoaLanding />} />
+
       {/* public / pre-auth */}
       <Route path="/login" element={
         authed ? <Navigate to="/dashboard" replace /> : (
@@ -107,7 +111,7 @@ function App() {
         <Route path="/settings" element={<SettingsScreen role={role} />} />
       </Route>
 
-      <Route path="*" element={<Navigate to={authed ? '/dashboard' : '/login'} replace />} />
+      <Route path="*" element={<Navigate to={authed ? '/dashboard' : '/'} replace />} />
     </Routes>
   );
 }

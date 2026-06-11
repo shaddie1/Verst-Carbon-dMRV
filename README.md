@@ -39,6 +39,22 @@ src/
 public/fonts/       Raleway + Inter woff2 files (referenced by tokens.css)
 ```
 
+## Public PoA landing (`/`)
+
+`/` serves the **Kenya National Clean Cooking PoA** public site
+(`src/poa/PoaLanding.jsx`) — a Kenya adaptation of Uganda's NCCCFF portal
+(ugandapoa.verst.earth): same Gold Standard GS4GG multi-fuel Programme of
+Activities structure, with Kenya specifics (Ministry of Energy & Petroleum as
+coordinating entity, KEBS device certification, PoA-KE-2026, coverage by
+county). Its dark/amber theme lives in `src/poa/poa.css`, scoped under `.poa`
+so it never touches the green dMRV design tokens. "Implementing Partner Login"
+and "Apply" route into the existing dMRV app (`/login`, `/apply`).
+
+> Placeholders pending real data: footer contact details and the Implementing
+> Partner directory entries. Sub-pages (Apply portal, Partners, Resources, LSC,
+> Grievances) currently anchor-scroll within the landing; they can be built out
+> as dedicated routes next.
+
 ## Routing
 
 Client-side routing uses **react-router** (`BrowserRouter`). Each screen has a
