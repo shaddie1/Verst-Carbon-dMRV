@@ -90,6 +90,27 @@ maps their existing callbacks (`onNav`, `onOpenDevice`, `onBack`, …) onto
 > this automatically; on static hosts configure a catch-all rewrite to
 > `/index.html`.
 
+## Sectoral scopes
+
+The dMRV platform spans three CDM/Gold-Standard **sectoral scopes**, selected via
+the **ScopeSwitcher** in the TopNav (the active scope is derived from the URL):
+
+| Scope | Path(s) | MRV model |
+|---|---|---|
+| Portfolio (all scopes) | `/portfolio` | cross-scope overview, avoidance vs removal |
+| **Energy Demand** (03) | `/dashboard`, `/devices`, `/fuels`, … | clean cooking — metered devices (existing) |
+| **Waste Management** (13) | `/waste`, `/waste/production` | biochar — feedstock→biochar mass balance, carbon **removal** |
+| **Land Use & Forestry / AFOLU** (14) | `/afolu`, `/afolu/plots` | Tsavo REDD+ (KWS) — strata/plots, carbon stock, avoided deforestation |
+
+The sidebar swaps per scope. Scope data + the sector registry live in
+`src/scopeData.js`; the new screens are under `src/screens/scopes/`. The portfolio
+sources its per-scope figures from each scope's own dataset (single source of truth).
+
+> All Waste/AFOLU figures and the Tsavo framing are illustrative placeholders.
+> A landscape REDD+ legitimately dwarfs the cooking/biochar pilots, so the
+> portfolio comparison uses labelled, range-tolerant bars. Reports/Alerts remain
+> Energy-centric for now.
+
 ## Data store
 
 `src/store.jsx` is a small React-context store over the in-memory `VC_DATA`

@@ -20,6 +20,11 @@ import { ApplicationWizard, ApplicationSubmitted } from './screens/ApplicationWi
 import { ApplicationsScreen } from './screens/ApplicationsReview.jsx';
 import { PoaLanding } from './poa/PoaLanding.jsx';
 import { StakeholderGaps } from './poa/StakeholderGaps.jsx';
+import { PortfolioOverview } from './screens/scopes/PortfolioOverview.jsx';
+import { BiocharDashboard } from './screens/scopes/BiocharDashboard.jsx';
+import { BiocharProduction } from './screens/scopes/BiocharProduction.jsx';
+import { ForestDashboard } from './screens/scopes/ForestDashboard.jsx';
+import { ForestPlots } from './screens/scopes/ForestPlots.jsx';
 
 const { useState } = React;
 
@@ -111,6 +116,13 @@ function App() {
         <Route path="/alerts" element={<AlertsScreen role={role} scope={scope} />} />
         <Route path="/households" element={<HouseholdsScreen role={role} scope={scope} />} />
         <Route path="/settings" element={<SettingsScreen role={role} />} />
+
+        {/* cross-scope portfolio + other sectoral scopes */}
+        <Route path="/portfolio" element={<PortfolioOverview onNav={navigate} />} />
+        <Route path="/waste" element={<BiocharDashboard onNav={navigate} />} />
+        <Route path="/waste/production" element={<BiocharProduction />} />
+        <Route path="/afolu" element={<ForestDashboard onNav={navigate} />} />
+        <Route path="/afolu/plots" element={<ForestPlots />} />
       </Route>
 
       <Route path="*" element={<Navigate to={authed ? '/dashboard' : '/'} replace />} />
@@ -123,14 +135,18 @@ function App() {
 function Shell({ role, scope, user, onScopeChange, alertCount, toast, onToastDismiss, register, onRegisterClose, onRole, onLogout }) {
   const navigate = useNavigate();
   const { pathname } = useLocation();
-  const active = pathname.split('/')[1] || 'dashboard';
-  const onDashboard = active === 'dashboard';
+  // active sectoral scope is derived from the URL so deep links work
+  const sector = pathname === '/portfolio' ? 'portfolio'
+    : pathname.startsWith('/waste') ? 'waste'
+      : pathname.startsWith('/afolu') ? 'afolu'
+        : 'energy';
+  const onDashboard = pathname === '/dashboard';
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', width: '100%', height: '100%', background: 'var(--surface-app)', overflow: 'hidden' }}>
-      <TopNav role={role} scope={scope} onScopeChange={onScopeChange} alertCount={alertCount} user={user} onBell={() => navigate('/alerts')} />
+      <TopNav role={role} scope={scope} onScopeChange={onScopeChange} sector={sector} onSectorChange={(s) => navigate(s.home)} alertCount={alertCount} user={user} onBell={() => navigate('/alerts')} />
       <div style={{ display: 'flex', flex: 1, minHeight: 0 }}>
-        <Sidebar role={role} active={active} onNav={(k) => navigate('/' + k)} alertCount={alertCount} />
+        <Sidebar role={role} sector={sector} pathname={pathname} onNav={(p) => navigate(p)} alertCount={alertCount} />
         <main style={{ flex: 1, minWidth: 0, overflowY: 'auto', padding: '24px 28px' }}>
           <div style={{ maxWidth: 1240, margin: '0 auto' }}><Outlet /></div>
         </main>
