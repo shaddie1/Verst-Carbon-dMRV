@@ -27,30 +27,6 @@ import { ScopeDetail } from './sectoral/ScopeDetail.jsx';
 
 const { useState } = React;
 
-/* ---- Energy demand = the embedded clean-cooking monitoring platform.
-   The existing screens are reused inside the Kenya POA shell at /energy/*. ---- */
-function EnergyPage({ children }) {
-  return <div style={{ padding: '24px 28px' }}><div style={{ maxWidth: 1240, margin: '0 auto' }}>{children}</div></div>;
-}
-function EnergyDashboard() {
-  const navigate = useNavigate();
-  return <EnergyPage><DashboardScreen role="admin" scope="all" onScopeChange={() => {}} onNav={(k) => navigate('/energy/' + k)} /></EnergyPage>;
-}
-function EnergyDevices() {
-  const navigate = useNavigate();
-  const [register, setRegister] = useState(false);
-  return (
-    <EnergyPage>
-      <DevicesScreen role="admin" scope="all" onOpenDevice={(imei) => navigate('/energy/devices/' + encodeURIComponent(imei))} onRegister={() => setRegister(true)} />
-      {register && <RegisterDeviceModal role="admin" scope="all" onClose={() => setRegister(false)} />}
-    </EnergyPage>
-  );
-}
-function EnergyDeviceDetail() {
-  const navigate = useNavigate();
-  const { imei } = useParams();
-  return <EnergyPage><DeviceDetailScreen role="admin" scope="all" imei={decodeURIComponent(imei)} onBack={() => navigate('/energy/devices')} /></EnergyPage>;
-}
 
 // Top-level keys used by the sidebar / breadcrumbs map 1:1 to the URL path.
 const deviceHref = (imei) => `/devices/${encodeURIComponent(imei)}`;
@@ -71,16 +47,16 @@ function App() {
     setRole(r);
     setScope(r === 'admin' ? 'all' : 'sahel');
     setAuthed(true);
-    navigate('/dashboard');
+    navigate('/energy');
   }
   function logout() {
     setAuthed(false);
-    navigate('/login');
+    navigate('/');
   }
   // Proponent picker jumps the admin into a single proponent's scope.
   function pickProponent(id) {
     setScope(id);
-    navigate('/dashboard');
+    navigate('/energy');
   }
 
   const user = role === 'admin'
@@ -91,16 +67,10 @@ function App() {
 
   return (
     <Routes>
-      {/* Kenya POA sectoral platform — overview, scope detail, embedded monitoring */}
+      {/* Kenya POA sectoral platform — overview + scope detail */}
       <Route element={<SectoralShell />}>
         <Route path="/" element={<SectoralOverview />} />
         <Route path="/scope/:sector" element={<ScopeDetail />} />
-        <Route path="/energy" element={<EnergyDashboard />} />
-        <Route path="/energy/devices" element={<EnergyDevices />} />
-        <Route path="/energy/devices/:imei" element={<EnergyDeviceDetail />} />
-        <Route path="/energy/fuels" element={<EnergyPage><FuelScreen role="admin" scope="all" /></EnergyPage>} />
-        <Route path="/energy/households" element={<EnergyPage><HouseholdsScreen role="admin" scope="all" /></EnergyPage>} />
-        <Route path="/energy/reports" element={<EnergyPage><ReportsScreen role="admin" scope="all" /></EnergyPage>} />
       </Route>
 
       {/* AFOLU → full standalone AFOLU dMRV platform (its own dark chrome) */}
@@ -112,7 +82,7 @@ function App() {
 
       {/* public / pre-auth */}
       <Route path="/login" element={
-        authed ? <Navigate to="/dashboard" replace /> : (
+        authed ? <Navigate to="/energy" replace /> : (
           <div style={{ width: '100%', height: '100%' }}>
             <LoginScreen onLogin={login} onApply={() => navigate('/apply')} />
           </div>
@@ -134,51 +104,47 @@ function App() {
           : <Navigate to="/apply" replace />
       } />
 
-      {/* authed app shell + nested screens */}
-      <Route element={requireAuth(
+      {/* Energy demand = the full clean-cooking dMRV platform (its own shell) */}
+      <Route element={
         <Shell
           role={role} scope={scope} user={user}
-          onScopeChange={setScope}
+          onScopeChange={setScope} onBack={() => navigate('/scope/energy')}
           alertCount={D.scopeAlerts(scope).length}
           toast={toast} onToastDismiss={() => setToast(false)}
           register={register} onRegisterClose={() => setRegister(false)}
           onRole={login} onLogout={logout}
         />
-      )}>
-        <Route path="/dashboard" element={<DashboardScreen role={role} scope={scope} onScopeChange={setScope} onNav={(k) => navigate('/' + k)} />} />
-        <Route path="/devices" element={<DevicesScreen role={role} scope={scope} onOpenDevice={(imei) => navigate(deviceHref(imei))} onRegister={() => setRegister(true)} />} />
-        <Route path="/devices/:imei" element={<DeviceDetailRoute role={role} scope={scope} />} />
-        <Route path="/fuels" element={<FuelScreen role={role} scope={scope} />} />
-        <Route path="/reports" element={<ReportsScreen role={role} scope={scope} />} />
-        <Route path="/proponents" element={<ProponentsScreen onScopeChange={pickProponent} />} />
-        <Route path="/applications" element={<ApplicationsScreen />} />
-        <Route path="/alerts" element={<AlertsScreen role={role} scope={scope} />} />
-        <Route path="/households" element={<HouseholdsScreen role={role} scope={scope} />} />
-        <Route path="/settings" element={<SettingsScreen role={role} />} />
+      }>
+        <Route path="/energy" element={<DashboardScreen role={role} scope={scope} onScopeChange={setScope} onNav={(k) => navigate('/energy/' + k)} />} />
+        <Route path="/energy/devices" element={<DevicesScreen role={role} scope={scope} onOpenDevice={(imei) => navigate('/energy/devices/' + encodeURIComponent(imei))} onRegister={() => setRegister(true)} />} />
+        <Route path="/energy/devices/:imei" element={<DeviceDetailRoute role={role} scope={scope} />} />
+        <Route path="/energy/fuels" element={<FuelScreen role={role} scope={scope} />} />
+        <Route path="/energy/reports" element={<ReportsScreen role={role} scope={scope} />} />
+        <Route path="/energy/proponents" element={<ProponentsScreen onScopeChange={pickProponent} />} />
+        <Route path="/energy/applications" element={<ApplicationsScreen />} />
+        <Route path="/energy/alerts" element={<AlertsScreen role={role} scope={scope} />} />
+        <Route path="/energy/households" element={<HouseholdsScreen role={role} scope={scope} />} />
+        <Route path="/energy/settings" element={<SettingsScreen role={role} />} />
       </Route>
 
-      <Route path="*" element={<Navigate to={authed ? '/dashboard' : '/'} replace />} />
+      <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   );
 }
 
-/* Authed chrome: top nav + sidebar + the active screen (<Outlet/>), plus the
-   global register modal, offline toast and the demo role switcher. */
-function Shell({ role, scope, user, onScopeChange, alertCount, toast, onToastDismiss, register, onRegisterClose, onRole, onLogout }) {
+/* Energy demand chrome: the clean-cooking dMRV platform shell — top nav +
+   sidebar + the active screen (<Outlet/>), register modal, offline toast,
+   demo role switcher, and a back link to the sectoral scopes. */
+function Shell({ role, scope, user, onScopeChange, onBack, alertCount, toast, onToastDismiss, register, onRegisterClose, onRole, onLogout }) {
   const navigate = useNavigate();
   const { pathname } = useLocation();
-  // active sectoral scope is derived from the URL so deep links work
-  const sector = pathname === '/portfolio' ? 'portfolio'
-    : pathname.startsWith('/waste') ? 'waste'
-      : pathname.startsWith('/afolu') ? 'afolu'
-        : 'energy';
-  const onDashboard = pathname === '/dashboard';
+  const onDashboard = pathname === '/energy';
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', width: '100%', height: '100%', background: 'var(--surface-app)', overflow: 'hidden' }}>
-      <TopNav role={role} scope={scope} onScopeChange={onScopeChange} sector={sector} onSectorChange={(s) => navigate(s.home)} alertCount={alertCount} user={user} onBell={() => navigate('/alerts')} />
+      <TopNav role={role} scope={scope} onScopeChange={onScopeChange} onBack={onBack} alertCount={alertCount} user={user} onBell={() => navigate('/energy/alerts')} />
       <div style={{ display: 'flex', flex: 1, minHeight: 0 }}>
-        <Sidebar role={role} sector={sector} pathname={pathname} onNav={(p) => navigate(p)} alertCount={alertCount} />
+        <Sidebar role={role} sector="energy" pathname={pathname} onNav={(p) => navigate(p)} alertCount={alertCount} />
         <main style={{ flex: 1, minWidth: 0, overflowY: 'auto', padding: '24px 28px' }}>
           <div style={{ maxWidth: 1240, margin: '0 auto' }}><Outlet /></div>
         </main>
@@ -188,7 +154,7 @@ function Shell({ role, scope, user, onScopeChange, alertCount, toast, onToastDis
 
       {toast && onDashboard && (
         <div style={{ position: 'absolute', right: 24, bottom: 24, zIndex: 80 }}>
-          <Toast tone="danger" title="Device offline > 72h" message={(role === 'admin' && scope === 'all' ? 'Sahel Clean Cooking · ' : '') + 'IMEI 35693…809 last seen 3 days ago · Kaolack'} action={{ label: 'View device', onClick: () => { navigate('/devices'); onToastDismiss(); } }} onDismiss={onToastDismiss} />
+          <Toast tone="danger" title="Device offline > 72h" message={(role === 'admin' && scope === 'all' ? 'Sahel Clean Cooking · ' : '') + 'IMEI 35693…809 last seen 3 days ago · Kaolack'} action={{ label: 'View device', onClick: () => { navigate('/energy/devices'); onToastDismiss(); } }} onDismiss={onToastDismiss} />
         </div>
       )}
 
@@ -201,7 +167,7 @@ function Shell({ role, scope, user, onScopeChange, alertCount, toast, onToastDis
 function DeviceDetailRoute({ role, scope }) {
   const { imei } = useParams();
   const navigate = useNavigate();
-  return <DeviceDetailScreen role={role} scope={scope} imei={decodeURIComponent(imei)} onBack={() => navigate('/devices')} />;
+  return <DeviceDetailScreen role={role} scope={scope} imei={decodeURIComponent(imei)} onBack={() => navigate('/energy/devices')} />;
 }
 
 /* Floating reviewer control to flip admin / proponent */

@@ -105,7 +105,12 @@ It has two levels:
 Shared data lives in `src/sectoral/sectoralData.js`.
 
 Scopes drill into monitoring workspaces:
-- **Energy demand → clean-cooking** (`/energy/*`) — embedded in the POA shell.
+- **Energy demand → the full clean-cooking dMRV platform** (`/energy/*`) — a
+  standalone workspace with its own light shell (TopNav + sidebar) and all
+  screens: Dashboard, Devices, Device detail, Fuels, Households, Reports, Alerts,
+  Proponents, Applications, Settings, plus the register-device modal. A
+  "← Sectoral scopes" link returns to the POA. (No login gate; reached from the
+  Energy scope card.)
 - **AFOLU → the full AFOLU dMRV platform** (`/afolu`) — a standalone, dark-themed
   app (`src/afolu/`) ported from the `design_handoff_afolu_dmrv` mockup:
   Portfolio, Project dashboard (procedural AGBD map), Measurement / Carbon

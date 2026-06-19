@@ -26,15 +26,15 @@ function Logo({ size = 28 }) {
 const SECTOR_NAV = {
   portfolio: () => [{ label: 'Overview', icon: 'dashboard', path: '/portfolio' }],
   energy: (ctx) => [
-    { label: 'Dashboard', icon: 'dashboard', path: '/dashboard' },
-    { label: 'Devices', icon: 'cpu', path: '/devices' },
-    { label: 'Fuels', icon: 'flame', path: '/fuels' },
-    { label: 'Households', icon: 'home', path: '/households' },
-    { label: 'Reports', icon: 'file', path: '/reports' },
-    { label: 'Alerts', icon: 'bell', path: '/alerts', badge: ctx.alertCount },
+    { label: 'Dashboard', icon: 'dashboard', path: '/energy' },
+    { label: 'Devices', icon: 'cpu', path: '/energy/devices' },
+    { label: 'Fuels', icon: 'flame', path: '/energy/fuels' },
+    { label: 'Households', icon: 'home', path: '/energy/households' },
+    { label: 'Reports', icon: 'file', path: '/energy/reports' },
+    { label: 'Alerts', icon: 'bell', path: '/energy/alerts', badge: ctx.alertCount },
     ...(ctx.role === 'admin' ? [
-      { label: 'Proponents', icon: 'users', path: '/proponents' },
-      { label: 'Applications', icon: 'inbox', path: '/applications', badge: ctx.pendingApps },
+      { label: 'Proponents', icon: 'users', path: '/energy/proponents' },
+      { label: 'Applications', icon: 'inbox', path: '/energy/applications', badge: ctx.pendingApps },
     ] : []),
   ],
   waste: () => [
@@ -146,14 +146,13 @@ function MenuItem({ active, onClick, icon, label, sub, logo, logoSrc }) {
   );
 }
 
-function TopNav({ role, scope, onScopeChange, sector, onSectorChange, alertCount, onBell, user }) {
+function TopNav({ role, scope, onScopeChange, onBack, alertCount, onBell, user }) {
   const [menu, setMenu] = useState(false);
   const ref = useRef(null);
   useEffect(() => {
     function onDoc(e) { if (ref.current && !ref.current.contains(e.target)) setMenu(false); }
     document.addEventListener('mousedown', onDoc); return () => document.removeEventListener('mousedown', onDoc);
   }, []);
-  const cur = sectorById(sector) || SECTORS[0];
   return (
     <header style={{
       display: 'flex', alignItems: 'center', gap: 14, height: 'var(--nav-height)', padding: '0 18px',
@@ -161,16 +160,12 @@ function TopNav({ role, scope, onScopeChange, sector, onSectorChange, alertCount
     }}>
       <Logo />
       <div style={{ width: 1, height: 24, background: 'var(--border-subtle)' }} />
-      <ScopeSwitcher sector={sector} onChange={onSectorChange} />
-      {/* proponent switcher only applies to the energy programme; other scopes show their partner */}
-      {sector === 'energy' && (role === 'admin'
+      <button onClick={onBack} style={{ display: 'inline-flex', alignItems: 'center', gap: 6, height: 34, padding: '0 11px 0 9px', background: 'var(--white)', border: '1px solid var(--border-default)', borderRadius: 'var(--radius-sm)', cursor: 'pointer', fontFamily: 'var(--font-sans)', fontSize: 'var(--fs-sm)', fontWeight: 600, color: 'var(--ink-900)' }}>
+        <Icon name="chevronRight" size={15} style={{ transform: 'rotate(180deg)', color: 'var(--text-muted)' }} />Sectoral scopes
+      </button>
+      {role === 'admin'
         ? <ProponentSwitcher scope={scope} onChange={onScopeChange} />
-        : <span style={{ display: 'inline-flex', alignItems: 'center', gap: 8 }}><ProponentLogo name={user.org} size={24} /><span style={{ fontSize: 'var(--fs-sm)', fontWeight: 700, color: 'var(--ink-900)' }}>{user.org}</span></span>)}
-      {sector !== 'energy' && sector !== 'portfolio' && (
-        <span style={{ display: 'inline-flex', alignItems: 'center', gap: 8, fontSize: 'var(--fs-sm)', fontWeight: 600, color: 'var(--text-secondary)' }}>
-          <Icon name="building" size={15} style={{ color: cur.color }} />{cur.programme}
-        </span>
-      )}
+        : <span style={{ display: 'inline-flex', alignItems: 'center', gap: 8 }}><ProponentLogo name={user.org} size={24} /><span style={{ fontSize: 'var(--fs-sm)', fontWeight: 700, color: 'var(--ink-900)' }}>{user.org}</span></span>}
       <div style={{ flex: 1 }} />
       <button onClick={onBell} style={{ position: 'relative', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: 36, height: 36, borderRadius: 'var(--radius-sm)', background: 'transparent', border: 'none', cursor: 'pointer', color: 'var(--text-secondary)' }}>
         <Icon name="bell" size={19} />
@@ -208,7 +203,7 @@ function Sidebar({ role, sector, pathname, onNav, alertCount }) {
     <nav style={{ width: 'var(--sidebar-width)', flex: 'none', background: 'var(--white)', borderRight: '1px solid var(--border-subtle)', padding: '12px 10px', display: 'flex', flexDirection: 'column', gap: 2 }}>
       {items.map(it => <SideItem key={it.path} {...it} accent={cur.color} active={isActive(it.path)} onClick={() => onNav(it.path)} />)}
       <div style={{ flex: 1 }} />
-      <SideItem label="Settings" icon="settings" accent={cur.color} active={pathname === '/settings'} onClick={() => onNav('/settings')} />
+      <SideItem label="Settings" icon="settings" accent={cur.color} active={pathname === '/energy/settings'} onClick={() => onNav('/energy/settings')} />
     </nav>
   );
 }

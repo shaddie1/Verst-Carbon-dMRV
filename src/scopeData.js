@@ -7,7 +7,7 @@
 // erKind: 'avoidance' = avoided/reduced emissions; 'removal' = carbon dioxide removal.
 const SECTORS = [
   { id: 'portfolio', label: 'All sectoral scopes', short: 'Portfolio', scopeNo: '', icon: 'dashboard', color: '#008037', home: '/portfolio' },
-  { id: 'energy', label: 'Energy Demand', short: 'Energy', scopeNo: '03', icon: 'flame', color: '#008037', home: '/dashboard', erKind: 'avoidance', programme: 'Kenya Clean Cooking PoA' },
+  { id: 'energy', label: 'Energy Demand', short: 'Energy', scopeNo: '03', icon: 'flame', color: '#008037', home: '/energy', erKind: 'avoidance', programme: 'Kenya Clean Cooking PoA' },
   { id: 'waste', label: 'Waste Management', short: 'Waste', scopeNo: '13', icon: 'package', color: '#4b4f57', home: '/waste', erKind: 'removal', programme: 'Biochar Carbon Removal' },
   { id: 'afolu', label: 'Land Use & Forestry (AFOLU)', short: 'AFOLU', scopeNo: '14', icon: 'sprout', color: '#1f7a3d', home: '/afolu', erKind: 'avoidance', programme: 'Tsavo REDD+ · KWS' },
 ];
