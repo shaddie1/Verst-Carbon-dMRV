@@ -20,8 +20,7 @@ import { ApplicationWizard, ApplicationSubmitted } from './screens/ApplicationWi
 import { ApplicationsScreen } from './screens/ApplicationsReview.jsx';
 import { PoaLanding } from './poa/PoaLanding.jsx';
 import { StakeholderGaps } from './poa/StakeholderGaps.jsx';
-import { ForestDashboard } from './screens/scopes/ForestDashboard.jsx';
-import { ForestPlots } from './screens/scopes/ForestPlots.jsx';
+import { AfoluApp } from './afolu/afoluApp.jsx';
 import { SectoralShell } from './sectoral/SectoralShell.jsx';
 import { SectoralOverview } from './sectoral/SectoralOverview.jsx';
 import { ScopeDetail } from './sectoral/ScopeDetail.jsx';
@@ -102,10 +101,10 @@ function App() {
         <Route path="/energy/fuels" element={<EnergyPage><FuelScreen role="admin" scope="all" /></EnergyPage>} />
         <Route path="/energy/households" element={<EnergyPage><HouseholdsScreen role="admin" scope="all" /></EnergyPage>} />
         <Route path="/energy/reports" element={<EnergyPage><ReportsScreen role="admin" scope="all" /></EnergyPage>} />
-        {/* AFOLU demand → embedded REDD+ forest monitoring (Tsavo) */}
-        <Route path="/afolu" element={<EnergyPage><ForestDashboard onNav={(p) => navigate(p)} /></EnergyPage>} />
-        <Route path="/afolu/plots" element={<EnergyPage><ForestPlots /></EnergyPage>} />
       </Route>
+
+      {/* AFOLU → full standalone AFOLU dMRV platform (its own dark chrome) */}
+      <Route path="/afolu" element={<div className="afolu" style={{ height: '100vh' }}><AfoluApp onBack={() => navigate('/scope/land')} /></div>} />
 
       {/* legacy public marketing + stakeholder pages */}
       <Route path="/welcome" element={<PoaLanding />} />

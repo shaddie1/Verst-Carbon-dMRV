@@ -104,10 +104,16 @@ It has two levels:
 
 Shared data lives in `src/sectoral/sectoralData.js`.
 
-Two scopes drill into embedded monitoring workspaces (rendered in the same
-shell, light content area): **Energy demand → clean-cooking** (`/energy/*`) and
-**AFOLU → Tsavo REDD+ forest monitoring** (`/afolu`, `/afolu/plots`). Waste keeps
-the generic scope detail for now.
+Scopes drill into monitoring workspaces:
+- **Energy demand → clean-cooking** (`/energy/*`) — embedded in the POA shell.
+- **AFOLU → the full AFOLU dMRV platform** (`/afolu`) — a standalone, dark-themed
+  app (`src/afolu/`) ported from the `design_handoff_afolu_dmrv` mockup:
+  Portfolio, Project dashboard (procedural AGBD map), Measurement / Carbon
+  accounting / Compliance / Biodiversity engines, Data pipeline and Field data,
+  plus a guided "monitoring cycle" walkthrough. Its theme is scoped under `.afolu`;
+  a "← Sectoral scopes" link returns to the POA. (The design-only tweaks panel was
+  excluded; theme fixed to dark.) Regenerate with `node afolu-port.mjs`.
+- **Waste** keeps the generic scope detail for now.
 
 - The **Energy demand** scope embeds the clean-cooking platform we built: "Open
   clean-cooking monitoring" (or a VPA row) opens it inline at `/energy/*`
