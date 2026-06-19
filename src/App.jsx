@@ -26,7 +26,8 @@ import { BiocharProduction } from './screens/scopes/BiocharProduction.jsx';
 import { ForestDashboard } from './screens/scopes/ForestDashboard.jsx';
 import { ForestPlots } from './screens/scopes/ForestPlots.jsx';
 import { SectoralShell } from './sectoral/SectoralShell.jsx';
-import { SectoralDashboard } from './sectoral/SectoralDashboard.jsx';
+import { SectoralOverview } from './sectoral/SectoralOverview.jsx';
+import { ScopeDetail } from './sectoral/ScopeDetail.jsx';
 
 const { useState } = React;
 
@@ -94,9 +95,10 @@ function App() {
 
   return (
     <Routes>
-      {/* Kenya POA sectoral platform — home + embedded clean-cooking monitoring */}
+      {/* Kenya POA sectoral platform — overview, scope detail, embedded monitoring */}
       <Route element={<SectoralShell />}>
-        <Route path="/" element={<SectoralDashboard />} />
+        <Route path="/" element={<SectoralOverview />} />
+        <Route path="/scope/:sector" element={<ScopeDetail />} />
         <Route path="/energy" element={<EnergyDashboard />} />
         <Route path="/energy/devices" element={<EnergyDevices />} />
         <Route path="/energy/devices/:imei" element={<EnergyDeviceDetail />} />

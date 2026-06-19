@@ -94,9 +94,15 @@ maps their existing callbacks (`onNav`, `onOpenDevice`, `onBack`, …) onto
 
 `/` is the **Kenya POA dMRV Sectoral Dashboard** (`src/sectoral/`), a unified
 dark-sidebar platform ported from the "dMRV Sectoral Dashboard" design mockup.
-It has three scope tabs — **Energy demand**, **Waste management**,
-**Land use & forestry** — each with KPIs, an emissions-over-time chart,
-monitoring-health bars, a VPA table and a register-project modal.
+It has two levels:
+- **Overview** (`/`, `SectoralOverview.jsx`): a hero, three clickable scope cards
+  — **Energy demand**, **Waste management**, **AFOLU** — a carbon-credit
+  lifecycle stepper, and a recent-activity feed.
+- **Scope detail** (`/scope/:sector`, `ScopeDetail.jsx`): the per-scope workspace
+  — KPIs, emissions-over-time chart, monitoring-health bars, a VPA table and a
+  register-project modal — with a "← All sectoral scopes" back button.
+
+Shared data lives in `src/sectoral/sectoralData.js`.
 
 - The **Energy demand** scope embeds the clean-cooking platform we built: "Open
   clean-cooking monitoring" (or a VPA row) opens it inline at `/energy/*`
