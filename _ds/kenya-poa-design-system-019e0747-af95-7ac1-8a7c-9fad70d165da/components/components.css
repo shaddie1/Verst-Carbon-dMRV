@@ -1,0 +1,228 @@
+/* Kenya POA — Component styles
+   Class-based so hover/focus/active states ship to consumers via styles.css.
+   Components render these classes; inline styles only for dynamic values. */
+
+/* ============ Button ============ */
+.poa-btn {
+  --_bg: var(--brand); --_fg: var(--text-on-brand); --_bd: transparent; --_bgh: var(--brand-strong);
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  font-family: var(--font-sans); font-weight: 600; font-size: var(--fs-body); line-height: 1;
+  height: 38px; padding: 0 16px; border-radius: var(--radius-sm);
+  background: var(--_bg); color: var(--_fg); border: 1px solid var(--_bd);
+  cursor: pointer; white-space: nowrap; user-select: none;
+  transition: background var(--dur) var(--ease-out), box-shadow var(--dur) var(--ease-out),
+              border-color var(--dur) var(--ease-out), transform var(--dur-fast) var(--ease-out);
+}
+.poa-btn:hover { background: var(--_bgh); }
+.poa-btn:active { transform: translateY(0.5px); }
+.poa-btn:focus-visible { outline: none; box-shadow: var(--shadow-focus); }
+.poa-btn:disabled, .poa-btn[aria-disabled="true"] { opacity: .45; cursor: not-allowed; transform: none; }
+.poa-btn .poa-btn__icon { width: 17px; height: 17px; display: inline-flex; flex-shrink: 0; }
+.poa-btn .poa-btn__icon svg { width: 100%; height: 100%; }
+
+.poa-btn.is-secondary { --_bg: var(--surface-card); --_fg: var(--text-strong); --_bd: var(--line-strong); --_bgh: var(--surface-hover); }
+.poa-btn.is-ghost { --_bg: transparent; --_fg: var(--text-body); --_bd: transparent; --_bgh: var(--surface-hover); }
+.poa-btn.is-subtle { --_bg: var(--brand-tint); --_fg: var(--brand-strong); --_bd: transparent; --_bgh: var(--green-200); }
+.poa-btn.is-danger { --_bg: var(--danger-solid); --_fg: #fff; --_bd: transparent; --_bgh: var(--red-700); }
+.poa-btn.is-danger:focus-visible { box-shadow: 0 0 0 3px rgba(192,57,43,.35); }
+
+.poa-btn.sz-sm { height: 30px; padding: 0 11px; font-size: var(--fs-sm); border-radius: var(--radius-xs); gap: 6px; }
+.poa-btn.sz-sm .poa-btn__icon { width: 15px; height: 15px; }
+.poa-btn.sz-lg { height: 46px; padding: 0 22px; font-size: var(--fs-h3); border-radius: var(--radius-md); }
+.poa-btn.is-block { display: flex; width: 100%; }
+
+/* Icon-only button */
+.poa-iconbtn {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 38px; height: 38px; border-radius: var(--radius-sm);
+  background: transparent; color: var(--text-muted); border: 1px solid transparent; cursor: pointer;
+  transition: background var(--dur) var(--ease-out), color var(--dur) var(--ease-out), border-color var(--dur) var(--ease-out);
+}
+.poa-iconbtn:hover { background: var(--surface-hover); color: var(--text-strong); }
+.poa-iconbtn:focus-visible { outline: none; box-shadow: var(--shadow-focus); }
+.poa-iconbtn.is-bordered { border-color: var(--line-strong); background: var(--surface-card); }
+.poa-iconbtn.sz-sm { width: 30px; height: 30px; border-radius: var(--radius-xs); }
+.poa-iconbtn svg { width: 18px; height: 18px; }
+.poa-iconbtn.sz-sm svg { width: 15px; height: 15px; }
+
+/* ============ Badge ============ */
+.poa-badge {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-family: var(--font-sans); font-weight: 600; font-size: var(--fs-xs); line-height: 1;
+  padding: 4px 9px; border-radius: var(--radius-pill);
+  background: var(--neutral-bg); color: var(--neutral-fg); white-space: nowrap;
+}
+.poa-badge .poa-badge__dot { width: 7px; height: 7px; border-radius: 50%; background: currentColor; flex-shrink: 0; }
+.poa-badge.is-square { border-radius: var(--radius-xs); }
+.poa-badge.tone-ok { background: var(--ok-bg); color: var(--ok-fg); }
+.poa-badge.tone-warn { background: var(--warn-bg); color: var(--warn-fg); }
+.poa-badge.tone-danger { background: var(--danger-bg); color: var(--danger-fg); }
+.poa-badge.tone-info { background: var(--info-bg); color: var(--info-fg); }
+.poa-badge.tone-brand { background: var(--brand-tint); color: var(--brand-strong); }
+.poa-badge.is-solid.tone-ok { background: var(--ok-solid); color: #fff; }
+.poa-badge.is-solid.tone-warn { background: var(--warn-solid); color: #fff; }
+.poa-badge.is-solid.tone-danger { background: var(--danger-solid); color: #fff; }
+.poa-badge.is-solid.tone-info { background: var(--info-solid); color: #fff; }
+.poa-badge.is-solid.tone-brand { background: var(--brand); color: #fff; }
+
+/* ============ Tag (removable chip) ============ */
+.poa-tag {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-family: var(--font-sans); font-weight: 500; font-size: var(--fs-sm); line-height: 1;
+  padding: 5px 6px 5px 10px; border-radius: var(--radius-sm);
+  background: var(--surface-sunken); color: var(--text-body); border: 1px solid var(--line);
+}
+.poa-tag.no-remove { padding: 5px 10px; }
+.poa-tag__x {
+  display: inline-flex; align-items: center; justify-content: center; width: 16px; height: 16px;
+  border-radius: var(--radius-xs); cursor: pointer; color: var(--text-subtle); border: 0; background: transparent;
+  transition: background var(--dur) var(--ease-out), color var(--dur) var(--ease-out);
+}
+.poa-tag__x:hover { background: var(--stone-200); color: var(--text-strong); }
+.poa-tag__x svg { width: 12px; height: 12px; }
+
+/* ============ Avatar ============ */
+.poa-avatar {
+  display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0;
+  width: 36px; height: 36px; border-radius: 50%;
+  background: var(--brand-tint); color: var(--brand-strong);
+  font-family: var(--font-sans); font-weight: 600; font-size: var(--fs-sm);
+  overflow: hidden; user-select: none;
+}
+.poa-avatar img { width: 100%; height: 100%; object-fit: cover; }
+.poa-avatar.sz-sm { width: 28px; height: 28px; font-size: var(--fs-xs); }
+.poa-avatar.sz-lg { width: 48px; height: 48px; font-size: var(--fs-h3); }
+.poa-avatar.is-square { border-radius: var(--radius-md); }
+.poa-avatar.tone-teal { background: var(--teal-100); color: var(--teal-700); }
+.poa-avatar.tone-clay { background: var(--clay-100); color: var(--clay-700); }
+.poa-avatar.tone-stone { background: var(--stone-200); color: var(--stone-700); }
+
+/* ============ Card ============ */
+.poa-card {
+  background: var(--surface-card); border: 1px solid var(--line); border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm); overflow: hidden;
+}
+.poa-card.is-flat { box-shadow: none; }
+.poa-card.is-pad { padding: var(--space-5); }
+.poa-card__head {
+  display: flex; align-items: center; justify-content: space-between; gap: 12px;
+  padding: 14px var(--space-5); border-bottom: 1px solid var(--line-soft);
+}
+.poa-card__title { font-weight: 600; font-size: var(--fs-title); color: var(--text-strong); }
+.poa-card__body { padding: var(--space-5); }
+
+/* ============ MetricCard ============ */
+.poa-metric {
+  background: var(--surface-card); border: 1px solid var(--line); border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm); padding: 16px 18px; display: flex; flex-direction: column; gap: 8px;
+}
+.poa-metric__top { display: flex; align-items: center; gap: 8px; }
+.poa-metric__icon {
+  width: 30px; height: 30px; border-radius: var(--radius-sm); display: inline-flex; align-items: center; justify-content: center;
+  background: var(--brand-tint); color: var(--brand-strong); flex-shrink: 0;
+}
+.poa-metric__icon svg { width: 17px; height: 17px; }
+.poa-metric__label { font-size: var(--fs-sm); color: var(--text-muted); font-weight: 500; }
+.poa-metric__value {
+  font-family: var(--font-condensed); font-weight: 700; font-size: 34px; line-height: 1;
+  letter-spacing: -0.02em; font-variant-numeric: tabular-nums; color: var(--text-strong);
+}
+.poa-metric__value .unit { font-size: 15px; color: var(--text-muted); font-weight: 600; margin-left: 4px; }
+.poa-metric__foot { display: flex; align-items: center; gap: 6px; font-size: var(--fs-sm); }
+.poa-metric__delta { display: inline-flex; align-items: center; gap: 3px; font-weight: 600; }
+.poa-metric__delta.up { color: var(--ok-fg); }
+.poa-metric__delta.down { color: var(--danger-fg); }
+.poa-metric__delta svg { width: 14px; height: 14px; }
+
+/* ============ Progress ============ */
+.poa-progress { display: flex; flex-direction: column; gap: 6px; }
+.poa-progress__track { height: 8px; border-radius: var(--radius-pill); background: var(--stone-150); overflow: hidden; }
+.poa-progress__fill { height: 100%; border-radius: var(--radius-pill); background: var(--brand); transition: width var(--dur-slow) var(--ease-out); }
+.poa-progress__fill.tone-teal { background: var(--teal-600); }
+.poa-progress__fill.tone-amber { background: var(--amber-500); }
+.poa-progress__fill.tone-clay { background: var(--clay-500); }
+.poa-progress__meta { display: flex; justify-content: space-between; font-size: var(--fs-xs); color: var(--text-muted); }
+.poa-progress__meta b { color: var(--text-strong); font-weight: 600; font-variant-numeric: tabular-nums; }
+.poa-progress.is-sm .poa-progress__track { height: 5px; }
+
+/* ============ Field / Input / Select ============ */
+.poa-field { display: flex; flex-direction: column; gap: 6px; }
+.poa-field__label { font-size: var(--fs-sm); font-weight: 600; color: var(--text-strong); }
+.poa-field__hint { font-size: var(--fs-xs); color: var(--text-muted); }
+.poa-field__error { font-size: var(--fs-xs); color: var(--danger-fg); font-weight: 500; }
+.poa-inputwrap { position: relative; display: flex; align-items: center; }
+.poa-inputwrap__icon { position: absolute; left: 11px; display: inline-flex; color: var(--text-subtle); pointer-events: none; }
+.poa-inputwrap__icon svg { width: 16px; height: 16px; }
+.poa-input {
+  width: 100%; height: 38px; padding: 0 12px; font-family: var(--font-sans); font-size: var(--fs-body);
+  color: var(--text-strong); background: var(--surface-card); border: 1px solid var(--line-strong);
+  border-radius: var(--radius-sm); outline: none;
+  transition: border-color var(--dur) var(--ease-out), box-shadow var(--dur) var(--ease-out);
+}
+.poa-input::placeholder { color: var(--text-subtle); }
+.poa-input:hover { border-color: var(--stone-400); }
+.poa-input:focus { border-color: var(--brand); box-shadow: var(--shadow-focus); }
+.poa-input.has-icon { padding-left: 34px; }
+.poa-input:disabled { background: var(--surface-sunken); color: var(--text-subtle); cursor: not-allowed; }
+.poa-input.is-invalid { border-color: var(--danger-solid); }
+.poa-input.is-invalid:focus { box-shadow: 0 0 0 3px rgba(192,57,43,.3); }
+.poa-input.is-mono { font-family: var(--font-mono); }
+textarea.poa-input { height: auto; padding: 9px 12px; line-height: 1.5; resize: vertical; }
+
+.poa-selectwrap { position: relative; display: flex; align-items: center; }
+.poa-selectwrap__chev { position: absolute; right: 11px; color: var(--text-subtle); pointer-events: none; display: inline-flex; }
+.poa-selectwrap__chev svg { width: 16px; height: 16px; }
+select.poa-input { appearance: none; -webkit-appearance: none; padding-right: 32px; cursor: pointer; }
+
+/* ============ Checkbox & Switch ============ */
+.poa-check { display: inline-flex; align-items: center; gap: 9px; cursor: pointer; font-size: var(--fs-body); color: var(--text-body); user-select: none; }
+.poa-check input { position: absolute; opacity: 0; width: 0; height: 0; }
+.poa-check__box {
+  width: 18px; height: 18px; border-radius: var(--radius-xs); border: 1.5px solid var(--line-strong);
+  background: var(--surface-card); display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0;
+  color: #fff; transition: background var(--dur) var(--ease-out), border-color var(--dur) var(--ease-out);
+}
+.poa-check__box svg { width: 12px; height: 12px; opacity: 0; transform: scale(.6); transition: opacity var(--dur) var(--ease-out), transform var(--dur) var(--ease-out); }
+.poa-check input:checked + .poa-check__box { background: var(--brand); border-color: var(--brand); }
+.poa-check input:checked + .poa-check__box svg { opacity: 1; transform: scale(1); }
+.poa-check input:focus-visible + .poa-check__box { box-shadow: var(--shadow-focus); }
+
+.poa-switch { display: inline-flex; align-items: center; gap: 10px; cursor: pointer; user-select: none; font-size: var(--fs-body); color: var(--text-body); }
+.poa-switch input { position: absolute; opacity: 0; width: 0; height: 0; }
+.poa-switch__track {
+  width: 38px; height: 22px; border-radius: var(--radius-pill); background: var(--stone-300); position: relative; flex-shrink: 0;
+  transition: background var(--dur) var(--ease-out);
+}
+.poa-switch__track::after {
+  content: ""; position: absolute; top: 2px; left: 2px; width: 18px; height: 18px; border-radius: 50%;
+  background: #fff; box-shadow: var(--shadow-sm); transition: transform var(--dur) var(--ease-out);
+}
+.poa-switch input:checked + .poa-switch__track { background: var(--brand); }
+.poa-switch input:checked + .poa-switch__track::after { transform: translateX(16px); }
+.poa-switch input:focus-visible + .poa-switch__track { box-shadow: var(--shadow-focus); }
+
+/* ============ Tabs ============ */
+.poa-tabs { display: flex; gap: 4px; border-bottom: 1px solid var(--line); }
+.poa-tab {
+  appearance: none; background: transparent; border: 0; cursor: pointer;
+  font-family: var(--font-sans); font-weight: 600; font-size: var(--fs-body); color: var(--text-muted);
+  padding: 10px 12px; position: relative; display: inline-flex; align-items: center; gap: 7px;
+  transition: color var(--dur) var(--ease-out);
+}
+.poa-tab:hover { color: var(--text-strong); }
+.poa-tab::after { content: ""; position: absolute; left: 6px; right: 6px; bottom: -1px; height: 2px; border-radius: 2px 2px 0 0; background: transparent; transition: background var(--dur) var(--ease-out); }
+.poa-tab.is-active { color: var(--brand-strong); }
+.poa-tab.is-active::after { background: var(--brand); }
+.poa-tab__count { font-family: var(--font-mono); font-size: var(--fs-xs); font-weight: 500; color: var(--text-subtle); background: var(--surface-sunken); padding: 1px 6px; border-radius: var(--radius-pill); }
+.poa-tab.is-active .poa-tab__count { color: var(--brand-strong); background: var(--brand-tint); }
+
+/* ============ Tooltip ============ */
+.poa-tip { position: relative; display: inline-flex; }
+.poa-tip__bubble {
+  position: absolute; bottom: calc(100% + 8px); left: 50%; transform: translateX(-50%) translateY(4px);
+  background: var(--stone-950); color: #EAF3EC; font-size: var(--fs-xs); font-weight: 500; line-height: 1.4;
+  padding: 6px 9px; border-radius: var(--radius-sm); white-space: nowrap; box-shadow: var(--shadow-md);
+  opacity: 0; pointer-events: none; transition: opacity var(--dur) var(--ease-out), transform var(--dur) var(--ease-out); z-index: 50;
+}
+.poa-tip__bubble::after { content: ""; position: absolute; top: 100%; left: 50%; transform: translateX(-50%); border: 5px solid transparent; border-top-color: var(--stone-950); }
+.poa-tip:hover .poa-tip__bubble, .poa-tip:focus-within .poa-tip__bubble { opacity: 1; transform: translateX(-50%) translateY(0); }

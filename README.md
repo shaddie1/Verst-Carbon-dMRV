@@ -90,7 +90,29 @@ maps their existing callbacks (`onNav`, `onOpenDevice`, `onBack`, …) onto
 > this automatically; on static hosts configure a catch-all rewrite to
 > `/index.html`.
 
-## Sectoral scopes
+## Platform entry — Kenya POA Sectoral Dashboard
+
+`/` is the **Kenya POA dMRV Sectoral Dashboard** (`src/sectoral/`), a unified
+dark-sidebar platform ported from the "dMRV Sectoral Dashboard" design mockup.
+It has three scope tabs — **Energy demand**, **Waste management**,
+**Land use & forestry** — each with KPIs, an emissions-over-time chart,
+monitoring-health bars, a VPA table and a register-project modal.
+
+- The **Energy demand** scope embeds the clean-cooking platform we built: "Open
+  clean-cooking monitoring" (or a VPA row) opens it inline at `/energy/*`
+  (dashboard, devices, device detail, fuels, households, reports), reusing the
+  existing screens. "← All scopes" returns to the sectoral dashboard.
+- Theme tokens (`src/sectoral/sectoral.css`, IBM Plex + warm-green neutrals) are
+  **scoped under `.kp`** so they apply only to the new shell + dashboard; the
+  embedded clean-cooking screens keep their own (`:root`) green tokens.
+- The earlier marketing landing now lives at `/welcome`; stakeholder gaps at
+  `/poa/stakeholders`. The standalone `/dashboard … /waste … /afolu … /portfolio`
+  scope routes from the previous iteration remain (behind login) but are no
+  longer the entry.
+
+> All sectoral figures are illustrative placeholders.
+
+## Sectoral scopes (standalone scope screens — earlier iteration)
 
 The dMRV platform spans three CDM/Gold-Standard **sectoral scopes**, selected via
 the **ScopeSwitcher** in the TopNav (the active scope is derived from the URL):

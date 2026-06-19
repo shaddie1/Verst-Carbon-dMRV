@@ -25,8 +25,35 @@ import { BiocharDashboard } from './screens/scopes/BiocharDashboard.jsx';
 import { BiocharProduction } from './screens/scopes/BiocharProduction.jsx';
 import { ForestDashboard } from './screens/scopes/ForestDashboard.jsx';
 import { ForestPlots } from './screens/scopes/ForestPlots.jsx';
+import { SectoralShell } from './sectoral/SectoralShell.jsx';
+import { SectoralDashboard } from './sectoral/SectoralDashboard.jsx';
 
 const { useState } = React;
+
+/* ---- Energy demand = the embedded clean-cooking monitoring platform.
+   The existing screens are reused inside the Kenya POA shell at /energy/*. ---- */
+function EnergyPage({ children }) {
+  return <div style={{ padding: '24px 28px' }}><div style={{ maxWidth: 1240, margin: '0 auto' }}>{children}</div></div>;
+}
+function EnergyDashboard() {
+  const navigate = useNavigate();
+  return <EnergyPage><DashboardScreen role="admin" scope="all" onScopeChange={() => {}} onNav={(k) => navigate('/energy/' + k)} /></EnergyPage>;
+}
+function EnergyDevices() {
+  const navigate = useNavigate();
+  const [register, setRegister] = useState(false);
+  return (
+    <EnergyPage>
+      <DevicesScreen role="admin" scope="all" onOpenDevice={(imei) => navigate('/energy/devices/' + encodeURIComponent(imei))} onRegister={() => setRegister(true)} />
+      {register && <RegisterDeviceModal role="admin" scope="all" onClose={() => setRegister(false)} />}
+    </EnergyPage>
+  );
+}
+function EnergyDeviceDetail() {
+  const navigate = useNavigate();
+  const { imei } = useParams();
+  return <EnergyPage><DeviceDetailScreen role="admin" scope="all" imei={decodeURIComponent(imei)} onBack={() => navigate('/energy/devices')} /></EnergyPage>;
+}
 
 // Top-level keys used by the sidebar / breadcrumbs map 1:1 to the URL path.
 const deviceHref = (imei) => `/devices/${encodeURIComponent(imei)}`;
@@ -67,8 +94,19 @@ function App() {
 
   return (
     <Routes>
-      {/* public Kenya PoA landing + stakeholder pages */}
-      <Route path="/" element={<PoaLanding />} />
+      {/* Kenya POA sectoral platform — home + embedded clean-cooking monitoring */}
+      <Route element={<SectoralShell />}>
+        <Route path="/" element={<SectoralDashboard />} />
+        <Route path="/energy" element={<EnergyDashboard />} />
+        <Route path="/energy/devices" element={<EnergyDevices />} />
+        <Route path="/energy/devices/:imei" element={<EnergyDeviceDetail />} />
+        <Route path="/energy/fuels" element={<EnergyPage><FuelScreen role="admin" scope="all" /></EnergyPage>} />
+        <Route path="/energy/households" element={<EnergyPage><HouseholdsScreen role="admin" scope="all" /></EnergyPage>} />
+        <Route path="/energy/reports" element={<EnergyPage><ReportsScreen role="admin" scope="all" /></EnergyPage>} />
+      </Route>
+
+      {/* legacy public marketing + stakeholder pages */}
+      <Route path="/welcome" element={<PoaLanding />} />
       <Route path="/poa/stakeholders" element={<StakeholderGaps />} />
 
       {/* public / pre-auth */}

@@ -1,0 +1,8 @@
+/* Kenya POA — Webfonts
+   IBM Plex superfamily: precise, engineered, audit-grade.
+   - Plex Sans          → UI + body
+   - Plex Sans Condensed → big display numbers, dense table headers
+   - Plex Mono          → device IDs, serials, tabular metrics, code
+   NOTE: loaded from Google Fonts CDN (binaries not self-hosted in this project).
+   Requires network at runtime. Flagged to the user — supply TTF/WOFF2 files to self-host. */
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans+Condensed:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap');
