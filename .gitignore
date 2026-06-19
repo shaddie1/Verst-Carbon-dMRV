@@ -6,3 +6,7 @@ dist/
 
 # Working artifacts from the mockup extraction (regenerate with scaffold.mjs)
 extracted/
+
+# stray editor / paste artifacts
+.thumbnail
+uploads/
