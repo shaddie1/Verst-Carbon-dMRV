@@ -55,17 +55,19 @@ function SectoralShell() {
   const isOverview = pathname === '/';
   const isScope = pathname.startsWith('/scope/');
   const isEnergy = pathname.startsWith('/energy');
+  const isAfolu = pathname.startsWith('/afolu');
   const scopeKey = isScope ? pathname.split('/')[2] : null;
 
   const activeKey = isOverview ? 'dashboard'
     : isScope ? 'scopes'
       : pathname.startsWith('/energy/devices') ? 'projects'
         : pathname.startsWith('/energy/reports') ? 'reports'
-          : isEnergy ? 'monitoring' : 'dashboard';
+          : (isEnergy || isAfolu) ? 'monitoring' : 'dashboard';
 
   let eyebrow = 'Kenya POA · National programme', title = 'Sectoral scopes', back = null;
   if (isScope) { eyebrow = null; title = (SCOPES[scopeKey] || {}).name || 'Scope'; back = { label: 'All sectoral scopes', to: '/' }; }
   else if (isEnergy) { eyebrow = null; title = 'Clean-cooking monitoring'; back = { label: 'Energy demand', to: '/scope/energy' }; }
+  else if (isAfolu) { eyebrow = null; title = 'REDD+ monitoring'; back = { label: 'AFOLU', to: '/scope/land' }; }
 
   return (
     <div style={{ display: 'flex', height: '100vh', overflow: 'hidden', background: '#F7F9F6' }}>

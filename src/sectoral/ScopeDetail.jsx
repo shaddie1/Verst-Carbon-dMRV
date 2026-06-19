@@ -93,6 +93,11 @@ function ScopeDetail() {
   const d = sc.kpi;
   const projects = sc.projects.concat(extra);
   const isEnergy = sector === 'energy';
+  const isAfolu = sector === 'land';
+  // scopes that drill into an embedded monitoring workspace
+  const monitor = isEnergy ? { label: 'Open clean-cooking monitoring', to: '/energy', rowTo: '/energy/devices' }
+    : isAfolu ? { label: 'Open REDD+ monitoring', to: '/afolu', rowTo: '/afolu/plots' }
+      : null;
 
   const openModal = () => { setForm({ name: '', county: sc.counties[0], sites: '', red: '' }); setModal(true); };
   const submit = () => {
@@ -127,10 +132,10 @@ function ScopeDetail() {
             </div>
           </div>
           <div style={{ display: 'flex', gap: 10, flex: 'none' }}>
-            {isEnergy && (
-              <button onClick={() => navigate('/energy')} style={{ height: 38, padding: '0 16px', border: 0, borderRadius: 6, background: '#008037', color: '#fff', fontFamily: 'inherit', fontSize: 13, fontWeight: 600, display: 'flex', alignItems: 'center', gap: 7, cursor: 'pointer' }}>
+            {monitor && (
+              <button onClick={() => navigate(monitor.to)} style={{ height: 38, padding: '0 16px', border: 0, borderRadius: 6, background: '#008037', color: '#fff', fontFamily: 'inherit', fontSize: 13, fontWeight: 600, display: 'flex', alignItems: 'center', gap: 7, cursor: 'pointer' }}>
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 12h4l2 6 4-14 2 8h6" /></svg>
-                Open clean-cooking monitoring
+                {monitor.label}
               </button>
             )}
             <button style={{ height: 38, padding: '0 14px', border: '1px solid #BDC6BF', borderRadius: 6, background: '#fff', color: '#1C2A22', fontFamily: 'inherit', fontSize: 13, fontWeight: 600, display: 'flex', alignItems: 'center', gap: 7, cursor: 'pointer' }}>
@@ -197,7 +202,7 @@ function ScopeDetail() {
               ))}
             </tr></thead>
             <tbody>{projects.map(p => (
-              <tr key={p.id} onClick={() => isEnergy && navigate('/energy/devices')} style={{ borderBottom: '1px solid #E6EBE6', cursor: isEnergy ? 'pointer' : 'default' }}>
+              <tr key={p.id} onClick={() => monitor && navigate(monitor.rowTo)} style={{ borderBottom: '1px solid #E6EBE6', cursor: monitor ? 'pointer' : 'default' }}>
                 <td style={{ padding: '13px 16px', fontFamily: "'IBM Plex Mono'", fontSize: 12, color: '#0E1A12', whiteSpace: 'nowrap' }}>{p.id}</td>
                 <td style={{ padding: '13px 16px', color: '#0E1A12', fontWeight: 500 }}>{p.name}</td>
                 <td style={{ padding: '13px 16px', color: '#4E5B52', whiteSpace: 'nowrap' }}>{p.loc}</td>

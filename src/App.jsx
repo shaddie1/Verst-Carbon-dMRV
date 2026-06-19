@@ -20,9 +20,6 @@ import { ApplicationWizard, ApplicationSubmitted } from './screens/ApplicationWi
 import { ApplicationsScreen } from './screens/ApplicationsReview.jsx';
 import { PoaLanding } from './poa/PoaLanding.jsx';
 import { StakeholderGaps } from './poa/StakeholderGaps.jsx';
-import { PortfolioOverview } from './screens/scopes/PortfolioOverview.jsx';
-import { BiocharDashboard } from './screens/scopes/BiocharDashboard.jsx';
-import { BiocharProduction } from './screens/scopes/BiocharProduction.jsx';
 import { ForestDashboard } from './screens/scopes/ForestDashboard.jsx';
 import { ForestPlots } from './screens/scopes/ForestPlots.jsx';
 import { SectoralShell } from './sectoral/SectoralShell.jsx';
@@ -105,6 +102,9 @@ function App() {
         <Route path="/energy/fuels" element={<EnergyPage><FuelScreen role="admin" scope="all" /></EnergyPage>} />
         <Route path="/energy/households" element={<EnergyPage><HouseholdsScreen role="admin" scope="all" /></EnergyPage>} />
         <Route path="/energy/reports" element={<EnergyPage><ReportsScreen role="admin" scope="all" /></EnergyPage>} />
+        {/* AFOLU demand → embedded REDD+ forest monitoring (Tsavo) */}
+        <Route path="/afolu" element={<EnergyPage><ForestDashboard onNav={(p) => navigate(p)} /></EnergyPage>} />
+        <Route path="/afolu/plots" element={<EnergyPage><ForestPlots /></EnergyPage>} />
       </Route>
 
       {/* legacy public marketing + stakeholder pages */}
@@ -156,13 +156,6 @@ function App() {
         <Route path="/alerts" element={<AlertsScreen role={role} scope={scope} />} />
         <Route path="/households" element={<HouseholdsScreen role={role} scope={scope} />} />
         <Route path="/settings" element={<SettingsScreen role={role} />} />
-
-        {/* cross-scope portfolio + other sectoral scopes */}
-        <Route path="/portfolio" element={<PortfolioOverview onNav={navigate} />} />
-        <Route path="/waste" element={<BiocharDashboard onNav={navigate} />} />
-        <Route path="/waste/production" element={<BiocharProduction />} />
-        <Route path="/afolu" element={<ForestDashboard onNav={navigate} />} />
-        <Route path="/afolu/plots" element={<ForestPlots />} />
       </Route>
 
       <Route path="*" element={<Navigate to={authed ? '/dashboard' : '/'} replace />} />

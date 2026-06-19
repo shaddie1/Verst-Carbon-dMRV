@@ -104,6 +104,11 @@ It has two levels:
 
 Shared data lives in `src/sectoral/sectoralData.js`.
 
+Two scopes drill into embedded monitoring workspaces (rendered in the same
+shell, light content area): **Energy demand → clean-cooking** (`/energy/*`) and
+**AFOLU → Tsavo REDD+ forest monitoring** (`/afolu`, `/afolu/plots`). Waste keeps
+the generic scope detail for now.
+
 - The **Energy demand** scope embeds the clean-cooking platform we built: "Open
   clean-cooking monitoring" (or a VPA row) opens it inline at `/energy/*`
   (dashboard, devices, device detail, fuels, households, reports), reusing the
