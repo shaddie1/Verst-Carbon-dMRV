@@ -94,10 +94,12 @@ function ScopeDetail() {
   const projects = sc.projects.concat(extra);
   const isEnergy = sector === 'energy';
   const isAfolu = sector === 'land';
+  const isWaste = sector === 'waste';
   // scopes that drill into an embedded monitoring workspace
   const monitor = isEnergy ? { label: 'Open clean-cooking monitoring', to: '/energy', rowTo: '/energy/devices' }
     : isAfolu ? { label: 'Open REDD+ monitoring', to: '/afolu', rowTo: '/afolu/plots' }
-      : null;
+      : isWaste ? { label: 'Open biochar monitoring', to: '/waste', rowTo: '/waste' }
+        : null;
 
   const openModal = () => { setForm({ name: '', county: sc.counties[0], sites: '', red: '' }); setModal(true); };
   const submit = () => {

@@ -118,7 +118,18 @@ Scopes drill into monitoring workspaces:
   plus a guided "monitoring cycle" walkthrough. Its theme is scoped under `.afolu`;
   a "← Sectoral scopes" link returns to the POA. (The design-only tweaks panel was
   excluded; theme fixed to dark.) Regenerate with `node afolu-port.mjs`.
-- **Waste** keeps the generic scope detail for now.
+- **Waste management → the full ABAP biochar platform** (`/waste`) — a standalone,
+  role-based app (`src/waste/BiocharPlatform.jsx`) ported from the
+  `design_handoff_ABAP_dmrv` mockup. It is a **tiered access** platform for the
+  biochar value chain across Kenya/Uganda/Tanzania/Nigeria/Zimbabwe: a login/apply
+  gateway, three **desktop** dashboards (Super Admin · global, Local IP · country,
+  Site Admin · site — each admits the tier beneath, with Africa/Kenya maps,
+  production + reactor-temperature DMRV charts, country/site registers and
+  approval queues), and three **field/phone** UIs (Farmer supply + marketplace,
+  Transport logistics, Enumerator survey with a locked farm-boundary polygon),
+  plus a shared approval/action modal. Its theme (IBM Plex, inline hex) is scoped
+  under `.abap` (`src/waste/waste.css`); a "← Sectoral scopes" link on the login
+  screen returns to the POA. Figures are illustrative placeholders.
 
 - The **Energy demand** scope embeds the clean-cooking platform we built: "Open
   clean-cooking monitoring" (or a VPA row) opens it inline at `/energy/*`

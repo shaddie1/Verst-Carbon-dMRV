@@ -21,6 +21,7 @@ import { ApplicationsScreen } from './screens/ApplicationsReview.jsx';
 import { PoaLanding } from './poa/PoaLanding.jsx';
 import { StakeholderGaps } from './poa/StakeholderGaps.jsx';
 import { AfoluApp } from './afolu/afoluApp.jsx';
+import { BiocharPlatform } from './waste/BiocharPlatform.jsx';
 import { SectoralShell } from './sectoral/SectoralShell.jsx';
 import { SectoralOverview } from './sectoral/SectoralOverview.jsx';
 import { ScopeDetail } from './sectoral/ScopeDetail.jsx';
@@ -75,6 +76,9 @@ function App() {
 
       {/* AFOLU → full standalone AFOLU dMRV platform (its own dark chrome) */}
       <Route path="/afolu" element={<div className="afolu" style={{ height: '100vh' }}><AfoluApp onBack={() => navigate('/scope/land')} /></div>} />
+
+      {/* Waste management → full standalone ABAP biochar platform (role-based) */}
+      <Route path="/waste" element={<BiocharPlatform onBack={() => navigate('/scope/waste')} />} />
 
       {/* legacy public marketing + stakeholder pages */}
       <Route path="/welcome" element={<PoaLanding />} />
