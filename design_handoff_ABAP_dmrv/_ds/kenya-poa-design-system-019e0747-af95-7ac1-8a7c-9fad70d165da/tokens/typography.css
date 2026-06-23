@@ -1,0 +1,71 @@
+/* Kenya POA — Typography
+   IBM Plex superfamily. Display & data lean on Condensed/Mono for an instrument-panel feel. */
+
+:root {
+  /* Families */
+  --font-sans:      'IBM Plex Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-condensed: 'IBM Plex Sans Condensed', 'IBM Plex Sans', system-ui, sans-serif;
+  --font-mono:      'IBM Plex Mono', ui-monospace, 'SFMono-Regular', Menlo, monospace;
+
+  /* Weights */
+  --fw-regular: 400; /* @kind font */
+  --fw-medium:  500; /* @kind font */
+  --fw-semibold:600; /* @kind font */
+  --fw-bold:    700; /* @kind font */
+
+  /* Type scale (px) — measured UI/data product */
+  --fs-display: 44px;   /* page hero numbers / big stats (use condensed) */
+  --fs-h1: 30px;
+  --fs-h2: 23px;
+  --fs-h3: 18px;
+  --fs-title: 15px;     /* card titles / section labels */
+  --fs-body: 14px;      /* default UI text */
+  --fs-sm: 13px;
+  --fs-xs: 12px;
+  --fs-micro: 11px;     /* overline labels, table chrome */
+
+  /* Line heights */
+  --lh-tight: 1.08; /* @kind font */
+  --lh-snug: 1.25; /* @kind font */
+  --lh-normal: 1.5; /* @kind font */
+  --lh-relaxed: 1.65; /* @kind font */
+
+  /* Letter spacing */
+  --ls-tight: -0.02em; /* @kind font */
+  --ls-normal: 0; /* @kind font */
+  --ls-wide: 0.04em; /* @kind font */
+  --ls-overline: 0.09em; /* @kind font */
+}
+
+/* Base element defaults (scoped, opt-in via .poa-type for cards/specimens) */
+.poa-type, .poa-root {
+  font-family: var(--font-sans);
+  font-size: var(--fs-body);
+  line-height: var(--lh-normal);
+  color: var(--text-body);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  font-feature-settings: 'tnum' 0;
+}
+
+/* Reusable type roles */
+.t-display { font-family: var(--font-condensed); font-weight: var(--fw-bold);
+  font-size: var(--fs-display); line-height: var(--lh-tight); letter-spacing: var(--ls-tight);
+  color: var(--text-strong); }
+.t-h1 { font-family: var(--font-sans); font-weight: var(--fw-bold); font-size: var(--fs-h1);
+  line-height: var(--lh-snug); letter-spacing: var(--ls-tight); color: var(--text-strong); }
+.t-h2 { font-weight: var(--fw-semibold); font-size: var(--fs-h2); line-height: var(--lh-snug);
+  letter-spacing: var(--ls-tight); color: var(--text-strong); }
+.t-h3 { font-weight: var(--fw-semibold); font-size: var(--fs-h3); line-height: var(--lh-snug);
+  color: var(--text-strong); }
+.t-title { font-weight: var(--fw-semibold); font-size: var(--fs-title); line-height: var(--lh-snug);
+  color: var(--text-strong); }
+.t-body { font-size: var(--fs-body); line-height: var(--lh-normal); color: var(--text-body); }
+.t-sm { font-size: var(--fs-sm); line-height: var(--lh-normal); color: var(--text-body); }
+.t-muted { color: var(--text-muted); }
+.t-overline { font-family: var(--font-sans); font-weight: var(--fw-semibold); font-size: var(--fs-micro);
+  text-transform: uppercase; letter-spacing: var(--ls-overline); color: var(--text-subtle); }
+.t-mono { font-family: var(--font-mono); font-size: var(--fs-sm); letter-spacing: var(--ls-normal); }
+.t-metric { font-family: var(--font-condensed); font-weight: var(--fw-bold); letter-spacing: var(--ls-tight);
+  font-variant-numeric: tabular-nums; color: var(--text-strong); }
+.tnum { font-variant-numeric: tabular-nums; }

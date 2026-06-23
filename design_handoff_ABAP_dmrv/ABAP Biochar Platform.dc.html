@@ -1,0 +1,966 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Sans+Condensed:wght@600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    *{box-sizing:border-box;}
+    html,body{margin:0;height:100%;}
+    body{font-family:'IBM Plex Sans',system-ui,sans-serif;background:#F7F9F6;color:#1C2A22;-webkit-font-smoothing:antialiased;}
+    ::-webkit-scrollbar{width:10px;height:10px;}
+    ::-webkit-scrollbar-thumb{background:#DCE3DD;border-radius:8px;border:2px solid #F7F9F6;}
+    .abap-phonescroll::-webkit-scrollbar{width:0;}
+    @keyframes abPulse{0%{box-shadow:0 0 0 0 rgba(77,184,116,.5);}70%{box-shadow:0 0 0 7px rgba(77,184,116,0);}100%{box-shadow:0 0 0 0 rgba(77,184,116,0);}}
+    @media (prefers-reduced-motion:reduce){.ab-pulse{animation:none!important;}}
+  </style>
+</helmet>
+
+<!-- ============================== LOGIN / GATEWAY ============================== -->
+<sc-if value="{{ isLogin }}" hint-placeholder-val="{{ true }}">
+<div data-screen-label="Login" style="display:flex;min-height:100vh;background:#F7F9F6;">
+
+  <!-- Brand panel -->
+  <div style="width:46%;max-width:620px;background:#0E1A12;color:#EAF3EC;padding:48px 52px;display:flex;flex-direction:column;justify-content:space-between;position:relative;overflow:hidden;">
+    <svg viewBox="0 0 620 800" preserveAspectRatio="xMidYMid slice" aria-hidden="true" style="position:absolute;inset:0;width:100%;height:100%;pointer-events:none;opacity:.16;"><g fill="none" stroke="#D86E45" stroke-width="1.3"><path d="M-20 560 C 160 510 320 600 480 540 S 720 500 760 560"></path><path d="M-20 600 C 160 550 320 640 480 580 S 720 540 760 600"></path><path d="M-20 640 C 160 590 320 680 480 620 S 720 580 760 640"></path><path d="M-20 520 C 160 470 320 560 480 500 S 720 460 760 520"></path></g></svg>
+    <div style="position:relative;z-index:1;display:flex;align-items:center;gap:13px;">
+      <span style="width:42px;height:42px;border-radius:11px;background:#BD5230;display:flex;align-items:center;justify-content:center;flex:none;">
+        <svg width="23" height="23" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8.5 14.5c0-3 3.5-4 3.5-8 3 2 5 5 5 8a5 5 0 0 1-10 0c0-1 .3-1.7.7-2.4"></path></svg>
+      </span>
+      <div style="line-height:1;">
+        <div style="font-weight:700;font-size:20px;color:#fff;letter-spacing:-.01em;">ABAP</div>
+        <div style="font-family:'IBM Plex Mono';font-size:9.5px;letter-spacing:.13em;text-transform:uppercase;color:#E89272;margin-top:5px;">Biochar Aggregation Platform</div>
+      </div>
+    </div>
+
+    <div style="position:relative;z-index:1;">
+      <div style="font-family:'IBM Plex Mono';font-size:11px;letter-spacing:.13em;text-transform:uppercase;color:#86D2A1;">Waste management · dMRV</div>
+      <h1 style="font-size:34px;line-height:1.14;font-weight:700;color:#fff;letter-spacing:-.02em;margin:14px 0 0;max-width:430px;">The biochar value chain, monitored end to end</h1>
+      <p style="font-size:14.5px;line-height:1.65;color:#AFC2B5;margin:16px 0 0;max-width:430px;">From farmer biomass to verified biochar — collection, pyrolysis, and marketplace across five countries, under one role-based platform.</p>
+      <div style="display:flex;flex-direction:column;gap:13px;margin-top:30px;max-width:430px;">
+        <div style="display:flex;align-items:center;gap:12px;font-size:13.5px;color:#C7D6CC;"><span style="width:30px;height:30px;border-radius:8px;background:rgba(255,255,255,.06);color:#86D2A1;display:flex;align-items:center;justify-content:center;flex:none;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12h4l2 6 4-14 2 8h6"></path></svg></span>Digital MRV on every pyrolysis machine</div>
+        <div style="display:flex;align-items:center;gap:12px;font-size:13.5px;color:#C7D6CC;"><span style="width:30px;height:30px;border-radius:8px;background:rgba(255,255,255,.06);color:#86D2A1;display:flex;align-items:center;justify-content:center;flex:none;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M22 21v-2a4 4 0 0 0-3-3.87"></path></svg></span>Tiered access — each role admits the one beneath</div>
+        <div style="display:flex;align-items:center;gap:12px;font-size:13.5px;color:#C7D6CC;"><span style="width:30px;height:30px;border-radius:8px;background:rgba(255,255,255,.06);color:#86D2A1;display:flex;align-items:center;justify-content:center;flex:none;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.7 13.4a2 2 0 0 0 2 1.6h9.7a2 2 0 0 0 2-1.6L23 6H6"></path></svg></span>Farmer marketplace for biochar manure</div>
+      </div>
+    </div>
+
+    <div style="position:relative;z-index:1;font-family:'IBM Plex Mono';font-size:11px;color:#5F7468;letter-spacing:.04em;">KENYA · UGANDA · TANZANIA · NIGERIA · ZIMBABWE</div>
+  </div>
+
+  <!-- Auth panel -->
+  <div style="flex:1;display:flex;align-items:center;justify-content:center;padding:40px 32px;">
+    <div style="width:100%;max-width:430px;">
+      <div style="display:inline-flex;gap:4px;background:#EFF3EE;padding:4px;border-radius:9px;border:1px solid #E6EBE6;margin-bottom:24px;">
+        <button onClick="{{ setSignin }}" style="{{ signinTabStyle }}">Sign in</button>
+        <button onClick="{{ setApply }}" style="{{ applyTabStyle }}">Apply to join</button>
+      </div>
+
+      <!-- Sign in -->
+      <sc-if value="{{ authIsSignin }}" hint-placeholder-val="{{ true }}">
+        <div>
+          <h2 style="margin:0;font-size:22px;font-weight:600;letter-spacing:-.02em;color:#0E1A12;">Sign in</h2>
+          <p style="margin:6px 0 22px;font-size:13.5px;color:#6B786F;">Access your role workspace.</p>
+          <label style="display:block;font-size:12.5px;font-weight:600;color:#1C2A22;margin-bottom:6px;">Email</label>
+          <input placeholder="you@organisation.org" style="width:100%;height:42px;padding:0 12px;font-family:inherit;font-size:13.5px;border:1px solid #BDC6BF;border-radius:6px;background:#fff;color:#0E1A12;outline:none;margin-bottom:14px;" style-focus="border-color:#008037;box-shadow:0 0 0 3px rgba(0,128,55,.20);">
+          <label style="display:block;font-size:12.5px;font-weight:600;color:#1C2A22;margin-bottom:6px;">Password</label>
+          <input type="password" value="demo-access" style="width:100%;height:42px;padding:0 12px;font-family:inherit;font-size:13.5px;border:1px solid #BDC6BF;border-radius:6px;background:#fff;color:#0E1A12;outline:none;margin-bottom:20px;" style-focus="border-color:#008037;box-shadow:0 0 0 3px rgba(0,128,55,.20);">
+          <button onClick="{{ goSuper }}" style="width:100%;height:44px;border:0;border-radius:6px;background:#008037;color:#fff;font-family:inherit;font-size:14px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;" style-hover="background:#00682C;">Sign in<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></button>
+
+          <div style="display:flex;align-items:center;gap:12px;margin:26px 0 16px;"><span style="flex:1;height:1px;background:#E6EBE6;"></span><span style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:#8C988F;">Or enter a demo workspace</span><span style="flex:1;height:1px;background:#E6EBE6;"></span></div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:9px;">
+            <sc-for list="{{ demoRoles }}" as="r" hint-placeholder-count="6">
+              <button onClick="{{ r.onEnter }}" style="display:flex;align-items:center;gap:10px;padding:11px 12px;border:1px solid #DCE3DD;border-radius:8px;background:#fff;cursor:pointer;text-align:left;font-family:inherit;" style-hover="border-color:#BDC6BF;background:#F7F9F6;">
+                <span style="{{ r.iconStyle }}">{{ r.iconEl }}</span>
+                <span style="min-width:0;"><span style="display:block;font-size:13px;font-weight:600;color:#0E1A12;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ r.label }}</span><span style="display:block;font-family:'IBM Plex Mono';font-size:9.5px;text-transform:uppercase;letter-spacing:.05em;color:#8C988F;margin-top:2px;">{{ r.tier }}</span></span>
+              </button>
+            </sc-for>
+          </div>
+        </div>
+      </sc-if>
+
+      <!-- Apply -->
+      <sc-if value="{{ authIsApply }}" hint-placeholder-val="{{ false }}">
+        <div>
+          <sc-if value="{{ notApplied }}" hint-placeholder-val="{{ true }}">
+            <div>
+              <h2 style="margin:0;font-size:22px;font-weight:600;letter-spacing:-.02em;color:#0E1A12;">Apply to join</h2>
+              <p style="margin:6px 0 22px;font-size:13.5px;color:#6B786F;">Field roles apply here, then a Site Admin reviews and approves your account.</p>
+              <label style="display:block;font-size:12.5px;font-weight:600;color:#1C2A22;margin-bottom:6px;">Role</label>
+              <div style="position:relative;display:flex;align-items:center;margin-bottom:14px;">
+                <select style="width:100%;height:42px;padding:0 30px 0 12px;font-family:inherit;font-size:13.5px;border:1px solid #BDC6BF;border-radius:6px;background:#fff;color:#0E1A12;outline:none;appearance:none;cursor:pointer;">
+                  <option>Farmer — supply biomass</option>
+                  <option>Transport — collect biomass</option>
+                  <option>Enumerator — field survey</option>
+                </select>
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#6B786F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="position:absolute;right:10px;pointer-events:none;"><path d="M6 9l6 6 6-6"></path></svg>
+              </div>
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px;">
+                <div><label style="display:block;font-size:12.5px;font-weight:600;color:#1C2A22;margin-bottom:6px;">Full name</label><input placeholder="Jane Wanjiku" style="width:100%;height:42px;padding:0 12px;font-family:inherit;font-size:13.5px;border:1px solid #BDC6BF;border-radius:6px;background:#fff;color:#0E1A12;outline:none;" style-focus="border-color:#008037;box-shadow:0 0 0 3px rgba(0,128,55,.20);"></div>
+                <div><label style="display:block;font-size:12.5px;font-weight:600;color:#1C2A22;margin-bottom:6px;">Phone</label><input placeholder="+254 7•• ••• •••" style="width:100%;height:42px;padding:0 12px;font-family:'IBM Plex Mono';font-size:13px;border:1px solid #BDC6BF;border-radius:6px;background:#fff;color:#0E1A12;outline:none;" style-focus="border-color:#008037;box-shadow:0 0 0 3px rgba(0,128,55,.20);"></div>
+              </div>
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:22px;">
+                <div><label style="display:block;font-size:12.5px;font-weight:600;color:#1C2A22;margin-bottom:6px;">Country</label>
+                  <div style="position:relative;display:flex;align-items:center;"><select style="width:100%;height:42px;padding:0 30px 0 12px;font-family:inherit;font-size:13.5px;border:1px solid #BDC6BF;border-radius:6px;background:#fff;color:#0E1A12;outline:none;appearance:none;cursor:pointer;"><option>Kenya</option><option>Uganda</option><option>Tanzania</option><option>Nigeria</option><option>Zimbabwe</option></select><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#6B786F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="position:absolute;right:10px;pointer-events:none;"><path d="M6 9l6 6 6-6"></path></svg></div>
+                </div>
+                <div><label style="display:block;font-size:12.5px;font-weight:600;color:#1C2A22;margin-bottom:6px;">Nearest site</label>
+                  <div style="position:relative;display:flex;align-items:center;"><select style="width:100%;height:42px;padding:0 30px 0 12px;font-family:inherit;font-size:13.5px;border:1px solid #BDC6BF;border-radius:6px;background:#fff;color:#0E1A12;outline:none;appearance:none;cursor:pointer;"><option>Nakuru Pyrolysis Site</option><option>Nyeri Biochar Hub</option><option>Kisumu Lakeside Site</option></select><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#6B786F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="position:absolute;right:10px;pointer-events:none;"><path d="M6 9l6 6 6-6"></path></svg></div>
+                </div>
+              </div>
+              <button onClick="{{ submitApply }}" style="width:100%;height:44px;border:0;border-radius:6px;background:#008037;color:#fff;font-family:inherit;font-size:14px;font-weight:600;cursor:pointer;" style-hover="background:#00682C;">Submit application</button>
+            </div>
+          </sc-if>
+          <sc-if value="{{ applied }}" hint-placeholder-val="{{ false }}">
+            <div style="text-align:center;padding:20px 8px;">
+              <span style="width:60px;height:60px;border-radius:50%;background:#DFF1E5;color:#008037;display:inline-flex;align-items:center;justify-content:center;margin-bottom:18px;"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"></path></svg></span>
+              <h2 style="margin:0;font-size:21px;font-weight:600;color:#0E1A12;letter-spacing:-.01em;">Application submitted</h2>
+              <p style="margin:10px auto 0;font-size:13.5px;line-height:1.6;color:#6B786F;max-width:330px;">Your account is <b style="color:#B57711;">pending Site Admin approval</b>. You'll get an SMS once approved — then you can sign in.</p>
+              <div style="display:inline-flex;align-items:center;gap:7px;margin-top:18px;font-size:11.5px;font-weight:600;color:#B57711;background:#FBEFD2;padding:6px 12px;border-radius:999px;"><i style="width:6px;height:6px;border-radius:50%;background:#DD9B1F;display:inline-block;"></i>Awaiting approval</div>
+              <div style="margin-top:24px;"><button onClick="{{ setSignin }}" style="height:40px;padding:0 18px;border:1px solid #BDC6BF;border-radius:6px;background:#fff;color:#1C2A22;font-family:inherit;font-size:13.5px;font-weight:600;cursor:pointer;" style-hover="background:#EFF3EE;">Back to sign in</button></div>
+            </div>
+          </sc-if>
+        </div>
+      </sc-if>
+    </div>
+  </div>
+</div>
+</sc-if>
+
+<!-- ============================== DESKTOP SHELL ============================== -->
+<sc-if value="{{ isDesktop }}" hint-placeholder-val="{{ false }}">
+<div data-screen-label="Desktop role" style="display:flex;height:100vh;overflow:hidden;background:#F7F9F6;">
+
+  <!-- Sidebar -->
+  <aside style="width:248px;flex:none;background:#0E1A12;color:#C7D6CC;display:flex;flex-direction:column;padding:18px 14px;border-right:1px solid rgba(255,255,255,.06);">
+    <div style="display:flex;align-items:center;gap:11px;padding:4px 8px 16px;">
+      <span style="width:32px;height:32px;border-radius:9px;background:#BD5230;display:flex;align-items:center;justify-content:center;flex:none;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8.5 14.5c0-3 3.5-4 3.5-8 3 2 5 5 5 8a5 5 0 0 1-10 0c0-1 .3-1.7.7-2.4"></path></svg></span>
+      <div style="display:flex;flex-direction:column;line-height:1;">
+        <span style="font-weight:700;font-size:16px;color:#fff;letter-spacing:-.01em;">ABAP</span>
+        <span style="font-family:'IBM Plex Mono';font-size:9px;letter-spacing:.13em;text-transform:uppercase;color:#E89272;margin-top:5px;">Biochar platform</span>
+      </div>
+    </div>
+
+    <div style="font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.1em;color:#5F7468;padding:6px 10px 6px;">{{ roleLabel }}</div>
+    <nav style="display:flex;flex-direction:column;gap:2px;flex:1;">
+      <sc-for list="{{ navItems }}" as="item" hint-placeholder-count="7">
+        <button style="{{ item.btnStyle }}"><span style="display:flex;width:18px;height:18px;flex:none;">{{ item.iconEl }}</span><span>{{ item.label }}</span></button>
+      </sc-for>
+    </nav>
+
+    <div style="display:flex;flex-direction:column;gap:10px;padding-top:12px;border-top:1px solid rgba(255,255,255,.07);">
+      <div style="display:flex;align-items:center;gap:10px;padding:8px 10px;background:rgba(255,255,255,.04);border-radius:6px;">
+        <span class="ab-pulse" style="width:8px;height:8px;border-radius:50%;background:#4DB874;flex:none;animation:abPulse 2.2s ease-out infinite;"></span>
+        <div><div style="font-size:12.5px;color:#EAF3EC;font-weight:600;">DMRV live</div><div style="font-size:11px;color:#7E9286;">Synced 2 min ago</div></div>
+      </div>
+      <div style="display:flex;align-items:center;gap:10px;padding:6px 8px;">
+        <span style="{{ footerAvatarStyle }}">{{ userInitials }}</span>
+        <div style="line-height:1.3;min-width:0;"><div style="font-size:13px;color:#EAF3EC;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ userName }}</div><div style="font-size:11px;color:#7E9286;">{{ roleLabel }}</div></div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Main -->
+  <div style="flex:1;display:flex;flex-direction:column;min-width:0;">
+    <header style="height:60px;flex:none;background:#fff;border-bottom:1px solid #DCE3DD;display:flex;align-items:center;justify-content:space-between;padding:0 24px;gap:16px;">
+      <div style="min-width:0;">
+        <div style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.09em;color:#6B786F;margin-bottom:2px;">{{ pageOverline }}</div>
+        <h1 style="margin:0;font-size:21px;font-weight:600;letter-spacing:-.02em;line-height:1.1;color:#0E1A12;">{{ pageTitle }}</h1>
+      </div>
+      <div style="display:flex;align-items:center;gap:10px;">
+        <!-- context switcher -->
+        <sc-if value="{{ ctxSelect }}" hint-placeholder-val="{{ true }}">
+          <div style="position:relative;display:flex;align-items:center;">
+            <span style="position:absolute;left:11px;width:8px;height:8px;border-radius:50%;background:#008037;"></span>
+            <select style="height:36px;width:200px;padding:0 30px 0 28px;font-family:inherit;font-size:13px;font-weight:600;border:1px solid #BDC6BF;border-radius:6px;background:#fff;color:#1C2A22;outline:none;appearance:none;cursor:pointer;">
+              <sc-for list="{{ ctxOptions }}" as="o" hint-placeholder-count="3"><option>{{ o }}</option></sc-for>
+            </select>
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#6B786F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="position:absolute;right:9px;pointer-events:none;"><path d="M6 9l6 6 6-6"></path></svg>
+          </div>
+        </sc-if>
+        <sc-if value="{{ ctxStatic }}" hint-placeholder-val="{{ false }}">
+          <span style="display:inline-flex;align-items:center;gap:8px;height:36px;padding:0 14px;border:1px solid #BDC6BF;border-radius:6px;background:#fff;font-size:13px;font-weight:600;color:#1C2A22;"><i style="width:8px;height:8px;border-radius:50%;background:#0E7490;display:inline-block;"></i>{{ ctxLabel }}</span>
+        </sc-if>
+        <button aria-label="Notifications" style="width:36px;height:36px;border:1px solid #BDC6BF;border-radius:6px;background:#fff;color:#4E5B52;display:flex;align-items:center;justify-content:center;cursor:pointer;position:relative;" style-hover="background:#EFF3EE;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 1 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.7 21a2 2 0 0 1-3.4 0"></path></svg><span style="position:absolute;top:7px;right:8px;width:7px;height:7px;border-radius:50%;background:#C0392B;border:1.5px solid #fff;"></span></button>
+        <span style="{{ roleBadgeStyle }}">{{ roleLabel }}</span>
+        <button onClick="{{ goLogin }}" style="height:36px;padding:0 13px;border:1px solid #BDC6BF;border-radius:6px;background:#fff;color:#4E5B52;font-family:inherit;font-size:13px;font-weight:600;display:flex;align-items:center;gap:6px;cursor:pointer;" style-hover="background:#EFF3EE;color:#9B2C20;"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><path d="M16 17l5-5-5-5"></path><path d="M21 12H9"></path></svg>Sign out</button>
+      </div>
+    </header>
+
+    <div style="flex:1;overflow-y:auto;padding:24px;">
+      <div style="max-width:1180px;margin:0 auto;display:flex;flex-direction:column;gap:18px;">
+
+        <!-- ============ SUPER ADMIN ============ -->
+        <sc-if value="{{ isSuper }}" hint-placeholder-val="{{ false }}">
+          <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:14px;">
+            <div style="background:#fff;border:1px solid #DCE3DD;border-radius:12px;padding:18px;box-shadow:0 1px 2px rgba(14,26,18,.04);"><div style="display:flex;align-items:center;justify-content:space-between;"><span style="width:30px;height:30px;border-radius:8px;background:#FBE9E1;color:#8F3A1F;display:flex;align-items:center;justify-content:center;"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"></path><path d="M7 14l3-3 3 3 5-6"></path></svg></span><span style="font-family:'IBM Plex Mono';font-size:11px;color:#00682C;font-weight:500;">+8.2%</span></div><div style="font-family:'IBM Plex Sans Condensed';font-weight:700;font-size:32px;color:#0E1A12;line-height:1;margin-top:16px;font-variant-numeric:tabular-nums;">15,910<span style="font-size:14px;color:#6B786F;font-family:'IBM Plex Mono';font-weight:400;margin-left:5px;">t</span></div><div style="font-size:12.5px;color:#4E5B52;margin-top:6px;">Biomass collected</div></div>
+            <div style="background:#fff;border:1px solid #DCE3DD;border-radius:12px;padding:18px;box-shadow:0 1px 2px rgba(14,26,18,.04);"><div style="display:flex;align-items:center;justify-content:space-between;"><span style="width:30px;height:30px;border-radius:8px;background:#EFF3EE;color:#36433B;display:flex;align-items:center;justify-content:center;"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8.5 14.5c0-3 3.5-4 3.5-8 3 2 5 5 5 8a5 5 0 0 1-10 0c0-1 .3-1.7.7-2.4"></path></svg></span><span style="font-family:'IBM Plex Mono';font-size:11px;color:#00682C;font-weight:500;">+11.4%</span></div><div style="font-family:'IBM Plex Sans Condensed';font-weight:700;font-size:32px;color:#0E1A12;line-height:1;margin-top:16px;font-variant-numeric:tabular-nums;">5,290<span style="font-size:14px;color:#6B786F;font-family:'IBM Plex Mono';font-weight:400;margin-left:5px;">t</span></div><div style="font-size:12.5px;color:#4E5B52;margin-top:6px;">Biochar produced</div></div>
+            <div style="background:#fff;border:1px solid #DCE3DD;border-radius:12px;padding:18px;box-shadow:0 1px 2px rgba(14,26,18,.04);"><div style="display:flex;align-items:center;justify-content:space-between;"><span style="width:30px;height:30px;border-radius:8px;background:#FBEFD2;color:#B57711;display:flex;align-items:center;justify-content:center;"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18"></path><path d="M5 21V8l7-5 7 5v13"></path><path d="M9 21v-6h6v6"></path></svg></span><span style="font-family:'IBM Plex Mono';font-size:11px;color:#00682C;font-weight:500;">+3</span></div><div style="font-family:'IBM Plex Sans Condensed';font-weight:700;font-size:32px;color:#0E1A12;line-height:1;margin-top:16px;font-variant-numeric:tabular-nums;">46</div><div style="font-size:12.5px;color:#4E5B52;margin-top:6px;">Active sites</div></div>
+            <div style="background:#fff;border:1px solid #DCE3DD;border-radius:12px;padding:18px;box-shadow:0 1px 2px rgba(14,26,18,.04);"><div style="display:flex;align-items:center;justify-content:space-between;"><span style="width:30px;height:30px;border-radius:8px;background:#E2F2F6;color:#0B5A6B;display:flex;align-items:center;justify-content:center;"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M22 21v-2a4 4 0 0 0-3-3.87"></path></svg></span><span style="font-family:'IBM Plex Mono';font-size:11px;color:#00682C;font-weight:500;">+260</span></div><div style="font-family:'IBM Plex Sans Condensed';font-weight:700;font-size:32px;color:#0E1A12;line-height:1;margin-top:16px;font-variant-numeric:tabular-nums;">4,170</div><div style="font-size:12.5px;color:#4E5B52;margin-top:6px;">Platform users</div></div>
+          </div>
+
+          <div style="display:grid;grid-template-columns:1.42fr 1fr;gap:18px;align-items:start;">
+            <div style="background:#fff;border:1px solid #DCE3DD;border-radius:12px;box-shadow:0 1px 2px rgba(14,26,18,.04);">
+              <div style="display:flex;align-items:center;justify-content:space-between;padding:16px 18px;border-bottom:1px solid #E6EBE6;"><h2 style="margin:0;font-size:15px;font-weight:600;color:#0E1A12;">Production across Africa</h2><span style="font-size:12px;color:#6B786F;">Biochar output by country</span></div>
+              <div style="padding:8px 12px 14px;">{{ africaMapEl }}</div>
+            </div>
+            <div style="background:#fff;border:1px solid #DCE3DD;border-radius:12px;box-shadow:0 1px 2px rgba(14,26,18,.04);">
+              <div style="display:flex;align-items:center;justify-content:space-between;padding:16px 18px;border-bottom:1px solid #E6EBE6;"><h2 style="margin:0;font-size:15px;font-weight:600;color:#0E1A12;">Monthly biochar output</h2><span style="font-size:12px;color:#6B786F;">All countries · t</span></div>
+              <div style="padding:14px 16px 16px;">{{ productionChartEl }}</div>
+            </div>
+          </div>
+
+          <div style="background:#fff;border:1px solid #DCE3DD;border-radius:12px;box-shadow:0 1px 2px rgba(14,26,18,.04);overflow:hidden;">
+            <div style="display:flex;align-items:center;justify-content:space-between;padding:16px 18px;border-bottom:1px solid #E6EBE6;"><h2 style="margin:0;font-size:15px;font-weight:600;color:#0E1A12;">Countries</h2><span style="font-size:12px;color:#6B786F;">5 programmes</span></div>
+            <table style="width:100%;border-collapse:collapse;font-size:13px;">
+              <thead><tr>
+                <th style="text-align:left;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:#6B786F;padding:10px 18px;border-bottom:1px solid #DCE3DD;background:#F7F9F6;">Country</th>
+                <th style="text-align:left;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:#6B786F;padding:10px 16px;border-bottom:1px solid #DCE3DD;background:#F7F9F6;">Implementing partner</th>
+                <th style="text-align:right;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:#6B786F;padding:10px 16px;border-bottom:1px solid #DCE3DD;background:#F7F9F6;">Sites</th>
+                <th style="text-align:right;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:#6B786F;padding:10px 16px;border-bottom:1px solid #DCE3DD;background:#F7F9F6;">Biomass t</th>
+                <th style="text-align:right;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:#6B786F;padding:10px 16px;border-bottom:1px solid #DCE3DD;background:#F7F9F6;">Biochar t</th>
+                <th style="text-align:left;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:#6B786F;padding:10px 18px;border-bottom:1px solid #DCE3DD;background:#F7F9F6;">Status</th>
+              </tr></thead>
+              <tbody>
+                <sc-for list="{{ countries }}" as="c" hint-placeholder-count="5">
+                  <tr style="border-bottom:1px solid #E6EBE6;" style-hover="background:#F7F9F6;">
+                    <td style="padding:13px 18px;"><span style="display:inline-flex;align-items:center;gap:9px;"><span style="width:22px;height:16px;border-radius:3px;background:{{ c.flag }};display:inline-block;flex:none;"></span><b style="font-weight:600;color:#0E1A12;">{{ c.name }}</b></span></td>
+                    <td style="padding:13px 16px;color:#4E5B52;">{{ c.ip }}</td>
+                    <td style="padding:13px 16px;text-align:right;font-family:'IBM Plex Mono';font-size:12px;color:#1C2A22;">{{ c.sites }}</td>
+                    <td style="padding:13px 16px;text-align:right;font-family:'IBM Plex Mono';font-size:12px;color:#1C2A22;">{{ c.biomass }}</td>
+                    <td style="padding:13px 16px;text-align:right;font-family:'IBM Plex Mono';font-size:12px;color:#0E1A12;font-weight:500;">{{ c.biochar }}</td>
+                    <td style="padding:13px 18px;"><span style="{{ c.badgeStyle }}"><i style="{{ c.dotStyle }}"></i>{{ c.status }}</span></td>
+                  </tr>
+                </sc-for>
+              </tbody>
+            </table>
+          </div>
+
+          <div style="background:#fff;border:1px solid #DCE3DD;border-radius:12px;box-shadow:0 1px 2px rgba(14,26,18,.04);overflow:hidden;">
+            <div style="display:flex;align-items:center;justify-content:space-between;padding:16px 18px;border-bottom:1px solid #E6EBE6;gap:12px;flex-wrap:wrap;"><div style="display:flex;align-items:baseline;gap:10px;"><h2 style="margin:0;font-size:15px;font-weight:600;color:#0E1A12;">Local Implementing Partners</h2><span style="font-size:12px;color:#6B786F;">You admit one IP per country</span></div></div>
+            <div style="padding:6px 18px 14px;">
+              <sc-for list="{{ localIPs }}" as="ip" hint-placeholder-count="3">
+                <div style="display:flex;align-items:center;gap:14px;padding:13px 0;border-bottom:1px solid #E6EBE6;">
+                  <span style="width:38px;height:38px;border-radius:9px;background:#E2F2F6;color:#0B5A6B;display:flex;align-items:center;justify-content:center;flex:none;font-family:'IBM Plex Sans Condensed';font-weight:700;font-size:14px;">{{ ip.code }}</span>
+                  <div style="flex:1;min-width:0;"><div style="font-size:13.5px;font-weight:600;color:#0E1A12;">{{ ip.org }}</div><div style="font-size:12px;color:#6B786F;margin-top:2px;">{{ ip.country }} · {{ ip.contact }}</div></div>
+                  <span style="{{ ip.badgeStyle }}"><i style="{{ ip.dotStyle }}"></i>{{ ip.status }}</span>
+                  <button onClick="{{ ip.onAction }}" style="{{ ip.actionStyle }}">{{ ip.action }}</button>
+                </div>
+              </sc-for>
+            </div>
+          </div>
+        </sc-if>
+
+        <!-- ============ LOCAL IP ============ -->
+        <sc-if value="{{ isIP }}" hint-placeholder-val="{{ false }}">
+          <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:14px;">
+            <div style="background:#fff;border:1px solid #DCE3DD;border-radius:12px;padding:18px;box-shadow:0 1px 2px rgba(14,26,18,.04);"><div style="display:flex;align-items:center;justify-content:space-between;"><span style="width:30px;height:30px;border-radius:8px;background:#FBEFD2;color:#B57711;display:flex;align-items:center;justify-content:center;"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18"></path><path d="M5 21V8l7-5 7 5v13"></path><path d="M9 21v-6h6v6"></path></svg></span><span style="font-family:'IBM Plex Mono';font-size:11px;color:#00682C;font-weight:500;">+1</span></div><div style="font-family:'IBM Plex Sans Condensed';font-weight:700;font-size:32px;color:#0E1A12;line-height:1;margin-top:16px;font-variant-numeric:tabular-nums;">5</div><div style="font-size:12.5px;color:#4E5B52;margin-top:6px;">Active sites · Kenya</div></div>
+            <div style="background:#fff;border:1px solid #DCE3DD;border-radius:12px;padding:18px;box-shadow:0 1px 2px rgba(14,26,18,.04);"><div style="display:flex;align-items:center;justify-content:space-between;"><span style="width:30px;height:30px;border-radius:8px;background:#FBE9E1;color:#8F3A1F;display:flex;align-items:center;justify-content:center;"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"></path><path d="M7 14l3-3 3 3 5-6"></path></svg></span><span style="font-family:'IBM Plex Mono';font-size:11px;color:#00682C;font-weight:500;">+6.4%</span></div><div style="font-family:'IBM Plex Sans Condensed';font-weight:700;font-size:32px;color:#0E1A12;line-height:1;margin-top:16px;font-variant-numeric:tabular-nums;">4,820<span style="font-size:14px;color:#6B786F;font-family:'IBM Plex Mono';font-weight:400;margin-left:5px;">t</span></div><div style="font-size:12.5px;color:#4E5B52;margin-top:6px;">Biomass collected</div></div>
+            <div style="background:#fff;border:1px solid #DCE3DD;border-radius:12px;padding:18px;box-shadow:0 1px 2px rgba(14,26,18,.04);"><div style="display:flex;align-items:center;justify-content:space-between;"><span style="width:30px;height:30px;border-radius:8px;background:#EFF3EE;color:#36433B;display:flex;align-items:center;justify-content:center;"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8.5 14.5c0-3 3.5-4 3.5-8 3 2 5 5 5 8a5 5 0 0 1-10 0c0-1 .3-1.7.7-2.4"></path></svg></span><span style="font-family:'IBM Plex Mono';font-size:11px;color:#00682C;font-weight:500;">+9.1%</span></div><div style="font-family:'IBM Plex Sans Condensed';font-weight:700;font-size:32px;color:#0E1A12;line-height:1;margin-top:16px;font-variant-numeric:tabular-nums;">1,640<span style="font-size:14px;color:#6B786F;font-family:'IBM Plex Mono';font-weight:400;margin-left:5px;">t</span></div><div style="font-size:12.5px;color:#4E5B52;margin-top:6px;">Biochar produced</div></div>
+            <div style="background:#fff;border:1px solid #DCE3DD;border-radius:12px;padding:18px;box-shadow:0 1px 2px rgba(14,26,18,.04);"><div style="display:flex;align-items:center;justify-content:space-between;"><span style="width:30px;height:30px;border-radius:8px;background:#E2F2F6;color:#0B5A6B;display:flex;align-items:center;justify-content:center;"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M22 21v-2a4 4 0 0 0-3-3.87"></path></svg></span><span style="font-family:'IBM Plex Mono';font-size:11px;color:#00682C;font-weight:500;">+74</span></div><div style="font-family:'IBM Plex Sans Condensed';font-weight:700;font-size:32px;color:#0E1A12;line-height:1;margin-top:16px;font-variant-numeric:tabular-nums;">1,210</div><div style="font-size:12.5px;color:#4E5B52;margin-top:6px;">Users in Kenya</div></div>
+          </div>
+
+          <div style="display:grid;grid-template-columns:1.3fr 1fr;gap:18px;align-items:start;">
+            <div style="background:#fff;border:1px solid #DCE3DD;border-radius:12px;box-shadow:0 1px 2px rgba(14,26,18,.04);">
+              <div style="display:flex;align-items:center;justify-content:space-between;padding:16px 18px;border-bottom:1px solid #E6EBE6;"><h2 style="margin:0;font-size:15px;font-weight:600;color:#0E1A12;">Sites across Kenya</h2><span style="font-size:12px;color:#6B786F;">5 sites</span></div>
+              <div style="padding:10px 14px 14px;">{{ kenyaMapEl }}</div>
+            </div>
+            <div style="background:#fff;border:1px solid #DCE3DD;border-radius:12px;box-shadow:0 1px 2px rgba(14,26,18,.04);">
+              <div style="display:flex;align-items:center;justify-content:space-between;padding:16px 18px;border-bottom:1px solid #E6EBE6;"><h2 style="margin:0;font-size:15px;font-weight:600;color:#0E1A12;">Collection volume</h2><span style="font-size:12px;color:#6B786F;">Monthly · t</span></div>
+              <div style="padding:14px 16px 16px;">{{ collectionChartEl }}</div>
+            </div>
+          </div>
+
+          <div style="background:#fff;border:1px solid #DCE3DD;border-radius:12px;box-shadow:0 1px 2px rgba(14,26,18,.04);overflow:hidden;">
+            <div style="display:flex;align-items:center;justify-content:space-between;padding:16px 18px;border-bottom:1px solid #E6EBE6;gap:12px;flex-wrap:wrap;"><h2 style="margin:0;font-size:15px;font-weight:600;color:#0E1A12;">Site register</h2><button onClick="{{ onEnrolSite }}" style="height:34px;padding:0 13px;border:1px solid #008037;border-radius:6px;background:#F1F8F3;color:#00682C;font-family:inherit;font-size:12.5px;font-weight:600;display:flex;align-items:center;gap:6px;cursor:pointer;" style-hover="background:#DFF1E5;"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"></path></svg>Enrol site</button></div>
+            <table style="width:100%;border-collapse:collapse;font-size:13px;">
+              <thead><tr>
+                <th style="text-align:left;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:#6B786F;padding:10px 18px;border-bottom:1px solid #DCE3DD;background:#F7F9F6;">Site ID</th>
+                <th style="text-align:left;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:#6B786F;padding:10px 16px;border-bottom:1px solid #DCE3DD;background:#F7F9F6;">Site</th>
+                <th style="text-align:left;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:#6B786F;padding:10px 16px;border-bottom:1px solid #DCE3DD;background:#F7F9F6;">Region</th>
+                <th style="text-align:right;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:#6B786F;padding:10px 16px;border-bottom:1px solid #DCE3DD;background:#F7F9F6;">Machines</th>
+                <th style="text-align:right;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:#6B786F;padding:10px 16px;border-bottom:1px solid #DCE3DD;background:#F7F9F6;">Biochar t</th>
+                <th style="text-align:left;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:#6B786F;padding:10px 18px;border-bottom:1px solid #DCE3DD;background:#F7F9F6;">Status</th>
+              </tr></thead>
+              <tbody>
+                <sc-for list="{{ keSites }}" as="s" hint-placeholder-count="5">
+                  <tr style="border-bottom:1px solid #E6EBE6;" style-hover="background:#F7F9F6;">
+                    <td style="padding:13px 18px;font-family:'IBM Plex Mono';font-size:12px;color:#0E1A12;white-space:nowrap;">{{ s.id }}</td>
+                    <td style="padding:13px 16px;color:#0E1A12;font-weight:500;">{{ s.name }}</td>
+                    <td style="padding:13px 16px;color:#4E5B52;">{{ s.region }}</td>
+                    <td style="padding:13px 16px;text-align:right;font-family:'IBM Plex Mono';font-size:12px;color:#1C2A22;">{{ s.machines }}</td>
+                    <td style="padding:13px 16px;text-align:right;font-family:'IBM Plex Mono';font-size:12px;color:#0E1A12;font-weight:500;">{{ s.biochar }}</td>
+                    <td style="padding:13px 18px;"><span style="{{ s.badgeStyle }}"><i style="{{ s.dotStyle }}"></i>{{ s.status }}</span></td>
+                  </tr>
+                </sc-for>
+              </tbody>
+            </table>
+          </div>
+
+          <div style="background:#fff;border:1px solid #DCE3DD;border-radius:12px;box-shadow:0 1px 2px rgba(14,26,18,.04);overflow:hidden;">
+            <div style="display:flex;align-items:center;justify-content:space-between;padding:16px 18px;border-bottom:1px solid #E6EBE6;gap:12px;flex-wrap:wrap;"><div style="display:flex;align-items:baseline;gap:10px;"><h2 style="margin:0;font-size:15px;font-weight:600;color:#0E1A12;">Site Admins</h2><span style="font-size:12px;color:#6B786F;">You admit a Site Admin per site</span></div></div>
+            <div style="padding:6px 18px 14px;">
+              <sc-for list="{{ siteAdmins }}" as="a" hint-placeholder-count="3">
+                <div style="display:flex;align-items:center;gap:14px;padding:13px 0;border-bottom:1px solid #E6EBE6;">
+                  <span style="width:38px;height:38px;border-radius:50%;background:#FBEFD2;color:#B57711;display:flex;align-items:center;justify-content:center;flex:none;font-size:13px;font-weight:600;">{{ a.initials }}</span>
+                  <div style="flex:1;min-width:0;"><div style="font-size:13.5px;font-weight:600;color:#0E1A12;">{{ a.name }}</div><div style="font-size:12px;color:#6B786F;margin-top:2px;">{{ a.site }}</div></div>
+                  <span style="{{ a.badgeStyle }}"><i style="{{ a.dotStyle }}"></i>{{ a.status }}</span>
+                  <button onClick="{{ a.onAction }}" style="{{ a.actionStyle }}">{{ a.action }}</button>
+                </div>
+              </sc-for>
+            </div>
+          </div>
+        </sc-if>
+
+        <!-- ============ SITE ADMIN ============ -->
+        <sc-if value="{{ isSite }}" hint-placeholder-val="{{ false }}">
+          <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:14px;">
+            <div style="background:#fff;border:1px solid #DCE3DD;border-radius:12px;padding:18px;box-shadow:0 1px 2px rgba(14,26,18,.04);"><div style="display:flex;align-items:center;justify-content:space-between;"><span style="width:30px;height:30px;border-radius:8px;background:#FBE9E1;color:#8F3A1F;display:flex;align-items:center;justify-content:center;"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12h4l2 6 4-14 2 8h6"></path></svg></span><span style="font-family:'IBM Plex Mono';font-size:11px;color:#00682C;font-weight:500;">today</span></div><div style="font-family:'IBM Plex Sans Condensed';font-weight:700;font-size:32px;color:#0E1A12;line-height:1;margin-top:16px;font-variant-numeric:tabular-nums;">1,240<span style="font-size:14px;color:#6B786F;font-family:'IBM Plex Mono';font-weight:400;margin-left:5px;">kg</span></div><div style="font-size:12.5px;color:#4E5B52;margin-top:6px;">Biomass in</div></div>
+            <div style="background:#fff;border:1px solid #DCE3DD;border-radius:12px;padding:18px;box-shadow:0 1px 2px rgba(14,26,18,.04);"><div style="display:flex;align-items:center;justify-content:space-between;"><span style="width:30px;height:30px;border-radius:8px;background:#EFF3EE;color:#36433B;display:flex;align-items:center;justify-content:center;"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8.5 14.5c0-3 3.5-4 3.5-8 3 2 5 5 5 8a5 5 0 0 1-10 0c0-1 .3-1.7.7-2.4"></path></svg></span><span style="font-family:'IBM Plex Mono';font-size:11px;color:#00682C;font-weight:500;">today</span></div><div style="font-family:'IBM Plex Sans Condensed';font-weight:700;font-size:32px;color:#0E1A12;line-height:1;margin-top:16px;font-variant-numeric:tabular-nums;">372<span style="font-size:14px;color:#6B786F;font-family:'IBM Plex Mono';font-weight:400;margin-left:5px;">kg</span></div><div style="font-size:12.5px;color:#4E5B52;margin-top:6px;">Biochar out</div></div>
+            <div style="background:#fff;border:1px solid #DCE3DD;border-radius:12px;padding:18px;box-shadow:0 1px 2px rgba(14,26,18,.04);"><div style="display:flex;align-items:center;justify-content:space-between;"><span style="width:30px;height:30px;border-radius:8px;background:#DFF1E5;color:#008037;display:flex;align-items:center;justify-content:center;"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-6.2-8.6"></path><path d="M21 4v6h-6"></path></svg></span><span style="font-family:'IBM Plex Mono';font-size:11px;color:#00682C;font-weight:500;">+1.2pt</span></div><div style="font-family:'IBM Plex Sans Condensed';font-weight:700;font-size:32px;color:#0E1A12;line-height:1;margin-top:16px;font-variant-numeric:tabular-nums;">30.0<span style="font-size:14px;color:#6B786F;font-family:'IBM Plex Mono';font-weight:400;margin-left:3px;">%</span></div><div style="font-size:12.5px;color:#4E5B52;margin-top:6px;">Conversion yield</div></div>
+            <div style="background:#fff;border:1px solid #DCE3DD;border-radius:12px;padding:18px;box-shadow:0 1px 2px rgba(14,26,18,.04);"><div style="display:flex;align-items:center;justify-content:space-between;"><span style="width:30px;height:30px;border-radius:8px;background:#FBEFD2;color:#B57711;display:flex;align-items:center;justify-content:center;"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 4v6a2 2 0 0 0 .6 1.4L18 15v5a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1v-5l3.4-3.6A2 2 0 0 0 10 10V4"></path><path d="M9 4h6"></path></svg></span><span style="display:inline-flex;align-items:center;gap:4px;font-family:'IBM Plex Mono';font-size:11px;color:#00682C;font-weight:500;"><i style="width:6px;height:6px;border-radius:50%;background:#008037;display:inline-block;"></i>normal</span></div><div style="font-family:'IBM Plex Sans Condensed';font-weight:700;font-size:32px;color:#0E1A12;line-height:1;margin-top:16px;font-variant-numeric:tabular-nums;">482<span style="font-size:14px;color:#6B786F;font-family:'IBM Plex Mono';font-weight:400;margin-left:3px;">°C</span></div><div style="font-size:12.5px;color:#4E5B52;margin-top:6px;">Reactor temp · PYR-02</div></div>
+          </div>
+
+          <div style="display:grid;grid-template-columns:1.6fr 1fr;gap:18px;align-items:start;">
+            <div style="background:#fff;border:1px solid #DCE3DD;border-radius:12px;box-shadow:0 1px 2px rgba(14,26,18,.04);">
+              <div style="display:flex;align-items:center;justify-content:space-between;padding:16px 18px;border-bottom:1px solid #E6EBE6;"><div><h2 style="margin:0;font-size:15px;font-weight:600;color:#0E1A12;">DMRV — reactor temperature</h2><div style="font-size:12px;color:#6B786F;margin-top:2px;">Last 24h · machine PYR-02 · target band 450–550°C</div></div><span style="display:inline-flex;align-items:center;gap:6px;font-size:11.5px;font-weight:600;color:#00682C;background:#DFF1E5;padding:4px 9px;border-radius:999px;"><i style="width:6px;height:6px;border-radius:50%;background:#008037;display:inline-block;"></i>Reporting</span></div>
+              <div style="padding:14px 16px 16px;">{{ tempChartEl }}</div>
+            </div>
+            <div style="background:#fff;border:1px solid #DCE3DD;border-radius:12px;box-shadow:0 1px 2px rgba(14,26,18,.04);">
+              <div style="display:flex;align-items:center;justify-content:space-between;padding:16px 18px;border-bottom:1px solid #E6EBE6;"><h2 style="margin:0;font-size:15px;font-weight:600;color:#0E1A12;">Alert log</h2><span style="font-size:12px;color:#6B786F;">PYR-01 · 02 · 03</span></div>
+              <div style="padding:6px 18px 12px;">
+                <sc-for list="{{ alerts }}" as="al" hint-placeholder-count="4">
+                  <div style="display:flex;gap:11px;padding:12px 0;border-bottom:1px solid #E6EBE6;align-items:flex-start;">
+                    <span style="{{ al.dotStyle }}"></span>
+                    <div style="flex:1;min-width:0;"><div style="font-size:13px;color:#1C2A22;line-height:1.4;">{{ al.msg }}</div><div style="font-family:'IBM Plex Mono';font-size:10.5px;color:#8C988F;margin-top:3px;">{{ al.machine }} · {{ al.time }}</div></div>
+                  </div>
+                </sc-for>
+              </div>
+            </div>
+          </div>
+
+          <div style="background:#fff;border:1px solid #DCE3DD;border-radius:12px;box-shadow:0 1px 2px rgba(14,26,18,.04);overflow:hidden;">
+            <div style="display:flex;align-items:center;justify-content:space-between;padding:16px 18px;border-bottom:1px solid #E6EBE6;"><div style="display:flex;align-items:baseline;gap:10px;"><h2 style="margin:0;font-size:15px;font-weight:600;color:#0E1A12;">Approvals queue</h2><span style="display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:600;color:#B57711;background:#FBEFD2;padding:3px 8px;border-radius:999px;">{{ approvalsCount }} pending</span></div></div>
+            <div style="padding:16px 18px;display:flex;flex-direction:column;gap:18px;">
+              <div>
+                <div style="font-size:11.5px;font-weight:600;text-transform:uppercase;letter-spacing:.07em;color:#6B786F;margin-bottom:10px;">Collection requests</div>
+                <sc-for list="{{ collectionReqs }}" as="r" hint-placeholder-count="3">
+                  <div style="display:flex;align-items:center;gap:14px;padding:11px 13px;border:1px solid #E6EBE6;border-radius:9px;margin-bottom:8px;">
+                    <span style="width:36px;height:36px;border-radius:9px;background:#FBE9E1;color:#8F3A1F;display:flex;align-items:center;justify-content:center;flex:none;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8.5 14.5c0-3 3.5-4 3.5-8 3 2 5 5 5 8a5 5 0 0 1-10 0c0-1 .3-1.7.7-2.4"></path></svg></span>
+                    <div style="flex:1;min-width:0;"><div style="font-size:13.5px;font-weight:600;color:#0E1A12;">{{ r.farmer }} · <span style="font-family:'IBM Plex Mono';font-weight:500;">{{ r.qty }}</span></div><div style="font-size:12px;color:#6B786F;margin-top:2px;">{{ r.location }} · {{ r.time }}</div></div>
+                    <button onClick="{{ r.onApprove }}" style="height:34px;padding:0 14px;border:0;border-radius:6px;background:#008037;color:#fff;font-family:inherit;font-size:12.5px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:6px;" style-hover="background:#00682C;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"></path></svg>Approve &amp; assign</button>
+                  </div>
+                </sc-for>
+              </div>
+              <div>
+                <div style="font-size:11.5px;font-weight:600;text-transform:uppercase;letter-spacing:.07em;color:#6B786F;margin-bottom:10px;">Enumerator-enrolled farmers</div>
+                <sc-for list="{{ enrolFarmers }}" as="e" hint-placeholder-count="2">
+                  <div style="display:flex;align-items:center;gap:14px;padding:11px 13px;border:1px solid #E6EBE6;border-radius:9px;margin-bottom:8px;">
+                    <span style="width:36px;height:36px;border-radius:50%;background:#F1F8F3;color:#034A24;display:flex;align-items:center;justify-content:center;flex:none;font-size:12.5px;font-weight:600;">{{ e.initials }}</span>
+                    <div style="flex:1;min-width:0;"><div style="font-size:13.5px;font-weight:600;color:#0E1A12;">{{ e.name }}</div><div style="font-size:12px;color:#6B786F;margin-top:2px;">Enrolled by {{ e.enumerator }} · {{ e.region }}</div></div>
+                    <button onClick="{{ e.onApprove }}" style="height:34px;padding:0 14px;border:0;border-radius:6px;background:#008037;color:#fff;font-family:inherit;font-size:12.5px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:6px;" style-hover="background:#00682C;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"></path></svg>Approve farmer</button>
+                  </div>
+                </sc-for>
+              </div>
+            </div>
+          </div>
+
+          <div style="background:#fff;border:1px solid #DCE3DD;border-radius:12px;box-shadow:0 1px 2px rgba(14,26,18,.04);overflow:hidden;">
+            <div style="display:flex;align-items:center;justify-content:space-between;padding:16px 18px;border-bottom:1px solid #E6EBE6;"><h2 style="margin:0;font-size:15px;font-weight:600;color:#0E1A12;">Site users</h2><span style="font-size:12px;color:#6B786F;">Farmers · transport · enumerators</span></div>
+            <table style="width:100%;border-collapse:collapse;font-size:13px;">
+              <thead><tr>
+                <th style="text-align:left;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:#6B786F;padding:10px 18px;border-bottom:1px solid #DCE3DD;background:#F7F9F6;">Name</th>
+                <th style="text-align:left;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:#6B786F;padding:10px 16px;border-bottom:1px solid #DCE3DD;background:#F7F9F6;">Role</th>
+                <th style="text-align:left;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:#6B786F;padding:10px 16px;border-bottom:1px solid #DCE3DD;background:#F7F9F6;">Phone</th>
+                <th style="text-align:left;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:#6B786F;padding:10px 18px;border-bottom:1px solid #DCE3DD;background:#F7F9F6;">Status</th>
+              </tr></thead>
+              <tbody>
+                <sc-for list="{{ siteUsers }}" as="u" hint-placeholder-count="5">
+                  <tr style="border-bottom:1px solid #E6EBE6;" style-hover="background:#F7F9F6;">
+                    <td style="padding:13px 18px;color:#0E1A12;font-weight:500;">{{ u.name }}</td>
+                    <td style="padding:13px 16px;"><span style="{{ u.roleStyle }}">{{ u.role }}</span></td>
+                    <td style="padding:13px 16px;font-family:'IBM Plex Mono';font-size:12px;color:#4E5B52;">{{ u.phone }}</td>
+                    <td style="padding:13px 18px;"><span style="{{ u.badgeStyle }}"><i style="{{ u.dotStyle }}"></i>{{ u.status }}</span></td>
+                  </tr>
+                </sc-for>
+              </tbody>
+            </table>
+          </div>
+        </sc-if>
+
+      </div>
+    </div>
+  </div>
+</div>
+</sc-if>
+
+<!-- ============================== FIELD (PHONE) ROLES ============================== -->
+<sc-if value="{{ isField }}" hint-placeholder-val="{{ false }}">
+<div data-screen-label="Field role" style="height:100vh;display:flex;flex-direction:column;background:#E7EBE6;overflow:hidden;">
+  <div style="height:52px;flex:none;background:#0E1A12;display:flex;align-items:center;justify-content:space-between;padding:0 18px;">
+    <div style="display:flex;align-items:center;gap:10px;"><span style="width:26px;height:26px;border-radius:7px;background:#BD5230;display:flex;align-items:center;justify-content:center;"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8.5 14.5c0-3 3.5-4 3.5-8 3 2 5 5 5 8a5 5 0 0 1-10 0c0-1 .3-1.7.7-2.4"></path></svg></span><span style="font-weight:700;color:#fff;font-size:14px;">ABAP</span><span style="{{ roleBadgeStyle }}">{{ roleLabel }}</span></div>
+    <button onClick="{{ goLogin }}" style="height:32px;padding:0 12px;border:1px solid rgba(255,255,255,.16);border-radius:6px;background:rgba(255,255,255,.05);color:#EAF3EC;font-family:inherit;font-size:12.5px;font-weight:600;display:flex;align-items:center;gap:6px;cursor:pointer;" style-hover="background:rgba(255,255,255,.12);"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><path d="M16 17l5-5-5-5"></path><path d="M21 12H9"></path></svg>Sign out</button>
+  </div>
+
+  <div style="flex:1;display:flex;align-items:center;justify-content:center;overflow:auto;padding:22px;">
+    <div style="width:392px;height:792px;flex:none;background:#0E1A12;border-radius:46px;padding:11px;box-shadow:0 30px 60px -20px rgba(14,26,18,.55);">
+      <div style="position:relative;width:100%;height:100%;background:#F7F9F6;border-radius:36px;overflow:hidden;display:flex;flex-direction:column;">
+        <!-- status bar -->
+        <div style="height:40px;flex:none;display:flex;align-items:center;justify-content:space-between;padding:0 26px;font-family:'IBM Plex Mono';font-size:12px;font-weight:500;color:#0E1A12;">
+          <span>9:41</span>
+          <span style="display:flex;align-items:center;gap:5px;"><svg width="16" height="11" viewBox="0 0 18 12" fill="#0E1A12"><rect x="0" y="7" width="3" height="5" rx="1"></rect><rect x="5" y="4" width="3" height="8" rx="1"></rect><rect x="10" y="1.5" width="3" height="10.5" rx="1"></rect><rect x="15" y="0" width="3" height="12" rx="1" opacity="0.3"></rect></svg><svg width="22" height="11" viewBox="0 0 24 12" fill="none"><rect x="0.5" y="0.5" width="20" height="11" rx="3" stroke="#0E1A12"></rect><rect x="2" y="2" width="15" height="8" rx="1.5" fill="#0E1A12"></rect><rect x="21.5" y="4" width="2" height="4" rx="1" fill="#0E1A12"></rect></svg></span>
+        </div>
+
+        <div class="abap-phonescroll" style="flex:1;overflow-y:auto;">
+
+          <!-- ===== FARMER ===== -->
+          <sc-if value="{{ isFarmer }}" hint-placeholder-val="{{ false }}">
+          <div style="padding:8px 18px 20px;">
+            <div style="display:flex;align-items:center;justify-content:space-between;">
+              <div><div style="font-size:13px;color:#6B786F;">Habari,</div><div style="font-size:21px;font-weight:700;color:#0E1A12;letter-spacing:-.01em;">Joseph Kamau</div></div>
+              <span style="width:42px;height:42px;border-radius:50%;background:#FBE9E1;color:#8F3A1F;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:600;">JK</span>
+            </div>
+
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:11px;margin-top:18px;">
+              <div style="background:#fff;border:1px solid #DCE3DD;border-radius:12px;padding:14px;"><div style="font-size:11.5px;color:#6B786F;">Received</div><div style="font-family:'IBM Plex Sans Condensed';font-weight:700;font-size:22px;color:#00682C;margin-top:5px;font-variant-numeric:tabular-nums;">KSh 18,400</div></div>
+              <div style="background:#fff;border:1px solid #DCE3DD;border-radius:12px;padding:14px;"><div style="font-size:11.5px;color:#6B786F;">Spent</div><div style="font-family:'IBM Plex Sans Condensed';font-weight:700;font-size:22px;color:#8F3A1F;margin-top:5px;font-variant-numeric:tabular-nums;">KSh 6,200</div></div>
+            </div>
+
+            <div style="display:flex;flex-direction:column;gap:10px;margin-top:16px;">
+              <button onClick="{{ onRequestCollection }}" style="width:100%;height:52px;border:0;border-radius:12px;background:#BD5230;color:#fff;font-family:inherit;font-size:15px;font-weight:600;display:flex;align-items:center;justify-content:center;gap:9px;cursor:pointer;" style-hover="background:#8F3A1F;"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 16V4a1 1 0 0 0-1-1H2"></path><path d="M14 9h4l3 3v4h-7"></path><circle cx="6.5" cy="16.5" r="2.5"></circle><circle cx="16.5" cy="16.5" r="2.5"></circle></svg>Request collection</button>
+              <button onClick="{{ onRequestManure }}" style="width:100%;height:48px;border:1px solid #BDC6BF;border-radius:12px;background:#fff;color:#1C2A22;font-family:inherit;font-size:14px;font-weight:600;display:flex;align-items:center;justify-content:center;gap:9px;cursor:pointer;" style-hover="background:#EFF3EE;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#36433B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22v-6"></path><path d="M12 16c-3.5 0-6-2.5-6-6 0-3.5 2.5-7 6-9 3.5 2 6 5.5 6 9 0 3.5-2.5 6-6 6z"></path></svg>Request biochar manure</button>
+            </div>
+
+            <div style="background:#FBEFD2;border:1px solid #F3DFB0;border-radius:12px;padding:13px 14px;margin-top:14px;display:flex;align-items:center;gap:11px;">
+              <span style="width:34px;height:34px;border-radius:9px;background:#fff;color:#B57711;display:flex;align-items:center;justify-content:center;flex:none;"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg></span>
+              <div style="flex:1;min-width:0;"><div style="font-size:13px;font-weight:600;color:#0E1A12;">Collection · 120 kg maize cobs</div><div style="font-size:11.5px;color:#8A6D2A;margin-top:2px;">Awaiting Site Admin approval</div></div>
+              <span style="font-size:10.5px;font-weight:600;color:#B57711;background:#fff;padding:4px 8px;border-radius:999px;white-space:nowrap;">Pending</span>
+            </div>
+
+            <div style="background:#fff;border:1px solid #DCE3DD;border-radius:12px;padding:16px;margin-top:16px;">
+              <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;"><div style="font-size:14px;font-weight:600;color:#0E1A12;">Submission log</div><div style="font-family:'IBM Plex Mono';font-size:11px;color:#6B786F;">kg / week</div></div>
+              {{ farmBarsEl }}
+              <div style="display:flex;flex-direction:column;gap:0;margin-top:8px;">
+                <sc-for list="{{ submissions }}" as="s" hint-placeholder-count="3">
+                  <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-top:1px solid #E6EBE6;">
+                    <div><div style="font-size:13px;color:#1C2A22;font-weight:500;">{{ s.material }}</div><div style="font-family:'IBM Plex Mono';font-size:11px;color:#8C988F;margin-top:2px;">{{ s.date }}</div></div>
+                    <div style="display:flex;align-items:center;gap:9px;"><span style="font-family:'IBM Plex Mono';font-size:13px;font-weight:500;color:#0E1A12;">{{ s.kg }}</span><span style="{{ s.badgeStyle }}"><i style="{{ s.dotStyle }}"></i>{{ s.status }}</span></div>
+                  </div>
+                </sc-for>
+              </div>
+            </div>
+
+            <div style="display:flex;align-items:center;justify-content:space-between;margin:20px 2px 10px;"><div style="font-size:14px;font-weight:600;color:#0E1A12;">Marketplace</div><span style="font-size:12px;font-weight:600;color:#BD5230;">See all</span></div>
+            <div style="display:flex;flex-direction:column;gap:10px;">
+              <sc-for list="{{ market }}" as="m" hint-placeholder-count="2">
+                <div style="display:flex;align-items:center;gap:12px;background:#fff;border:1px solid #DCE3DD;border-radius:12px;padding:12px 13px;">
+                  <span style="{{ m.iconStyle }}">{{ m.iconEl }}</span>
+                  <div style="flex:1;min-width:0;"><div style="font-size:13.5px;font-weight:600;color:#0E1A12;">{{ m.title }}</div><div style="font-size:11.5px;color:#6B786F;margin-top:2px;">{{ m.sub }}</div></div>
+                  <div style="text-align:right;"><div style="font-family:'IBM Plex Mono';font-size:13px;font-weight:600;color:#0E1A12;">{{ m.price }}</div><span style="{{ m.tagStyle }}">{{ m.tag }}</span></div>
+                </div>
+              </sc-for>
+            </div>
+          </div>
+          </sc-if>
+
+          <!-- ===== TRANSPORT ===== -->
+          <sc-if value="{{ isTransport }}" hint-placeholder-val="{{ false }}">
+          <div style="padding:8px 18px 20px;">
+            <div style="display:flex;align-items:center;justify-content:space-between;">
+              <div><div style="font-size:13px;color:#6B786F;">Today's tasks</div><div style="font-size:21px;font-weight:700;color:#0E1A12;letter-spacing:-.01em;">4 collections</div></div>
+              <span style="width:42px;height:42px;border-radius:50%;background:#E2F2F6;color:#0B5A6B;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:600;">DM</span>
+            </div>
+
+            <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:9px;margin-top:18px;">
+              <div style="background:#fff;border:1px solid #DCE3DD;border-radius:12px;padding:12px;text-align:center;"><div style="font-family:'IBM Plex Sans Condensed';font-weight:700;font-size:22px;color:#0E1A12;">2</div><div style="font-size:10.5px;color:#6B786F;margin-top:3px;">Assigned</div></div>
+              <div style="background:#fff;border:1px solid #DCE3DD;border-radius:12px;padding:12px;text-align:center;"><div style="font-family:'IBM Plex Sans Condensed';font-weight:700;font-size:22px;color:#00682C;">2</div><div style="font-size:10.5px;color:#6B786F;margin-top:3px;">Collected</div></div>
+              <div style="background:#fff;border:1px solid #DCE3DD;border-radius:12px;padding:12px;text-align:center;"><div style="font-family:'IBM Plex Sans Condensed';font-weight:700;font-size:22px;color:#0E1A12;">238<span style="font-size:11px;color:#6B786F;font-family:'IBM Plex Mono';"> kg</span></div><div style="font-size:10.5px;color:#6B786F;margin-top:3px;">Logged</div></div>
+            </div>
+
+            <div style="font-size:11.5px;font-weight:600;text-transform:uppercase;letter-spacing:.07em;color:#6B786F;margin:20px 2px 10px;">Assigned collections</div>
+            <div style="display:flex;flex-direction:column;gap:11px;">
+              <sc-for list="{{ tasks }}" as="t" hint-placeholder-count="4">
+                <div style="background:#fff;border:1px solid #DCE3DD;border-radius:12px;padding:14px;">
+                  <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:10px;">
+                    <div style="min-width:0;"><div style="font-size:14px;font-weight:600;color:#0E1A12;">{{ t.farmer }}</div><div style="display:flex;align-items:center;gap:5px;font-size:12px;color:#6B786F;margin-top:3px;"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex:none;"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>{{ t.location }}</div></div>
+                    <span style="{{ t.badgeStyle }}"><i style="{{ t.dotStyle }}"></i>{{ t.status }}</span>
+                  </div>
+                  <div style="display:flex;align-items:center;justify-content:space-between;margin-top:13px;padding-top:13px;border-top:1px solid #E6EBE6;">
+                    <div><div style="font-size:11px;color:#8C988F;">{{ t.metaLabel }}</div><div style="font-family:'IBM Plex Mono';font-size:14px;font-weight:600;color:#0E1A12;margin-top:2px;">{{ t.metaValue }}</div></div>
+                    <button onClick="{{ t.onAction }}" style="{{ t.actionStyle }}">{{ t.action }}</button>
+                  </div>
+                </div>
+              </sc-for>
+            </div>
+          </div>
+          </sc-if>
+
+          <!-- ===== ENUMERATOR ===== -->
+          <sc-if value="{{ isEnum }}" hint-placeholder-val="{{ false }}">
+          <div style="padding:8px 18px 20px;">
+            <div style="display:flex;align-items:center;justify-content:space-between;">
+              <div><div style="font-size:13px;color:#6B786F;">Field survey · Nakuru</div><div style="font-size:21px;font-weight:700;color:#0E1A12;letter-spacing:-.01em;">Grace Achieng</div></div>
+              <span style="width:42px;height:42px;border-radius:50%;background:#F1F8F3;color:#034A24;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:600;">GA</span>
+            </div>
+
+            <div style="background:#fff;border:1px solid #DCE3DD;border-radius:12px;overflow:hidden;margin-top:18px;">
+              <div style="display:flex;align-items:center;justify-content:space-between;padding:13px 14px;border-bottom:1px solid #E6EBE6;"><div style="font-size:14px;font-weight:600;color:#0E1A12;">Farm boundary · F-2291</div><span style="display:inline-flex;align-items:center;gap:5px;font-size:10.5px;font-weight:600;color:#00682C;background:#DFF1E5;padding:4px 8px;border-radius:999px;"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="11" width="14" height="10" rx="2"></rect><path d="M8 11V7a4 4 0 0 1 8 0v4"></path></svg>Locked</span></div>
+              {{ farmPolygonEl }}
+            </div>
+
+            <button onClick="{{ onEnrolFarmer }}" style="width:100%;height:50px;border:0;border-radius:12px;background:#008037;color:#fff;font-family:inherit;font-size:14.5px;font-weight:600;display:flex;align-items:center;justify-content:center;gap:9px;cursor:pointer;margin-top:14px;" style-hover="background:#00682C;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M19 8v6M22 11h-6"></path></svg>Enrol new farmer</button>
+
+            <div style="font-size:11.5px;font-weight:600;text-transform:uppercase;letter-spacing:.07em;color:#6B786F;margin:20px 2px 10px;">Soil samples</div>
+            <div style="display:flex;flex-direction:column;gap:10px;">
+              <sc-for list="{{ samples }}" as="s" hint-placeholder-count="3">
+                <div style="display:flex;align-items:center;gap:12px;background:#fff;border:1px solid #DCE3DD;border-radius:12px;padding:13px;">
+                  <span style="width:38px;height:38px;border-radius:9px;background:#F1F8F3;color:#034A24;display:flex;align-items:center;justify-content:center;flex:none;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 2h6"></path><path d="M10 2v7L5 19a2 2 0 0 0 2 3h10a2 2 0 0 0 2-3l-5-10V2"></path></svg></span>
+                  <div style="flex:1;min-width:0;"><div style="font-size:13.5px;font-weight:600;color:#0E1A12;">{{ s.farm }}</div><div style="font-family:'IBM Plex Mono';font-size:11px;color:#6B786F;margin-top:2px;">pH {{ s.ph }} · N {{ s.n }}</div></div>
+                  <span style="{{ s.badgeStyle }}"><i style="{{ s.dotStyle }}"></i>{{ s.status }}</span>
+                </div>
+              </sc-for>
+            </div>
+          </div>
+          </sc-if>
+
+        </div>
+
+        <!-- bottom tab bar -->
+        <div style="height:64px;flex:none;background:#fff;border-top:1px solid #DCE3DD;display:flex;align-items:center;justify-content:space-around;padding:0 6px 6px;">
+          <sc-for list="{{ tabBar }}" as="tb" hint-placeholder-count="4">
+            <div style="display:flex;flex-direction:column;align-items:center;gap:4px;flex:1;"><span style="{{ tb.iconStyle }}">{{ tb.iconEl }}</span><span style="{{ tb.labelStyle }}">{{ tb.label }}</span></div>
+          </sc-for>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</sc-if>
+
+<!-- ============================== APPROVAL / ACTION MODAL ============================== -->
+<sc-if value="{{ modalOpen }}" hint-placeholder-val="{{ false }}">
+  <div style="position:fixed;inset:0;background:rgba(14,26,18,.45);display:flex;align-items:center;justify-content:center;z-index:60;padding:24px;" onClick="{{ closeModal }}">
+    <div style="background:#fff;border-radius:14px;box-shadow:0 16px 40px -10px rgba(14,26,18,.30);width:100%;max-width:440px;overflow:hidden;" onClick="{{ stop }}">
+      <div style="padding:20px 22px 16px;border-bottom:1px solid #E6EBE6;display:flex;align-items:flex-start;justify-content:space-between;gap:14px;">
+        <div style="display:flex;gap:12px;align-items:center;"><span style="{{ modalIconStyle }}">{{ modalIconEl }}</span><div><h3 style="margin:0;font-size:17px;font-weight:600;color:#0E1A12;">{{ modalTitle }}</h3><div style="font-size:12.5px;color:#6B786F;margin-top:3px;">{{ modalSubtitle }}</div></div></div>
+        <button onClick="{{ closeModal }}" aria-label="Close" style="width:32px;height:32px;border:0;border-radius:7px;background:#EFF3EE;color:#4E5B52;display:flex;align-items:center;justify-content:center;cursor:pointer;flex:none;" style-hover="background:#DCE3DD;"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6L6 18M6 6l12 12"></path></svg></button>
+      </div>
+      <div style="padding:18px 22px;">
+        <div style="background:#F7F9F6;border:1px solid #E6EBE6;border-radius:10px;padding:6px 14px;">
+          <sc-for list="{{ modalRows }}" as="row" hint-placeholder-count="3">
+            <div style="display:flex;align-items:center;justify-content:space-between;padding:9px 0;border-bottom:1px solid #E6EBE6;gap:14px;"><span style="font-size:12.5px;color:#6B786F;">{{ row.k }}</span><span style="font-size:13px;font-weight:600;color:#0E1A12;text-align:right;">{{ row.v }}</span></div>
+          </sc-for>
+        </div>
+        <sc-if value="{{ modalHasNote }}" hint-placeholder-val="{{ false }}">
+          <div style="display:flex;align-items:center;gap:9px;padding:11px 13px;background:#F1F8F3;border:1px solid #DFF1E5;border-radius:8px;margin-top:14px;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#00682C" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex:none;"><path d="M12 2l8 4v6c0 5-3.5 8-8 10-4.5-2-8-5-8-10V6z"></path><path d="M9 12l2 2 4-4"></path></svg><span style="font-size:12.5px;color:#1C2A22;">{{ modalNote }}</span></div>
+        </sc-if>
+      </div>
+      <div style="padding:14px 22px 20px;border-top:1px solid #E6EBE6;display:flex;justify-content:flex-end;gap:10px;">
+        <button onClick="{{ closeModal }}" style="height:40px;padding:0 16px;border:1px solid #BDC6BF;border-radius:6px;background:#fff;color:#1C2A22;font-family:inherit;font-size:13.5px;font-weight:600;cursor:pointer;" style-hover="background:#EFF3EE;">{{ modalSecondary }}</button>
+        <button onClick="{{ confirmModal }}" style="{{ modalConfirmStyle }}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"></path></svg>{{ modalConfirm }}</button>
+      </div>
+    </div>
+  </div>
+</sc-if>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;startScreen&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;login&quot;,&quot;superadmin&quot;,&quot;ip&quot;,&quot;siteadmin&quot;,&quot;farmer&quot;,&quot;transport&quot;,&quot;enumerator&quot;],&quot;default&quot;:&quot;login&quot;,&quot;tsType&quot;:&quot;string&quot;}}">
+class Component extends DCLogic {
+  state = { screen: null, authTab: 'signin', applied: false, modal: null };
+
+  ROLES = {
+    superadmin: { label:'Super Admin', accent:'#008037', bg:'#DFF1E5', fg:'#00682C', user:'Amara Okonkwo', initials:'AO', desktop:true, tier:'Tier 1 · Global', icon:'globe' },
+    ip:         { label:'Local IP',    accent:'#0E7490', bg:'#E2F2F6', fg:'#0B5A6B', user:'David Otieno',  initials:'DO', desktop:true, tier:'Tier 2 · Country', icon:'layers' },
+    siteadmin:  { label:'Site Admin',  accent:'#B57711', bg:'#FBEFD2', fg:'#B57711', user:'Wanjiru Kariuki', initials:'WK', desktop:true, tier:'Tier 3 · Site', icon:'factory' },
+    farmer:     { label:'Farmer',      accent:'#BD5230', bg:'#FBE9E1', fg:'#8F3A1F', user:'Joseph Kamau',  initials:'JK', desktop:false, tier:'Field · Supply', icon:'sprout' },
+    transport:  { label:'Transport',   accent:'#0B5A6B', bg:'#E2F2F6', fg:'#0B5A6B', user:'Daniel Mwangi', initials:'DM', desktop:false, tier:'Field · Logistics', icon:'truck' },
+    enumerator: { label:'Enumerator',  accent:'#1E9B4E', bg:'#F1F8F3', fg:'#034A24', user:'Grace Achieng', initials:'GA', desktop:false, tier:'Field · Survey', icon:'flask' },
+  };
+
+  cur() { return this.state.screen ?? (this.props.startScreen || 'login'); }
+
+  // ---- icons ----
+  icon(name, size) {
+    const h = React.createElement;
+    const s = { width:size||18, height:size||18, viewBox:'0 0 24 24', fill:'none', stroke:'currentColor', strokeWidth:2, strokeLinecap:'round', strokeLinejoin:'round' };
+    const P = (...d) => h('svg', s, ...d.map((dd, i) => h('path', { key:i, d:dd })));
+    const M = (...els) => h('svg', s, ...els);
+    switch (name) {
+      case 'grid': return M(h('rect',{key:0,x:3,y:3,width:7,height:7,rx:1.5}),h('rect',{key:1,x:14,y:3,width:7,height:7,rx:1.5}),h('rect',{key:2,x:14,y:14,width:7,height:7,rx:1.5}),h('rect',{key:3,x:3,y:14,width:7,height:7,rx:1.5}));
+      case 'globe': return M(h('circle',{key:0,cx:12,cy:12,r:9}),h('path',{key:1,d:'M3 12h18'}),h('path',{key:2,d:'M12 3c2.5 2.5 3.5 6 3.5 9s-1 6.5-3.5 9c-2.5-2.5-3.5-6-3.5-9s1-6.5 3.5-9z'}));
+      case 'layers': return P('M12 3l9 5-9 5-9-5 9-5z','M3 13l9 5 9-5','M3 17l9 5 9-5');
+      case 'factory': return M(h('path',{key:0,d:'M3 21h18'}),h('path',{key:1,d:'M5 21V8l7-5 7 5v13'}),h('path',{key:2,d:'M9 21v-6h6v6'}));
+      case 'truck': return M(h('path',{key:0,d:'M14 16V4a1 1 0 0 0-1-1H2'}),h('path',{key:1,d:'M14 9h4l3 3v4h-7'}),h('circle',{key:2,cx:6.5,cy:16.5,r:2.5}),h('circle',{key:3,cx:16.5,cy:16.5,r:2.5}));
+      case 'sprout': return M(h('path',{key:0,d:'M12 22v-7'}),h('path',{key:1,d:'M12 15c-3 0-5-2-5-5 3 0 5 2 5 5z'}),h('path',{key:2,d:'M12 13c0-3 2-5 5-5 0 3-2 5-5 5z'}));
+      case 'flask': return M(h('path',{key:0,d:'M9 2h6'}),h('path',{key:1,d:'M10 2v7L5 19a2 2 0 0 0 2 3h10a2 2 0 0 0 2-3l-5-10V2'}),h('path',{key:2,d:'M7.5 14h9'}));
+      case 'users': return M(h('path',{key:0,d:'M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2'}),h('circle',{key:1,cx:9,cy:7,r:4}),h('path',{key:2,d:'M22 21v-2a4 4 0 0 0-3-3.87'}));
+      case 'chart': return P('M3 3v18h18','M7 14l3-3 3 3 5-6');
+      case 'thermometer': return P('M14 14V4a2 2 0 0 0-4 0v10a4 4 0 1 0 4 0z');
+      case 'check': return M(h('rect',{key:0,x:3,y:5,width:18,height:14,rx:2}),h('path',{key:1,d:'M8 12l3 3 5-5'}));
+      case 'settings': return M(h('circle',{key:0,cx:12,cy:12,r:3}),h('path',{key:1,d:'M19 12a7 7 0 0 0-.1-1.3l2-1.5-2-3.4-2.3 1a7 7 0 0 0-2.3-1.3L13.8 2h-3.6l-.3 2.5a7 7 0 0 0-2.3 1.3l-2.3-1-2 3.4 2 1.5A7 7 0 0 0 5 12a7 7 0 0 0 .1 1.3l-2 1.5 2 3.4 2.3-1a7 7 0 0 0 2.3 1.3l.3 2.5h3.6l.3-2.5a7 7 0 0 0 2.3-1.3l2.3 1 2-3.4-2-1.5A7 7 0 0 0 19 12z'}));
+      case 'store': return P('M3 9l1.5-5h15L21 9','M4 9v10a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1V9','M3 9h18');
+      case 'home': return P('M3 11l9-8 9 8','M5 10v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V10');
+      case 'wallet': return M(h('path',{key:0,d:'M3 7a2 2 0 0 1 2-2h13a1 1 0 0 1 1 1v3'}),h('path',{key:1,d:'M3 7v11a1 1 0 0 0 1 1h16a1 1 0 0 0 1-1v-7a1 1 0 0 0-1-1H5a2 2 0 0 1-2-2z'}),h('circle',{key:2,cx:16,cy:13,r:1.2}));
+      case 'list': return P('M8 6h13M8 12h13M8 18h13','M3 6h.01M3 12h.01M3 18h.01');
+      case 'map': return P('M9 4L3 6v14l6-2 6 2 6-2V4l-6 2-6-2z','M9 4v14M15 6v14');
+      case 'user': return M(h('circle',{key:0,cx:12,cy:8,r:4}),h('path',{key:1,d:'M4 21v-1a6 6 0 0 1 6-6h4a6 6 0 0 1 6 6v1'}));
+      case 'coins': return M(h('ellipse',{key:0,cx:12,cy:6,rx:8,ry:3}),h('path',{key:1,d:'M4 6v6c0 1.66 3.58 3 8 3s8-1.34 8-3V6'}),h('path',{key:2,d:'M4 12v6c0 1.66 3.58 3 8 3s8-1.34 8-3v-6'}));
+      case 'leaf': return M(h('path',{key:0,d:'M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10z'}),h('path',{key:1,d:'M2 21c0-3 1.85-5.36 5.08-6'}));
+      default: return P('M5 12h14');
+    }
+  }
+
+  badge(label) {
+    const ok = ['Active','Producing','Verified','Approved','Collected','Locked','Online','Issued'];
+    const info = ['Assigned','Onboarding','Reporting','Buyer'];
+    const warn = ['Pending','In review','Maintenance','Awaiting','Seller'];
+    const danger = ['Rejected','Offline','Alert','Flagged'];
+    let t;
+    if (ok.includes(label)) t = { bg:'#DFF1E5', fg:'#00682C', dot:'#008037' };
+    else if (info.includes(label)) t = { bg:'#E2F2F6', fg:'#0B5A6B', dot:'#0E7490' };
+    else if (warn.includes(label)) t = { bg:'#FBEFD2', fg:'#B57711', dot:'#DD9B1F' };
+    else if (danger.includes(label)) t = { bg:'#FBE4E1', fg:'#9B2C20', dot:'#C0392B' };
+    else t = { bg:'#EFF3EE', fg:'#36433B', dot:'#8C988F' };
+    return {
+      badge: { display:'inline-flex', alignItems:'center', gap:'6px', fontSize:'11px', fontWeight:600, padding:'4px 9px', borderRadius:'999px', whiteSpace:'nowrap', background:t.bg, color:t.fg },
+      dot: { width:'6px', height:'6px', borderRadius:'50%', flex:'none', display:'inline-block', background:t.dot },
+    };
+  }
+
+  pillBtn(kind, label, onClick) {
+    const styles = {
+      admit:  { bg:'#008037', fg:'#fff', bd:'#008037' },
+      manage: { bg:'#fff', fg:'#36433B', bd:'#BDC6BF' },
+      review: { bg:'#F1F8F3', fg:'#00682C', bd:'#008037' },
+    }[kind] || { bg:'#fff', fg:'#36433B', bd:'#BDC6BF' };
+    return { onClick, label, style: { height:'34px', padding:'0 13px', border:'1px solid '+styles.bd, borderRadius:'6px', background:styles.bg, color:styles.fg, fontFamily:'inherit', fontSize:'12.5px', fontWeight:600, cursor:'pointer', flex:'none', whiteSpace:'nowrap' } };
+  }
+
+  // ---- navigation ----
+  go(screen) { this.setState({ screen }); }
+  goLogin = () => this.setState({ screen:'login', applied:false, authTab:'signin', modal:null });
+  setSignin = () => this.setState({ authTab:'signin' });
+  setApply = () => this.setState({ authTab:'apply', applied:false });
+  submitApply = () => this.setState({ applied:true });
+
+  closeModal = () => this.setState({ modal:null });
+  confirmModal = () => this.setState({ modal:null });
+  openModal(payload) { this.setState({ modal:payload }); }
+
+  approveModal(title, subtitle, rows, accent, note) {
+    return { title, subtitle, rows, note: note || 'This action provisions the account and is recorded in the audit log.', confirm:'Approve', secondary:'Reject', accent: accent || '#008037', bg:'#DFF1E5', fg:'#00682C', iconName:'check' };
+  }
+
+  navFor(role) {
+    const defs = {
+      superadmin: [['Overview','grid'],['Countries','globe'],['Local IPs','users'],['Sites','factory'],['Production','chart'],['Users','user'],['Settings','settings']],
+      ip:         [['Overview','grid'],['Sites','factory'],['Site Admins','users'],['Collection','truck'],['Production','chart'],['Users','user'],['Settings','settings']],
+      siteadmin:  [['Overview','grid'],['Monitoring','thermometer'],['Approvals','check'],['Farmers','sprout'],['Transport','truck'],['Enumerators','flask'],['Settings','settings']],
+    }[role] || [];
+    return defs.map((d, i) => {
+      const active = i === 0;
+      return {
+        label: d[0], iconEl: this.icon(d[1], 18),
+        btnStyle: { display:'flex', alignItems:'center', gap:'11px', padding:'9px 10px', borderRadius:'6px', border:0, cursor:'pointer', width:'100%', textAlign:'left', fontFamily:'inherit', fontSize:'13.5px', fontWeight: active?600:500, background: active?'#008037':'transparent', color: active?'#fff':'#AFC2B5' },
+      };
+    });
+  }
+
+  tabsFor(role) {
+    const defs = {
+      farmer:     [['Home','home'],['Logs','chart'],['Market','store'],['Profile','user']],
+      transport:  [['Tasks','list'],['Map','map'],['History','chart'],['Profile','user']],
+      enumerator: [['Survey','map'],['Farms','sprout'],['Samples','flask'],['Profile','user']],
+    }[role] || [];
+    const accent = this.ROLES[role].accent;
+    return defs.map((d, i) => {
+      const active = i === 0;
+      return {
+        label: d[0], iconEl: this.icon(d[1], 22),
+        iconStyle: { display:'flex', color: active?accent:'#8C988F' },
+        labelStyle: { fontSize:'10.5px', fontWeight: active?600:500, color: active?accent:'#8C988F' },
+      };
+    });
+  }
+
+  // ---- charts / maps ----
+  buildBars(data, labels, color, unitK) {
+    const W=640,H=200,padL=38,padB=26,padT=10,padR=8,n=data.length;
+    const max=Math.ceil(Math.max(...data)*1.15);
+    const bw=(W-padL-padR)/n, xc=i=>padL+i*bw+bw/2, yv=v=>padT+(H-padT-padB)*(1-v/max), barW=bw*0.5;
+    const h=React.createElement,kids=[];
+    for(let g=0;g<=4;g++){const val=+(max/4*g).toFixed(0);kids.push(h('line',{key:'g'+g,x1:padL,x2:W-padR,y1:yv(val),y2:yv(val),stroke:'#E6EBE6'}));kids.push(h('text',{key:'t'+g,x:padL-8,y:yv(val)+4,textAnchor:'end',fontSize:10,fontFamily:'IBM Plex Mono',fill:'#8C988F'},val+(unitK||'')));}
+    data.forEach((v,i)=>{kids.push(h('rect',{key:'b'+i,x:xc(i)-barW/2,y:yv(v),width:barW,height:(H-padB)-yv(v),rx:2.5,fill:color,opacity:i===n-1?1:0.8}));kids.push(h('text',{key:'x'+i,x:xc(i),y:H-9,textAnchor:'middle',fontSize:10,fontFamily:'IBM Plex Mono',fill:'#8C988F'},labels[i]));});
+    return h('svg',{viewBox:'0 0 '+W+' '+H,preserveAspectRatio:'xMidYMid meet',style:{width:'100%',display:'block'}},kids);
+  }
+
+  miniBars(data, labels, color) {
+    const W=320,H=120,padB=20,padT=6,n=data.length;
+    const max=Math.max(...data)*1.12;
+    const bw=W/n, xc=i=>i*bw+bw/2, yv=v=>padT+(H-padT-padB)*(1-v/max), barW=bw*0.46;
+    const h=React.createElement,kids=[];
+    data.forEach((v,i)=>{kids.push(h('rect',{key:'b'+i,x:xc(i)-barW/2,y:yv(v),width:barW,height:(H-padB)-yv(v),rx:3,fill:color,opacity:i===n-1?1:0.55}));kids.push(h('text',{key:'x'+i,x:xc(i),y:H-6,textAnchor:'middle',fontSize:10,fontFamily:'IBM Plex Mono',fill:'#8C988F'},labels[i]));});
+    return h('svg',{viewBox:'0 0 '+W+' '+H,preserveAspectRatio:'xMidYMid meet',style:{width:'100%',display:'block'}},kids);
+  }
+
+  tempChart() {
+    const data=[455,470,492,510,505,488,475,498,520,535,528,512,500,486,478,505,522,540,531,515,498,488,492,482];
+    const W=640,H=210,padL=40,padB=26,padT=12,padR=10,n=data.length;
+    const min=380,max=600;
+    const xc=i=>padL+(W-padL-padR)*(i/(n-1)), yv=v=>padT+(H-padT-padB)*(1-(v-min)/(max-min));
+    const h=React.createElement,kids=[];
+    kids.push(h('rect',{key:'band',x:padL,y:yv(550),width:W-padL-padR,height:yv(450)-yv(550),fill:'#DFF1E5',opacity:0.6}));
+    kids.push(h('text',{key:'bandt',x:W-padR-4,y:yv(550)+13,textAnchor:'end',fontSize:9.5,fontFamily:'IBM Plex Mono',fill:'#00682C'},'target 450–550°C'));
+    [400,450,500,550,600].forEach((v,i)=>{kids.push(h('line',{key:'g'+i,x1:padL,x2:W-padR,y1:yv(v),y2:yv(v),stroke:'#E6EBE6'}));kids.push(h('text',{key:'t'+i,x:padL-8,y:yv(v)+4,textAnchor:'end',fontSize:10,fontFamily:'IBM Plex Mono',fill:'#8C988F'},v));});
+    const line=data.map((v,i)=>(i?'L':'M')+xc(i).toFixed(1)+' '+yv(v).toFixed(1)).join(' ');
+    kids.push(h('path',{key:'line',d:line,fill:'none',stroke:'#DD9B1F',strokeWidth:2.2,strokeLinecap:'round',strokeLinejoin:'round'}));
+    kids.push(h('circle',{key:'dot',cx:xc(n-1),cy:yv(data[n-1]),r:4,fill:'#DD9B1F'}));
+    ['00:00','06:00','12:00','18:00','now'].forEach((lb,i)=>{const x=padL+(W-padL-padR)*(i/4);kids.push(h('text',{key:'x'+i,x:x,y:H-8,textAnchor:'middle',fontSize:10,fontFamily:'IBM Plex Mono',fill:'#8C988F'},lb));});
+    return h('svg',{viewBox:'0 0 '+W+' '+H,preserveAspectRatio:'xMidYMid meet',style:{width:'100%',display:'block'},role:'img','aria-label':'Reactor temperature over 24 hours'},kids);
+  }
+
+  africaMap() {
+    const h=React.createElement;
+    const cont='M150 44 C 200 24, 286 26, 322 52 C 340 64, 356 70, 372 86 C 382 96, 380 110, 366 116 C 372 130, 360 150, 342 156 C 332 196, 312 250, 286 300 C 276 320, 252 322, 244 300 C 232 262, 224 236, 204 220 C 168 210, 132 196, 120 156 C 110 122, 116 70, 150 44 Z';
+    const pins=[
+      {code:'NG',name:'Nigeria',x:178,y:152,v:1300,c:'#BD5230'},
+      {code:'UG',name:'Uganda',x:298,y:178,v:1020,c:'#0E7490'},
+      {code:'KE',name:'Kenya',x:330,y:166,v:1640,c:'#008037'},
+      {code:'TZ',name:'Tanzania',x:314,y:206,v:810,c:'#DD9B1F'},
+      {code:'ZW',name:'Zimbabwe',x:288,y:256,v:520,c:'#8F3A1F'},
+    ];
+    const kids=[h('path',{key:'c',d:cont,fill:'#EFF3EE',stroke:'#DCE3DD',strokeWidth:1.5})];
+    pins.forEach(p=>{
+      const r=7+p.v/150;
+      kids.push(h('circle',{key:p.code+'h',cx:p.x,cy:p.y,r:r+5,fill:p.c,opacity:0.14}));
+      kids.push(h('circle',{key:p.code+'d',cx:p.x,cy:p.y,r:r,fill:p.c,opacity:0.9,stroke:'#fff',strokeWidth:2}));
+      const lx = p.code==='NG' ? p.x-14 : p.x+r+8;
+      const anchor = p.code==='NG' ? 'end' : 'start';
+      kids.push(h('text',{key:p.code+'n',x:lx,y:p.y-2,textAnchor:anchor,fontSize:11,fontWeight:600,fontFamily:'IBM Plex Sans',fill:'#1C2A22'},p.name));
+      kids.push(h('text',{key:p.code+'v',x:lx,y:p.y+11,textAnchor:anchor,fontSize:10,fontFamily:'IBM Plex Mono',fill:'#6B786F'},p.v.toLocaleString()+' t'));
+    });
+    return h('svg',{viewBox:'0 0 440 340',preserveAspectRatio:'xMidYMid meet',style:{width:'100%',display:'block',maxHeight:'340px'},role:'img','aria-label':'Biochar production by country across Africa'},kids);
+  }
+
+  kenyaMap() {
+    const h=React.createElement;
+    const shape='M70 70 C 120 50, 180 48, 250 60 C 300 68, 320 92, 312 130 C 306 168, 286 210, 250 244 C 214 268, 168 264, 138 240 C 110 218, 96 188, 84 156 C 72 128, 56 92, 70 70 Z';
+    const sites=[
+      {n:'Nakuru',x:150,y:150,c:'#008037'},
+      {n:'Nyeri',x:196,y:130,c:'#008037'},
+      {n:'Kisumu',x:104,y:128,c:'#008037'},
+      {n:'Machakos',x:208,y:182,c:'#DD9B1F'},
+      {n:'Eldoret',x:128,y:96,c:'#0E7490'},
+    ];
+    const kids=[h('path',{key:'s',d:shape,fill:'#F1F8F3',stroke:'#BCE6CB',strokeWidth:1.5})];
+    sites.forEach((s,i)=>{
+      kids.push(h('circle',{key:'p'+i,cx:s.x,cy:s.y,r:6,fill:s.c,stroke:'#fff',strokeWidth:2}));
+      kids.push(h('text',{key:'t'+i,x:s.x+10,y:s.y+4,fontSize:11,fontWeight:600,fontFamily:'IBM Plex Sans',fill:'#1C2A22'},s.n));
+    });
+    return h('svg',{viewBox:'0 0 360 300',preserveAspectRatio:'xMidYMid meet',style:{width:'100%',display:'block',maxHeight:'300px'},role:'img','aria-label':'Biochar sites across Kenya'},kids);
+  }
+
+  farmPolygon() {
+    const h=React.createElement;
+    const kids=[h('rect',{key:'bg',x:0,y:0,width:360,height:200,fill:'#F1F8F3'})];
+    for(let x=0;x<=360;x+=30) kids.push(h('line',{key:'vx'+x,x1:x,y1:0,x2:x,y2:200,stroke:'#DDEEE2',strokeWidth:1}));
+    for(let y=0;y<=200;y+=30) kids.push(h('line',{key:'hy'+y,x1:0,y1:y,x2:360,y2:y,stroke:'#DDEEE2',strokeWidth:1}));
+    kids.push(h('polygon',{key:'poly',points:'78,52 220,40 286,108 232,168 110,160 64,104',fill:'rgba(0,128,55,0.16)',stroke:'#008037',strokeWidth:2.5,strokeLinejoin:'round'}));
+    ['78,52','220,40','286,108','232,168','110,160','64,104'].forEach((pt,i)=>{const [x,y]=pt.split(',').map(Number);kids.push(h('circle',{key:'v'+i,cx:x,cy:y,r:4,fill:'#fff',stroke:'#008037',strokeWidth:2}));});
+    [['154,96','#DD9B1F'],['196,128','#0E7490'],['120,118','#BD5230']].forEach((s,i)=>{const [x,y]=s[0].split(',').map(Number);kids.push(h('circle',{key:'s'+i,cx:x,cy:y,r:3.5,fill:s[1]}));});
+    kids.push(h('text',{key:'lbl',x:175,y:108,textAnchor:'middle',fontSize:11,fontFamily:'IBM Plex Mono',fill:'#00682C'},'2.4 ha'));
+    return h('svg',{viewBox:'0 0 360 200',preserveAspectRatio:'xMidYMid meet',style:{width:'100%',display:'block'},role:'img','aria-label':'Locked farm boundary polygon with soil sample points'},kids);
+  }
+
+  renderVals() {
+    const screen = this.cur();
+    const isLogin = screen === 'login';
+    const role = this.ROLES[screen];
+    const isDesktop = !!role && role.desktop;
+    const isField = !!role && !role.desktop;
+    const modal = this.state.modal;
+
+    // ----- LOGIN -----
+    if (isLogin) {
+      const tabStyle = (active) => ({ padding:'9px 16px', borderRadius:'7px', border:0, cursor:'pointer', fontFamily:'inherit', fontSize:'13.5px', fontWeight:600, background: active?'#fff':'transparent', color: active?'#0E1A12':'#6B786F', boxShadow: active?'0 1px 2px rgba(14,26,18,.12)':'none' });
+      const demoRoles = Object.keys(this.ROLES).map(k => {
+        const r = this.ROLES[k];
+        return { label:r.label, tier:r.tier, onEnter:()=>this.go(k), iconEl:this.icon(r.icon,17), iconStyle:{ width:'32px', height:'32px', borderRadius:'8px', display:'flex', alignItems:'center', justifyContent:'center', flex:'none', background:r.bg, color:r.fg } };
+      });
+      return {
+        isLogin:true, isDesktop:false, isField:false, modalOpen:false,
+        authIsSignin: this.state.authTab==='signin', authIsApply: this.state.authTab==='apply',
+        applied: this.state.applied, notApplied: !this.state.applied,
+        signinTabStyle: tabStyle(this.state.authTab==='signin'),
+        applyTabStyle: tabStyle(this.state.authTab==='apply'),
+        setSignin:this.setSignin, setApply:this.setApply, submitApply:this.submitApply,
+        goSuper:()=>this.go('superadmin'),
+        demoRoles,
+      };
+    }
+
+    // ----- shared shell bits -----
+    const common = {
+      isLogin:false, isDesktop, isField,
+      roleLabel: role.label, userName: role.user, userInitials: role.initials,
+      goLogin: this.goLogin,
+      roleBadgeStyle: { display:'inline-flex', alignItems:'center', height:'28px', padding:'0 12px', borderRadius:'999px', fontSize:'12px', fontWeight:600, background:role.bg, color:role.fg, whiteSpace:'nowrap' },
+      footerAvatarStyle: { width:'30px', height:'30px', borderRadius:'50%', background:role.bg, color:role.fg, display:'flex', alignItems:'center', justifyContent:'center', fontSize:'12px', fontWeight:600, flex:'none' },
+      // modal
+      modalOpen: !!modal,
+      closeModal:this.closeModal, confirmModal:this.confirmModal, stop:(e)=>e.stopPropagation(),
+      modalTitle: modal&&modal.title, modalSubtitle: modal&&modal.subtitle,
+      modalRows: (modal&&modal.rows)||[], modalHasNote: !!(modal&&modal.note), modalNote: modal&&modal.note,
+      modalSecondary: (modal&&modal.secondary)||'Cancel', modalConfirm:(modal&&modal.confirm)||'Confirm',
+      modalIconEl: this.icon((modal&&modal.iconName)||'check', 20),
+      modalIconStyle: { width:'38px', height:'38px', borderRadius:'9px', display:'flex', alignItems:'center', justifyContent:'center', flex:'none', background:(modal&&modal.bg)||'#DFF1E5', color:(modal&&modal.fg)||'#00682C' },
+      modalConfirmStyle: { height:'40px', padding:'0 16px', border:0, borderRadius:'6px', background:(modal&&modal.accent)||'#008037', color:'#fff', fontFamily:'inherit', fontSize:'13.5px', fontWeight:600, display:'flex', alignItems:'center', gap:'7px', cursor:'pointer' },
+    };
+
+    // ----- DESKTOP -----
+    if (isDesktop) {
+      const titles = { superadmin:['Global · all countries','Programme overview'], ip:['Kenya · country programme','Country overview'], siteadmin:['Nakuru Pyrolysis Site','Site operations'] };
+      const ctx = {
+        superadmin:{ select:true, options:['All countries','Kenya','Uganda','Tanzania','Nigeria','Zimbabwe'] },
+        ip:{ static:true, label:'Kenya · KE' },
+        siteadmin:{ select:true, options:['Nakuru Pyrolysis Site','Nyeri Biochar Hub','Kisumu Lakeside Site'] },
+      }[screen];
+
+      const d = {
+        navItems: this.navFor(screen),
+        pageOverline: titles[screen][0], pageTitle: titles[screen][1],
+        ctxSelect: !!ctx.select, ctxStatic: !!ctx.static, ctxOptions: ctx.options||[], ctxLabel: ctx.label||'',
+        isSuper: screen==='superadmin', isIP: screen==='ip', isSite: screen==='siteadmin',
+      };
+
+      if (screen==='superadmin') {
+        const flags = { KE:'#C0392B', UG:'#DD9B1F', TZ:'#0E7490', NG:'#008037', ZW:'#8F3A1F' };
+        const rows = [
+          { code:'KE', name:'Kenya', ip:'GreenChar Kenya Ltd', sites:14, biomass:'4,820', biochar:'1,640', status:'Active' },
+          { code:'NG', name:'Nigeria', ip:'Sahel Biochar Co.', sites:11, biomass:'3,980', biochar:'1,300', status:'Active' },
+          { code:'UG', name:'Uganda', ip:'BioSoil Uganda', sites:9, biomass:'3,110', biochar:'1,020', status:'Active' },
+          { code:'TZ', name:'Tanzania', ip:'Carbon Roots TZ', sites:7, biomass:'2,440', biochar:'810', status:'Active' },
+          { code:'ZW', name:'Zimbabwe', ip:'Veld Carbon ZW', sites:5, biomass:'1,560', biochar:'520', status:'Onboarding' },
+        ];
+        d.countries = rows.map(r=>{ const b=this.badge(r.status); return { ...r, flag:flags[r.code], badgeStyle:b.badge, dotStyle:b.dot }; });
+        const ips = [
+          { code:'GC', org:'GreenChar Kenya Ltd', country:'Kenya', contact:'partners@greenchar.co.ke', status:'Active', action:'manage' },
+          { code:'SB', org:'Sahel Biochar Co.', country:'Nigeria', contact:'ops@sahelbiochar.ng', status:'Active', action:'manage' },
+          { code:'VC', org:'Veld Carbon ZW', country:'Zimbabwe', contact:'admin@veldcarbon.zw', status:'Pending', action:'admit' },
+        ];
+        d.localIPs = ips.map(ip=>{ const b=this.badge(ip.status); const isAdmit=ip.action==='admit'; const pb=this.pillBtn(isAdmit?'admit':'manage', isAdmit?'Admit IP':'Manage', isAdmit?()=>this.openModal(this.approveModal('Admit Implementing Partner','Provision country-level access for '+ip.org,[{k:'Organisation',v:ip.org},{k:'Country',v:ip.country},{k:'Contact',v:ip.contact},{k:'Access tier',v:'Tier 2 · Country'}],'#0E7490','Admitting this IP grants management of all sites and users in '+ip.country+'.')):this.closeModal); return { ...ip, badgeStyle:b.badge, dotStyle:b.dot, action:pb.label, onAction:pb.onClick, actionStyle:pb.style }; });
+        d.africaMapEl = this.africaMap();
+        d.productionChartEl = this.buildBars([320,360,395,430,460,510,540,580,610,640,690,720],['J','F','M','A','M','J','J','A','S','O','N','D'],'#008037','');
+      }
+
+      if (screen==='ip') {
+        const sites = [
+          { id:'KE-NKR-01', name:'Nakuru Pyrolysis Site', region:'Nakuru', machines:3, biochar:'420', status:'Producing' },
+          { id:'KE-KSM-03', name:'Kisumu Lakeside Site', region:'Kisumu', machines:2, biochar:'310', status:'Producing' },
+          { id:'KE-NYR-02', name:'Nyeri Biochar Hub', region:'Nyeri', machines:2, biochar:'265', status:'Producing' },
+          { id:'KE-ELD-05', name:'Eldoret Grain Belt Site', region:'Uasin Gishu', machines:2, biochar:'180', status:'Onboarding' },
+          { id:'KE-MCK-04', name:'Machakos Dryland Site', region:'Machakos', machines:1, biochar:'140', status:'Maintenance' },
+        ];
+        d.keSites = sites.map(s=>{ const b=this.badge(s.status); return { ...s, badgeStyle:b.badge, dotStyle:b.dot }; });
+        const admins = [
+          { initials:'WK', name:'Wanjiru Kariuki', site:'Nakuru Pyrolysis Site', status:'Active', action:'manage' },
+          { initials:'OO', name:'Otieno Omondi', site:'Kisumu Lakeside Site', status:'Active', action:'manage' },
+          { initials:'PN', name:'Peter Njoroge', site:'Eldoret Grain Belt Site', status:'Pending', action:'admit' },
+        ];
+        d.siteAdmins = admins.map(a=>{ const b=this.badge(a.status); const isAdmit=a.action==='admit'; const pb=this.pillBtn(isAdmit?'admit':'manage', isAdmit?'Admit':'Manage', isAdmit?()=>this.openModal(this.approveModal('Admit Site Admin','Provision site-level access for '+a.name,[{k:'Name',v:a.name},{k:'Site',v:a.site},{k:'Access tier',v:'Tier 3 · Site'}],'#B57711','The Site Admin can then admit farmers, transport and enumerators.')):this.closeModal); return { ...a, badgeStyle:b.badge, dotStyle:b.dot, action:pb.label, onAction:pb.onClick, actionStyle:pb.style }; });
+        d.onEnrolSite = ()=>this.openModal({ title:'Enrol a new site', subtitle:'Register a pyrolysis site under Kenya', rows:[{k:'Country',v:'Kenya'},{k:'Default methodology',v:'Verra VM0044'},{k:'Access tier',v:'Tier 3 · Site'}], note:'A site code is issued and a Site Admin can then be admitted.', confirm:'Create site', secondary:'Cancel', accent:'#008037', bg:'#DFF1E5', fg:'#00682C', iconName:'factory' });
+        d.kenyaMapEl = this.kenyaMap();
+        d.collectionChartEl = this.buildBars([280,310,330,360,390,420,405,440,470,460,495,520],['J','F','M','A','M','J','J','A','S','O','N','D'],'#0E7490','');
+      }
+
+      if (screen==='siteadmin') {
+        d.tempChartEl = this.tempChart();
+        const alerts = [
+          { level:'danger', machine:'PYR-01', time:'08:12', msg:'Feed auger jam cleared — 14 min downtime' },
+          { level:'warn', machine:'PYR-03', time:'06:40', msg:'Reactor temp dipped to 442°C, below band' },
+          { level:'ok', machine:'PYR-02', time:'05:55', msg:'Batch 0294 complete — 96 kg biochar' },
+          { level:'ok', machine:'PYR-02', time:'02:30', msg:'Telemetry sync OK · all sensors reporting' },
+        ];
+        const dotColor = { danger:'#C0392B', warn:'#DD9B1F', ok:'#008037' };
+        d.alerts = alerts.map(a=>({ ...a, dotStyle:{ width:'9px', height:'9px', borderRadius:'50%', marginTop:'5px', flex:'none', background:dotColor[a.level] } }));
+        const reqs = [
+          { farmer:'Joseph Kamau', qty:'120 kg', location:'Bahati ward · 3.2 km', time:'12 min ago' },
+          { farmer:'Mary Wairimu', qty:'85 kg', location:'Kabatini · 5.1 km', time:'40 min ago' },
+          { farmer:'Samuel Kiptoo', qty:'200 kg', location:'Lanet · 7.8 km', time:'1 h ago' },
+        ];
+        d.collectionReqs = reqs.map(r=>({ ...r, onApprove:()=>this.openModal(this.approveModal('Approve & assign collection','Assign this collection to a transport operator',[{k:'Farmer',v:r.farmer},{k:'Quantity',v:r.qty},{k:'Location',v:r.location},{k:'Assign to',v:'Daniel Mwangi'}],'#008037','The transport operator is notified and records actual weight on collection.')) }));
+        const enrol = [
+          { initials:'FN', name:'Faith Nyambura', enumerator:'Grace Achieng', region:'Bahati ward' },
+          { initials:'JM', name:'James Mutua', enumerator:'Grace Achieng', region:'Lanet' },
+        ];
+        d.enrolFarmers = enrol.map(e=>({ ...e, onApprove:()=>this.openModal(this.approveModal('Approve farmer','Confirm enrolment of a field-surveyed farmer',[{k:'Farmer',v:e.name},{k:'Enrolled by',v:e.enumerator},{k:'Region',v:e.region}],'#008037','Approving activates the farmer account and links their farm polygon.')) }));
+        d.approvalsCount = reqs.length + enrol.length;
+        const users = [
+          { name:'Joseph Kamau', role:'Farmer', phone:'+254 712 004 118', status:'Active' },
+          { name:'Daniel Mwangi', role:'Transport', phone:'+254 720 551 902', status:'Active' },
+          { name:'Grace Achieng', role:'Enumerator', phone:'+254 733 887 410', status:'Active' },
+          { name:'Mary Wairimu', role:'Farmer', phone:'+254 711 220 845', status:'Active' },
+          { name:'Faith Nyambura', role:'Farmer', phone:'+254 759 330 271', status:'Pending' },
+        ];
+        const roleTone = { Farmer:'#FBE9E1|#8F3A1F', Transport:'#E2F2F6|#0B5A6B', Enumerator:'#F1F8F3|#034A24' };
+        d.siteUsers = users.map(u=>{ const b=this.badge(u.status); const [bg,fg]=roleTone[u.role].split('|'); return { ...u, badgeStyle:b.badge, dotStyle:b.dot, roleStyle:{ display:'inline-flex', alignItems:'center', fontSize:'11.5px', fontWeight:600, padding:'3px 9px', borderRadius:'6px', background:bg, color:fg } }; });
+      }
+
+      return { ...common, ...d };
+    }
+
+    // ----- FIELD (phone) -----
+    const f = { tabBar: this.tabsFor(screen), isFarmer:screen==='farmer', isTransport:screen==='transport', isEnum:screen==='enumerator' };
+
+    if (screen==='farmer') {
+      f.farmBarsEl = this.miniBars([45,80,60,120,95,140],['W1','W2','W3','W4','W5','W6'],'#BD5230');
+      const subs = [
+        { material:'Maize cobs', date:'18 Jun 2026', kg:'140 kg', status:'Verified' },
+        { material:'Rice husks', date:'09 Jun 2026', kg:'95 kg', status:'Verified' },
+        { material:'Coffee pulp', date:'27 May 2026', kg:'120 kg', status:'Collected' },
+      ];
+      f.submissions = subs.map(s=>{ const b=this.badge(s.status); return { ...s, badgeStyle:b.badge, dotStyle:b.dot }; });
+      const market = [
+        { title:'Biochar manure · 25 kg', sub:'Nakuru Pyrolysis Site', price:'KSh 1,250', tag:'Buyer', iconName:'leaf', tone:'#DFF1E5|#00682C' },
+        { title:'Raw biomass · maize', sub:'Listed by you · 60 kg', price:'KSh 900', tag:'Seller', iconName:'sprout', tone:'#FBE9E1|#8F3A1F' },
+      ];
+      f.market = market.map(m=>{ const b=this.badge(m.tag); const [bg,fg]=m.tone.split('|'); return { ...m, iconEl:this.icon(m.iconName,18), iconStyle:{ width:'40px', height:'40px', borderRadius:'10px', display:'flex', alignItems:'center', justifyContent:'center', flex:'none', background:bg, color:fg }, tagStyle:{ display:'inline-block', marginTop:'4px', fontSize:'10px', fontWeight:600, padding:'2px 7px', borderRadius:'999px', background:b.badge.background, color:b.badge.color } }; });
+      f.onRequestCollection = ()=>this.openModal({ title:'Request collection', subtitle:'Notify the site that biomass is ready', rows:[{k:'Material',v:'Maize cobs'},{k:'Estimated weight',v:'120 kg'},{k:'Pickup',v:'Bahati ward'}], note:'Your request goes to the Site Admin for approval, then a transport operator is assigned.', confirm:'Send request', secondary:'Cancel', accent:'#BD5230', bg:'#FBE9E1', fg:'#8F3A1F', iconName:'truck' });
+      f.onRequestManure = ()=>this.openModal({ title:'Request biochar manure', subtitle:'Order finished biochar for your farm', rows:[{k:'Product',v:'Biochar manure'},{k:'Quantity',v:'25 kg'},{k:'Price',v:'KSh 1,250'}], note:'Payment is deducted from your marketplace balance on fulfilment.', confirm:'Place order', secondary:'Cancel', accent:'#BD5230', bg:'#FBE9E1', fg:'#8F3A1F', iconName:'leaf' });
+    }
+
+    if (screen==='transport') {
+      const tasks = [
+        { farmer:'Joseph Kamau', location:'Bahati ward · 3.2 km', status:'Assigned', metaLabel:'Expected', metaValue:'120 kg', action:'record' },
+        { farmer:'Mary Wairimu', location:'Kabatini · 5.1 km', status:'Assigned', metaLabel:'Expected', metaValue:'85 kg', action:'record' },
+        { farmer:'Samuel Kiptoo', location:'Lanet · 7.8 km', status:'Collected', metaLabel:'Recorded', metaValue:'118 kg', action:'view' },
+        { farmer:'Esther Cheruiyot', location:'Free Area · 2.4 km', status:'Collected', metaLabel:'Recorded', metaValue:'62 kg', action:'view' },
+      ];
+      f.tasks = tasks.map(t=>{ const b=this.badge(t.status); const isRec=t.action==='record';
+        const pb = isRec
+          ? { label:'Record weight', style:{ height:'36px', padding:'0 14px', border:0, borderRadius:'7px', background:'#0B5A6B', color:'#fff', fontFamily:'inherit', fontSize:'12.5px', fontWeight:600, cursor:'pointer', flex:'none' }, onClick:()=>this.openModal({ title:'Record collected weight', subtitle:'Weight reflects back to '+t.farmer+' for verification', rows:[{k:'Farmer',v:t.farmer},{k:'Location',v:t.location},{k:'Expected',v:t.metaValue},{k:'Actual weight',v:'— enter on scale —'}], note:'The farmer verifies the recorded weight before it is logged to the site intake.', confirm:'Confirm weight', secondary:'Cancel', accent:'#0B5A6B', bg:'#E2F2F6', fg:'#0B5A6B', iconName:'truck' }) }
+          : { label:'View', style:{ height:'36px', padding:'0 14px', border:'1px solid #BDC6BF', borderRadius:'7px', background:'#fff', color:'#36433B', fontFamily:'inherit', fontSize:'12.5px', fontWeight:600, cursor:'pointer', flex:'none' }, onClick:()=>this.openModal({ title:'Collection record', subtitle:'Logged and verified', rows:[{k:'Farmer',v:t.farmer},{k:'Recorded weight',v:t.metaValue},{k:'Status',v:'Verified by farmer'}], note:'This collection has been logged to site intake.', confirm:'Close', secondary:'Back', accent:'#008037', bg:'#DFF1E5', fg:'#00682C', iconName:'check' }) };
+        return { ...t, badgeStyle:b.badge, dotStyle:b.dot, action:pb.label, actionStyle:pb.style, onAction:pb.onClick }; });
+    }
+
+    if (screen==='enumerator') {
+      f.farmPolygonEl = this.farmPolygon();
+      const samples = [
+        { farm:'F-2291 · Kamau', ph:'6.2', n:'Medium', status:'Verified' },
+        { farm:'F-2288 · Wairimu', ph:'5.8', n:'Low', status:'In review' },
+        { farm:'F-2284 · Kiptoo', ph:'6.6', n:'High', status:'Verified' },
+      ];
+      f.samples = samples.map(s=>{ const b=this.badge(s.status); return { ...s, badgeStyle:b.badge, dotStyle:b.dot }; });
+      f.onEnrolFarmer = ()=>this.openModal({ title:'Enrol new farmer', subtitle:'Submit a surveyed farmer for approval', rows:[{k:'Farmer',v:'Faith Nyambura'},{k:'Farm ID',v:'F-2291'},{k:'Polygon',v:'Locked · 2.4 ha'},{k:'Routes to',v:'Site Admin · Nakuru'}], note:'Enrolment is sent to the Site Admin for approval before the account is activated.', confirm:'Submit for approval', secondary:'Cancel', accent:'#1E9B4E', bg:'#F1F8F3', fg:'#034A24', iconName:'users' });
+    }
+
+    return { ...common, ...f };
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,799 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Sans+Condensed:wght@600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    *{box-sizing:border-box;}
+    html,body{margin:0;height:100%;}
+    body{font-family:'IBM Plex Sans',system-ui,sans-serif;background:#F7F9F6;color:#1C2A22;-webkit-font-smoothing:antialiased;}
+    ::-webkit-scrollbar{width:10px;height:10px;}
+    ::-webkit-scrollbar-thumb{background:#DCE3DD;border-radius:8px;border:2px solid #F7F9F6;}
+    @keyframes kpPulse{0%{box-shadow:0 0 0 0 rgba(77,184,116,.5);}70%{box-shadow:0 0 0 7px rgba(77,184,116,0);}100%{box-shadow:0 0 0 0 rgba(77,184,116,0);}}
+    @media (prefers-reduced-motion:reduce){.kp-pulse{animation:none!important;}}
+  </style>
+</helmet>
+
+<div style="display:flex;height:100vh;overflow:hidden;background:#F7F9F6;">
+
+  <!-- ===== Sidebar ===== -->
+  <aside style="width:248px;flex:none;background:#0E1A12;color:#C7D6CC;display:flex;flex-direction:column;padding:18px 14px;border-right:1px solid rgba(255,255,255,.06);">
+    <div style="display:flex;align-items:center;gap:11px;padding:4px 8px 16px;">
+      <svg width="30" height="30" viewBox="0 0 320 320" aria-hidden="true"><g transform="translate(8,4)" stroke="#fff" stroke-width="22" stroke-linecap="round" stroke-linejoin="round" fill="none"><path d="M150 280A100 100 0 0 1 133 86C214 70 235 62 263 28c14 28 28 59 28 113 0 78-68 142-141 142Z"></path><path d="M28 296c0-43 26-76 72-85"></path></g></svg>
+      <div style="display:flex;flex-direction:column;line-height:1;">
+        <span style="font-weight:700;font-size:17px;color:#fff;letter-spacing:-.01em;">Kenya POA</span>
+        <span style="font-family:'IBM Plex Mono';font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;color:#86D2A1;margin-top:5px;">dMRV Platform</span>
+      </div>
+    </div>
+
+    <nav style="display:flex;flex-direction:column;gap:2px;flex:1;">
+      <div style="font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.1em;color:#5F7468;padding:6px 10px 4px;">Programme</div>
+      <button onClick="{{ goOverview }}" style="{{ navDashStyle }}">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9" rx="1.5"></rect><rect x="14" y="3" width="7" height="5" rx="1.5"></rect><rect x="14" y="12" width="7" height="9" rx="1.5"></rect><rect x="3" y="16" width="7" height="5" rx="1.5"></rect></svg>
+        <span>Dashboard</span>
+      </button>
+      <button onClick="{{ openEnergy }}" style="{{ navScopeStyle }}">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7l9-4 9 4-9 4-9-4z"></path><path d="M3 12l9 4 9-4"></path><path d="M3 17l9 4 9-4"></path></svg>
+        <span>Sectoral scopes</span>
+      </button>
+      <button style="display:flex;align-items:center;gap:11px;padding:9px 10px;border-radius:6px;border:0;cursor:pointer;width:100%;text-align:left;font-family:inherit;font-size:13.5px;font-weight:500;background:transparent;color:#AFC2B5;" style-hover="background:rgba(255,255,255,.05);color:#EAF3EC;">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V7a2 2 0 0 1 2-2h4l2 2h6a2 2 0 0 1 2 2v11a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1z"></path></svg>
+        <span>Projects (VPAs)</span>
+      </button>
+      <button style="display:flex;align-items:center;gap:11px;padding:9px 10px;border-radius:6px;border:0;cursor:pointer;width:100%;text-align:left;font-family:inherit;font-size:13.5px;font-weight:500;background:transparent;color:#AFC2B5;" style-hover="background:rgba(255,255,255,.05);color:#EAF3EC;">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="8" r="5"></circle><path d="M12.5 12.5L21 21"></path><circle cx="16" cy="16" r="4"></circle></svg>
+        <span>Registry</span>
+      </button>
+      <div style="font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.1em;color:#5F7468;padding:6px 10px 4px;margin-top:16px;">Operations</div>
+      <button style="display:flex;align-items:center;gap:11px;padding:9px 10px;border-radius:6px;border:0;cursor:pointer;width:100%;text-align:left;font-family:inherit;font-size:13.5px;font-weight:500;background:transparent;color:#AFC2B5;" style-hover="background:rgba(255,255,255,.05);color:#EAF3EC;">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12h4l2 6 4-14 2 8h6"></path></svg>
+        <span>Monitoring</span>
+      </button>
+      <button style="display:flex;align-items:center;gap:11px;padding:9px 10px;border-radius:6px;border:0;cursor:pointer;width:100%;text-align:left;font-family:inherit;font-size:13.5px;font-weight:500;background:transparent;color:#AFC2B5;" style-hover="background:rgba(255,255,255,.05);color:#EAF3EC;">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3v5h5"></path><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><path d="M8 13h8M8 17h6"></path></svg>
+        <span>Reports</span>
+      </button>
+      <button style="display:flex;align-items:center;gap:11px;padding:9px 10px;border-radius:6px;border:0;cursor:pointer;width:100%;text-align:left;font-family:inherit;font-size:13.5px;font-weight:500;background:transparent;color:#AFC2B5;" style-hover="background:rgba(255,255,255,.05);color:#EAF3EC;">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-2.81 1.17V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 8 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 3.6 15H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.6h.09A1.65 1.65 0 0 0 11 3.09V3a2 2 0 0 1 4 0v.09A1.65 1.65 0 0 0 16.91 5l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 21 11h.09A2 2 0 0 1 21 15z"></path></svg>
+        <span>Settings</span>
+      </button>
+    </nav>
+
+    <div style="display:flex;flex-direction:column;gap:10px;padding-top:12px;border-top:1px solid rgba(255,255,255,.07);">
+      <div style="display:flex;align-items:center;gap:10px;padding:8px 10px;background:rgba(255,255,255,.04);border-radius:6px;">
+        <span class="kp-pulse" style="width:8px;height:8px;border-radius:50%;background:#4DB874;flex:none;animation:kpPulse 2.2s ease-out infinite;"></span>
+        <div>
+          <div style="font-size:13px;color:#EAF3EC;font-weight:600;">4,612 / 4,860 reporting</div>
+          <div style="font-size:11px;color:#7E9286;">Synced 4 min ago</div>
+        </div>
+      </div>
+      <div style="display:flex;align-items:center;gap:10px;padding:6px 8px;">
+        <span style="width:30px;height:30px;border-radius:50%;background:#0E7490;color:#fff;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;flex:none;">AO</span>
+        <div style="line-height:1.3;min-width:0;">
+          <div style="font-size:13px;color:#EAF3EC;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Achieng Otieno</div>
+          <div style="font-size:11px;color:#7E9286;">Programme operator</div>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ===== Main ===== -->
+  <div style="flex:1;display:flex;flex-direction:column;min-width:0;">
+
+    <!-- Topbar -->
+    <header style="height:60px;flex:none;background:#fff;border-bottom:1px solid #DCE3DD;display:flex;align-items:center;justify-content:space-between;padding:0 24px;gap:18px;">
+      <div>
+        <sc-if value="{{ showOverview }}" hint-placeholder-val="{{ true }}">
+          <div style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.09em;color:#6B786F;margin-bottom:2px;">Kenya POA · National programme</div>
+        </sc-if>
+        <sc-if value="{{ showDetail }}" hint-placeholder-val="{{ false }}">
+          <button onClick="{{ goOverview }}" style="display:inline-flex;align-items:center;gap:5px;border:0;background:transparent;padding:0;margin-bottom:3px;cursor:pointer;font-family:inherit;font-size:11.5px;font-weight:600;text-transform:uppercase;letter-spacing:.07em;color:#00682C;" style-hover="color:#022B16;">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"></path></svg>
+            All sectoral scopes
+          </button>
+        </sc-if>
+        <h1 style="margin:0;font-size:23px;font-weight:600;letter-spacing:-.02em;line-height:1.1;color:#0E1A12;">{{ title }}</h1>
+      </div>
+      <div style="display:flex;align-items:center;gap:10px;">
+        <div style="position:relative;display:flex;align-items:center;">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#6B786F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="position:absolute;left:11px;"><circle cx="11" cy="11" r="7"></circle><path d="M21 21l-4-4"></path></svg>
+          <input placeholder="Search projects, serials, sites…" style="height:36px;width:240px;padding:0 12px 0 34px;font-family:inherit;font-size:13px;border:1px solid #BDC6BF;border-radius:6px;background:#F7F9F6;color:#0E1A12;outline:none;" style-focus="border-color:#008037;box-shadow:0 0 0 3px rgba(0,128,55,.20);background:#fff;">
+        </div>
+        <div style="position:relative;display:flex;align-items:center;">
+          <select style="height:36px;width:150px;padding:0 30px 0 12px;font-family:inherit;font-size:13px;border:1px solid #BDC6BF;border-radius:6px;background:#fff;color:#1C2A22;outline:none;appearance:none;cursor:pointer;">
+            <option>Apr–Jun 2026</option>
+            <option>Jan–Mar 2026</option>
+            <option>Jul–Dec 2025</option>
+            <option>Year to date</option>
+          </select>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#6B786F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="position:absolute;right:9px;pointer-events:none;"><path d="M6 9l6 6 6-6"></path></svg>
+        </div>
+        <button aria-label="Notifications" style="width:36px;height:36px;border:1px solid #BDC6BF;border-radius:6px;background:#fff;color:#4E5B52;display:flex;align-items:center;justify-content:center;cursor:pointer;" style-hover="background:#EFF3EE;">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 1 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.7 21a2 2 0 0 1-3.4 0"></path></svg>
+        </button>
+        <button onClick="{{ openModal }}" style="height:36px;padding:0 14px;border:0;border-radius:6px;background:#008037;color:#fff;font-family:inherit;font-size:13px;font-weight:600;display:flex;align-items:center;gap:7px;cursor:pointer;" style-hover="background:#00682C;">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"></path></svg>
+          Register project
+        </button>
+      </div>
+    </header>
+
+    <!-- Scrolling content -->
+    <div style="flex:1;overflow-y:auto;padding:24px;">
+
+      <!-- ============ OVERVIEW ============ -->
+      <sc-if value="{{ showOverview }}" hint-placeholder-val="{{ true }}">
+      <div data-screen-label="Overview" style="max-width:1180px;margin:0 auto;display:flex;flex-direction:column;gap:18px;">
+
+        <!-- Hero -->
+        <div style="position:relative;overflow:hidden;background:#0E1A12;border-radius:14px;padding:34px 36px;color:#EAF3EC;display:flex;align-items:center;justify-content:space-between;gap:32px;">
+          <svg viewBox="0 0 640 320" preserveAspectRatio="xMidYMid slice" aria-hidden="true" style="position:absolute;inset:0;width:100%;height:100%;pointer-events:none;">
+            <g fill="none" stroke="#1E9B4E" stroke-width="1.2" opacity="0.16">
+              <path d="M-20 232 C 130 196, 250 276, 400 220 S 640 184, 700 234"></path>
+              <path d="M-20 256 C 130 220, 250 300, 400 244 S 640 208, 700 258"></path>
+              <path d="M-20 280 C 130 244, 250 324, 400 268 S 640 232, 700 282"></path>
+              <path d="M-20 208 C 130 172, 250 252, 400 196 S 640 160, 700 210"></path>
+            </g>
+          </svg>
+          <div style="position:relative;z-index:1;">
+            <div style="font-family:'IBM Plex Mono';font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#86D2A1;">Kenya POA · National programme</div>
+            <h2 style="font-size:30px;line-height:1.12;font-weight:700;color:#fff;letter-spacing:-.02em;margin:12px 0 0;max-width:540px;">Monitoring carbon across three sectoral scopes</h2>
+            <p style="font-size:14px;line-height:1.6;color:#AFC2B5;margin:12px 0 0;max-width:520px;">Digital MRV across clean cooking, waste and land — every tonne measured at source, independently verified, and issued under recognised carbon standards.</p>
+            <div style="display:flex;gap:8px;margin-top:20px;flex-wrap:wrap;">
+              <button onClick="{{ openEnergy }}" style="display:inline-flex;align-items:center;gap:7px;padding:7px 13px;border-radius:999px;border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.05);color:#EAF3EC;font-family:inherit;font-size:12.5px;font-weight:600;cursor:pointer;" style-hover="background:rgba(255,255,255,.11);"><i style="width:8px;height:8px;border-radius:50%;background:#DD9B1F;display:inline-block;"></i>Energy demand</button>
+              <button onClick="{{ openWaste }}" style="display:inline-flex;align-items:center;gap:7px;padding:7px 13px;border-radius:999px;border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.05);color:#EAF3EC;font-family:inherit;font-size:12.5px;font-weight:600;cursor:pointer;" style-hover="background:rgba(255,255,255,.11);"><i style="width:8px;height:8px;border-radius:50%;background:#0E7490;display:inline-block;"></i>Waste management</button>
+              <button onClick="{{ openLand }}" style="display:inline-flex;align-items:center;gap:7px;padding:7px 13px;border-radius:999px;border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.05);color:#EAF3EC;font-family:inherit;font-size:12.5px;font-weight:600;cursor:pointer;" style-hover="background:rgba(255,255,255,.11);"><i style="width:8px;height:8px;border-radius:50%;background:#4DB874;display:inline-block;"></i>AFOLU</button>
+            </div>
+          </div>
+          <div style="position:relative;z-index:1;flex:none;width:156px;height:156px;display:flex;align-items:center;justify-content:center;">
+            <span style="position:absolute;width:156px;height:156px;border-radius:50%;border:1px solid rgba(255,255,255,.10);"></span>
+            <span style="position:absolute;width:118px;height:118px;border-radius:50%;border:1px solid rgba(255,255,255,.15);"></span>
+            <span style="width:84px;height:84px;border-radius:50%;background:rgba(255,255,255,.06);display:flex;align-items:center;justify-content:center;">
+              <svg width="46" height="46" viewBox="0 0 320 320" aria-hidden="true"><g transform="translate(8,4)" stroke="#86D2A1" stroke-width="22" stroke-linecap="round" stroke-linejoin="round" fill="none"><path d="M150 280A100 100 0 0 1 133 86C214 70 235 62 263 28c14 28 28 59 28 113 0 78-68 142-141 142Z"></path><path d="M28 296c0-43 26-76 72-85"></path></g></svg>
+            </span>
+          </div>
+        </div>
+
+        <!-- Sectoral scope cards (clickable) -->
+        <div style="display:flex;align-items:baseline;justify-content:space-between;margin-top:4px;">
+          <h2 style="margin:0;font-size:15px;font-weight:600;color:#0E1A12;">Sectoral scopes</h2>
+          <span style="font-size:12px;color:#6B786F;">Select a scope to open its workspace</span>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;">
+
+          <!-- Energy demand -->
+          <div onClick="{{ openEnergy }}" role="button" tabindex="0" style="background:#fff;border:1px solid #DCE3DD;border-radius:12px;box-shadow:0 1px 2px rgba(14,26,18,.04);border-top:3px solid #DD9B1F;overflow:hidden;cursor:pointer;transition:box-shadow .18s ease, transform .18s ease, border-color .18s ease;" style-hover="box-shadow:0 8px 20px -8px rgba(14,26,18,.22);transform:translateY(-2px);border-color:#BDC6BF;">
+            <div style="padding:16px 18px;">
+              <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:10px;">
+                <div style="display:flex;gap:11px;align-items:center;">
+                  <span style="width:38px;height:38px;border-radius:9px;background:#FBEFD2;color:#B57711;display:flex;align-items:center;justify-content:center;flex:none;">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8.5 14.5c0-3 3.5-4 3.5-8 3 2 5 5 5 8a5 5 0 0 1-10 0c0-1 .3-1.7.7-2.4"></path></svg>
+                  </span>
+                  <div>
+                    <div style="font-size:15px;font-weight:600;color:#0E1A12;">Energy demand</div>
+                    <div style="font-family:'IBM Plex Mono';font-size:10.5px;text-transform:uppercase;letter-spacing:.06em;color:#6B786F;margin-top:3px;">Clean cooking · EPC</div>
+                  </div>
+                </div>
+                <span style="font-size:11px;font-weight:600;color:#00682C;background:#DFF1E5;padding:4px 9px;border-radius:999px;white-space:nowrap;">Crediting</span>
+              </div>
+              <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:18px 0 16px;">
+                <div><div style="font-family:'IBM Plex Sans Condensed';font-weight:700;font-size:21px;color:#0E1A12;line-height:1;letter-spacing:-.02em;">128,400</div><div style="font-size:10.5px;color:#6B786F;margin-top:5px;">tCO₂e reduced</div></div>
+                <div><div style="font-family:'IBM Plex Sans Condensed';font-weight:700;font-size:21px;color:#0E1A12;line-height:1;letter-spacing:-.02em;">16</div><div style="font-size:10.5px;color:#6B786F;margin-top:5px;">projects</div></div>
+                <div><div style="font-family:'IBM Plex Sans Condensed';font-weight:700;font-size:21px;color:#0E1A12;line-height:1;letter-spacing:-.02em;">2,180</div><div style="font-size:10.5px;color:#6B786F;margin-top:5px;">smart meters</div></div>
+              </div>
+              <div style="display:flex;justify-content:space-between;font-size:12px;color:#4E5B52;margin-bottom:6px;">Data completeness<span style="font-family:'IBM Plex Mono';color:#0E1A12;">92%</span></div>
+              <div style="height:7px;border-radius:999px;background:#E6EBE6;overflow:hidden;"><i style="display:block;height:100%;width:92%;background:#DD9B1F;border-radius:999px;"></i></div>
+            </div>
+            <div style="padding:11px 18px;border-top:1px solid #E6EBE6;background:#F7F9F6;display:flex;align-items:center;justify-content:space-between;gap:10px;">
+              <span style="font-family:'IBM Plex Mono';font-size:11px;color:#6B786F;">Gold Standard · Metered</span>
+              <span style="display:inline-flex;align-items:center;gap:4px;font-size:12px;font-weight:600;color:#B57711;">Open scope<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"></path></svg></span>
+            </div>
+          </div>
+
+          <!-- Waste management -->
+          <div onClick="{{ openWaste }}" role="button" tabindex="0" style="background:#fff;border:1px solid #DCE3DD;border-radius:12px;box-shadow:0 1px 2px rgba(14,26,18,.04);border-top:3px solid #0E7490;overflow:hidden;cursor:pointer;transition:box-shadow .18s ease, transform .18s ease, border-color .18s ease;" style-hover="box-shadow:0 8px 20px -8px rgba(14,26,18,.22);transform:translateY(-2px);border-color:#BDC6BF;">
+            <div style="padding:16px 18px;">
+              <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:10px;">
+                <div style="display:flex;gap:11px;align-items:center;">
+                  <span style="width:38px;height:38px;border-radius:9px;background:#E2F2F6;color:#0B5A6B;display:flex;align-items:center;justify-content:center;flex:none;">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"></path><path d="M8 6V4a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v2"></path><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"></path><path d="M10 11v6M14 11v6"></path></svg>
+                  </span>
+                  <div>
+                    <div style="font-size:15px;font-weight:600;color:#0E1A12;">Waste management</div>
+                    <div style="font-family:'IBM Plex Mono';font-size:10.5px;text-transform:uppercase;letter-spacing:.06em;color:#6B786F;margin-top:3px;">Composting · LFG</div>
+                  </div>
+                </div>
+                <span style="font-size:11px;font-weight:600;color:#0B5A6B;background:#E2F2F6;padding:4px 9px;border-radius:999px;white-space:nowrap;">Monitoring</span>
+              </div>
+              <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:18px 0 16px;">
+                <div><div style="font-family:'IBM Plex Sans Condensed';font-weight:700;font-size:21px;color:#0E1A12;line-height:1;letter-spacing:-.02em;">41,600</div><div style="font-size:10.5px;color:#6B786F;margin-top:5px;">tCO₂e reduced</div></div>
+                <div><div style="font-family:'IBM Plex Sans Condensed';font-weight:700;font-size:21px;color:#0E1A12;line-height:1;letter-spacing:-.02em;">9</div><div style="font-size:10.5px;color:#6B786F;margin-top:5px;">projects</div></div>
+                <div><div style="font-family:'IBM Plex Sans Condensed';font-weight:700;font-size:21px;color:#0E1A12;line-height:1;letter-spacing:-.02em;">740</div><div style="font-size:10.5px;color:#6B786F;margin-top:5px;">facilities</div></div>
+              </div>
+              <div style="display:flex;justify-content:space-between;font-size:12px;color:#4E5B52;margin-bottom:6px;">Data completeness<span style="font-family:'IBM Plex Mono';color:#0E1A12;">86%</span></div>
+              <div style="height:7px;border-radius:999px;background:#E6EBE6;overflow:hidden;"><i style="display:block;height:100%;width:86%;background:#0E7490;border-radius:999px;"></i></div>
+            </div>
+            <div style="padding:11px 18px;border-top:1px solid #E6EBE6;background:#F7F9F6;display:flex;align-items:center;justify-content:space-between;gap:10px;">
+              <span style="font-family:'IBM Plex Mono';font-size:11px;color:#6B786F;">CDM AMS-III.F</span>
+              <span style="display:inline-flex;align-items:center;gap:4px;font-size:12px;font-weight:600;color:#0B5A6B;">Open scope<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"></path></svg></span>
+            </div>
+          </div>
+
+          <!-- AFOLU -->
+          <div onClick="{{ openLand }}" role="button" tabindex="0" style="background:#fff;border:1px solid #DCE3DD;border-radius:12px;box-shadow:0 1px 2px rgba(14,26,18,.04);border-top:3px solid #008037;overflow:hidden;cursor:pointer;transition:box-shadow .18s ease, transform .18s ease, border-color .18s ease;" style-hover="box-shadow:0 8px 20px -8px rgba(14,26,18,.22);transform:translateY(-2px);border-color:#BDC6BF;">
+            <div style="padding:16px 18px;">
+              <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:10px;">
+                <div style="display:flex;gap:11px;align-items:center;">
+                  <span style="width:38px;height:38px;border-radius:9px;background:#DFF1E5;color:#008037;display:flex;align-items:center;justify-content:center;flex:none;">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22v-6"></path><path d="M12 16c-3.5 0-6-2.5-6-6 0-3.5 2.5-7 6-9 3.5 2 6 5.5 6 9 0 3.5-2.5 6-6 6z"></path></svg>
+                  </span>
+                  <div>
+                    <div style="font-size:15px;font-weight:600;color:#0E1A12;">AFOLU</div>
+                    <div style="font-family:'IBM Plex Mono';font-size:10.5px;text-transform:uppercase;letter-spacing:.06em;color:#6B786F;margin-top:3px;">ARR · REDD+</div>
+                  </div>
+                </div>
+                <span style="font-size:11px;font-weight:600;color:#B57711;background:#FBEFD2;padding:4px 9px;border-radius:999px;white-space:nowrap;">In review</span>
+              </div>
+              <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:18px 0 16px;">
+                <div><div style="font-family:'IBM Plex Sans Condensed';font-weight:700;font-size:21px;color:#0E1A12;line-height:1;letter-spacing:-.02em;">44,800</div><div style="font-size:10.5px;color:#6B786F;margin-top:5px;">tCO₂e reduced</div></div>
+                <div><div style="font-family:'IBM Plex Sans Condensed';font-weight:700;font-size:21px;color:#0E1A12;line-height:1;letter-spacing:-.02em;">13</div><div style="font-size:10.5px;color:#6B786F;margin-top:5px;">projects</div></div>
+                <div><div style="font-family:'IBM Plex Sans Condensed';font-weight:700;font-size:21px;color:#0E1A12;line-height:1;letter-spacing:-.02em;">1,940</div><div style="font-size:10.5px;color:#6B786F;margin-top:5px;">ha-plots</div></div>
+              </div>
+              <div style="display:flex;justify-content:space-between;font-size:12px;color:#4E5B52;margin-bottom:6px;">Data completeness<span style="font-family:'IBM Plex Mono';color:#0E1A12;">79%</span></div>
+              <div style="height:7px;border-radius:999px;background:#E6EBE6;overflow:hidden;"><i style="display:block;height:100%;width:79%;background:#008037;border-radius:999px;"></i></div>
+            </div>
+            <div style="padding:11px 18px;border-top:1px solid #E6EBE6;background:#F7F9F6;display:flex;align-items:center;justify-content:space-between;gap:10px;">
+              <span style="font-family:'IBM Plex Mono';font-size:11px;color:#6B786F;">Verra VM0047</span>
+              <span style="display:inline-flex;align-items:center;gap:4px;font-size:12px;font-weight:600;color:#00682C;">Open scope<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"></path></svg></span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Carbon credit lifecycle -->
+        <div style="background:#fff;border:1px solid #DCE3DD;border-radius:12px;box-shadow:0 1px 2px rgba(14,26,18,.04);padding:20px 24px 26px;margin-top:4px;">
+          <div style="display:flex;align-items:baseline;justify-content:space-between;gap:12px;">
+            <h2 style="margin:0;font-size:15px;font-weight:600;color:#0E1A12;">Carbon credit lifecycle</h2>
+            <span style="font-size:12px;color:#6B786F;">From metered activity to retired credit</span>
+          </div>
+          <div style="position:relative;display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-top:26px;">
+            <div style="position:absolute;top:24px;left:10%;right:10%;height:2px;background:#E6EBE6;z-index:0;"></div>
+            <div style="position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;text-align:center;gap:11px;padding:0 6px;">
+              <span style="width:48px;height:48px;border-radius:50%;background:#DFF1E5;color:#008037;display:flex;align-items:center;justify-content:center;border:3px solid #fff;box-shadow:0 0 0 1px #DCE3DD;">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12h4l2 6 4-14 2 8h6"></path></svg>
+              </span>
+              <div><div style="font-size:13px;font-weight:600;color:#0E1A12;">Monitor</div><div style="font-size:11px;color:#6B786F;line-height:1.4;margin-top:3px;">Meters capture activity at source</div></div>
+            </div>
+            <div style="position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;text-align:center;gap:11px;padding:0 6px;">
+              <span style="width:48px;height:48px;border-radius:50%;background:#DFF1E5;color:#008037;display:flex;align-items:center;justify-content:center;border:3px solid #fff;box-shadow:0 0 0 1px #DCE3DD;">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 20h.01M7 20v-4M12 20v-8M17 20V8M22 4v16"></path></svg>
+              </span>
+              <div><div style="font-size:13px;font-weight:600;color:#0E1A12;">Quantify</div><div style="font-size:11px;color:#6B786F;line-height:1.4;margin-top:3px;">Reductions computed in tCO₂e</div></div>
+            </div>
+            <div style="position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;text-align:center;gap:11px;padding:0 6px;">
+              <span style="width:48px;height:48px;border-radius:50%;background:#DFF1E5;color:#008037;display:flex;align-items:center;justify-content:center;border:3px solid #fff;box-shadow:0 0 0 1px #DCE3DD;">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l8 4v6c0 5-3.5 8-8 10-4.5-2-8-5-8-10V6z"></path><path d="M9 12l2 2 4-4"></path></svg>
+              </span>
+              <div><div style="font-size:13px;font-weight:600;color:#0E1A12;">Verify</div><div style="font-size:11px;color:#6B786F;line-height:1.4;margin-top:3px;">Independent third-party audit</div></div>
+            </div>
+            <div style="position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;text-align:center;gap:11px;padding:0 6px;">
+              <span style="width:48px;height:48px;border-radius:50%;background:#DFF1E5;color:#008037;display:flex;align-items:center;justify-content:center;border:3px solid #fff;box-shadow:0 0 0 1px #DCE3DD;">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="6" rx="8" ry="3"></ellipse><path d="M4 6v6c0 1.66 3.58 3 8 3s8-1.34 8-3V6"></path><path d="M4 12v6c0 1.66 3.58 3 8 3s8-1.34 8-3v-6"></path></svg>
+              </span>
+              <div><div style="font-size:13px;font-weight:600;color:#0E1A12;">Issue</div><div style="font-size:11px;color:#6B786F;line-height:1.4;margin-top:3px;">Credits issued to registry</div></div>
+            </div>
+            <div style="position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;text-align:center;gap:11px;padding:0 6px;">
+              <span style="width:48px;height:48px;border-radius:50%;background:#008037;color:#fff;display:flex;align-items:center;justify-content:center;border:3px solid #fff;box-shadow:0 0 0 1px #DCE3DD;">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10z"></path><path d="M2 21c0-3 1.85-5.36 5.08-6"></path></svg>
+              </span>
+              <div><div style="font-size:13px;font-weight:600;color:#0E1A12;">Retire</div><div style="font-size:11px;color:#6B786F;line-height:1.4;margin-top:3px;">Offset claimed &amp; retired</div></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Recent activity -->
+        <sc-if value="{{ showActivity }}" hint-placeholder-val="{{ true }}">
+          <div style="background:#fff;border:1px solid #DCE3DD;border-radius:12px;box-shadow:0 1px 2px rgba(14,26,18,.04);">
+            <div style="display:flex;align-items:center;justify-content:space-between;padding:16px 18px;border-bottom:1px solid #E6EBE6;">
+              <h2 style="margin:0;font-size:15px;font-weight:600;color:#0E1A12;">Recent activity</h2>
+              <a style="font-size:13px;color:#00682C;font-weight:600;text-decoration:none;cursor:pointer;">View all</a>
+            </div>
+            <div style="padding:4px 18px 6px;">
+              <sc-for list="{{ events }}" as="e" hint-placeholder-count="5">
+                <div style="display:flex;gap:12px;padding:13px 0;border-bottom:1px solid #E6EBE6;align-items:flex-start;">
+                  <span style="width:9px;height:9px;border-radius:50%;margin-top:6px;flex:none;background:{{ e.dot }}"></span>
+                  <div style="flex:1;font-size:13px;line-height:1.45;color:#1C2A22;"><b style="color:#0E1A12;font-weight:600;">{{ e.lead }}</b> {{ e.text }}</div>
+                  <span style="font-family:'IBM Plex Mono';font-size:11px;color:#6B786F;white-space:nowrap;margin-top:1px;">{{ e.time }}</span>
+                </div>
+              </sc-for>
+            </div>
+          </div>
+        </sc-if>
+
+      </div>
+      </sc-if>
+
+      <!-- ============ SCOPE DETAIL ============ -->
+      <sc-if value="{{ showDetail }}" hint-placeholder-val="{{ false }}">
+      <div data-screen-label="Scope detail" style="max-width:1180px;margin:0 auto;display:flex;flex-direction:column;gap:18px;">
+
+        <!-- Scope header band -->
+        <div style="{{ bandStyle }}">
+          <div style="display:flex;gap:15px;align-items:center;min-width:0;">
+            <span style="{{ iconChipStyle }}">{{ scopeIconEl }}</span>
+            <div style="min-width:0;">
+              <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+                <h2 style="margin:0;font-size:20px;font-weight:600;letter-spacing:-.01em;color:#0E1A12;">{{ scopeName }}</h2>
+                <span style="{{ statusStyle }}"><i style="{{ statusDotStyle }}"></i>{{ statusLabel }}</span>
+              </div>
+              <div style="font-size:13px;color:#4E5B52;margin-top:5px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+                <span>{{ tagline }}</span>
+                <span style="color:#BDC6BF;">·</span>
+                <span style="display:inline-flex;align-items:center;gap:5px;font-family:'IBM Plex Mono';font-size:11.5px;color:#6B786F;">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l8 4v6c0 5-3.5 8-8 10-4.5-2-8-5-8-10V6z"></path><path d="M9 12l2 2 4-4"></path></svg>
+                  {{ methodology }}
+                </span>
+              </div>
+            </div>
+          </div>
+          <div style="display:flex;gap:10px;flex:none;">
+            <button style="height:38px;padding:0 14px;border:1px solid #BDC6BF;border-radius:6px;background:#fff;color:#1C2A22;font-family:inherit;font-size:13px;font-weight:600;display:flex;align-items:center;gap:7px;cursor:pointer;" style-hover="background:#EFF3EE;">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><path d="M7 10l5 5 5-5"></path><path d="M12 15V3"></path></svg>
+              Export scope
+            </button>
+            <button onClick="{{ openModal }}" style="height:38px;padding:0 16px;border:0;border-radius:6px;background:#008037;color:#fff;font-family:inherit;font-size:13px;font-weight:600;display:flex;align-items:center;gap:7px;cursor:pointer;" style-hover="background:#00682C;">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"></path></svg>
+              Register project
+            </button>
+          </div>
+        </div>
+
+        <!-- ABAP biochar launch (waste scope only) -->
+        <sc-if value="{{ isWaste }}" hint-placeholder-val="{{ false }}">
+          <a href="ABAP Biochar Platform.dc.html" style="display:flex;align-items:center;justify-content:space-between;gap:20px;text-decoration:none;background:#0E1A12;border-radius:12px;padding:20px 24px;overflow:hidden;position:relative;">
+            <svg viewBox="0 0 520 160" preserveAspectRatio="xMidYMid slice" aria-hidden="true" style="position:absolute;inset:0;width:100%;height:100%;pointer-events:none;opacity:.18;"><g fill="none" stroke="#D86E45" stroke-width="1.2"><path d="M-10 120 C 110 96 200 140 320 110 S 540 96 560 124"></path><path d="M-10 138 C 110 114 200 158 320 128 S 540 114 560 142"></path><path d="M-10 102 C 110 78 200 122 320 92 S 540 78 560 106"></path></g></svg>
+            <div style="display:flex;align-items:center;gap:16px;position:relative;z-index:1;min-width:0;">
+              <span style="width:48px;height:48px;border-radius:11px;background:rgba(216,110,69,.18);color:#E89272;display:flex;align-items:center;justify-content:center;flex:none;">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8.5 14.5c0-3 3.5-4 3.5-8 3 2 5 5 5 8a5 5 0 0 1-10 0c0-1 .3-1.7.7-2.4"></path></svg>
+              </span>
+              <div style="min-width:0;">
+                <div style="font-family:'IBM Plex Mono';font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:#E89272;">Biochar value chain</div>
+                <div style="font-size:17px;font-weight:600;color:#fff;margin-top:4px;letter-spacing:-.01em;">Open ABAP — biochar aggregation platform</div>
+                <div style="font-size:12.5px;color:#AFC2B5;margin-top:3px;">Farmers · transport · pyrolysis sites · marketplace — across 5 countries</div>
+              </div>
+            </div>
+            <span style="position:relative;z-index:1;display:inline-flex;align-items:center;gap:7px;flex:none;height:40px;padding:0 16px;border-radius:6px;background:#008037;color:#fff;font-size:13px;font-weight:600;">
+              Launch platform
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M17 7H8M17 7v9"></path></svg>
+            </span>
+          </a>
+        </sc-if>
+
+        <!-- KPI grid -->
+        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:14px;">
+          <div style="background:#fff;border:1px solid #DCE3DD;border-radius:12px;padding:18px;box-shadow:0 1px 1px rgba(14,26,18,.04);">
+            <div style="display:flex;align-items:center;justify-content:space-between;">
+              <span style="width:30px;height:30px;border-radius:8px;background:#DFF1E5;color:#008037;display:flex;align-items:center;justify-content:center;">
+                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10z"></path><path d="M2 21c0-3 1.85-5.36 5.08-6"></path></svg>
+              </span>
+              <span style="font-family:'IBM Plex Mono';font-size:11px;color:#00682C;display:inline-flex;align-items:center;gap:3px;font-weight:500;"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M7 14l5-5 5 5"></path></svg>{{ rDelta }}</span>
+            </div>
+            <div style="font-family:'IBM Plex Sans Condensed';font-weight:700;font-size:34px;letter-spacing:-.02em;color:#0E1A12;line-height:1;margin-top:16px;font-variant-numeric:tabular-nums;">{{ rVal }}<span style="font-size:14px;color:#6B786F;font-family:'IBM Plex Mono';font-weight:400;margin-left:5px;">tCO₂e</span></div>
+            <div style="font-size:12.5px;color:#4E5B52;margin-top:6px;">Verified reductions</div>
+          </div>
+          <div style="background:#fff;border:1px solid #DCE3DD;border-radius:12px;padding:18px;box-shadow:0 1px 1px rgba(14,26,18,.04);">
+            <div style="display:flex;align-items:center;justify-content:space-between;">
+              <span style="width:30px;height:30px;border-radius:8px;background:#FBEFD2;color:#B57711;display:flex;align-items:center;justify-content:center;">
+                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="6" rx="8" ry="3"></ellipse><path d="M4 6v6c0 1.66 3.58 3 8 3s8-1.34 8-3V6"></path><path d="M4 12v6c0 1.66 3.58 3 8 3s8-1.34 8-3v-6"></path></svg>
+              </span>
+              <span style="font-family:'IBM Plex Mono';font-size:11px;color:#00682C;display:inline-flex;align-items:center;gap:3px;font-weight:500;"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M7 14l5-5 5 5"></path></svg>{{ cDelta }}</span>
+            </div>
+            <div style="font-family:'IBM Plex Sans Condensed';font-weight:700;font-size:34px;letter-spacing:-.02em;color:#0E1A12;line-height:1;margin-top:16px;font-variant-numeric:tabular-nums;">{{ cVal }}<span style="font-size:14px;color:#6B786F;font-family:'IBM Plex Mono';font-weight:400;margin-left:5px;">tCO₂e</span></div>
+            <div style="font-size:12.5px;color:#4E5B52;margin-top:6px;">Credits issued</div>
+          </div>
+          <div style="background:#fff;border:1px solid #DCE3DD;border-radius:12px;padding:18px;box-shadow:0 1px 1px rgba(14,26,18,.04);">
+            <div style="display:flex;align-items:center;justify-content:space-between;">
+              <span style="width:30px;height:30px;border-radius:8px;background:#E2F2F6;color:#0B5A6B;display:flex;align-items:center;justify-content:center;">
+                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V7a2 2 0 0 1 2-2h4l2 2h6a2 2 0 0 1 2 2v11z"></path></svg>
+              </span>
+              <span style="font-family:'IBM Plex Mono';font-size:11px;color:#00682C;display:inline-flex;align-items:center;gap:3px;font-weight:500;"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M7 14l5-5 5 5"></path></svg>{{ pDelta }}</span>
+            </div>
+            <div style="font-family:'IBM Plex Sans Condensed';font-weight:700;font-size:34px;letter-spacing:-.02em;color:#0E1A12;line-height:1;margin-top:16px;font-variant-numeric:tabular-nums;">{{ pVal }}<span style="font-size:14px;color:#6B786F;font-family:'IBM Plex Mono';font-weight:400;margin-left:5px;">VPAs</span></div>
+            <div style="font-size:12.5px;color:#4E5B52;margin-top:6px;">Active projects</div>
+          </div>
+          <div style="background:#fff;border:1px solid #DCE3DD;border-radius:12px;padding:18px;box-shadow:0 1px 1px rgba(14,26,18,.04);">
+            <div style="display:flex;align-items:center;justify-content:space-between;">
+              <span style="width:30px;height:30px;border-radius:8px;background:#FBE9E1;color:#8F3A1F;display:flex;align-items:center;justify-content:center;">
+                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12h4l2 6 4-14 2 8h6"></path></svg>
+              </span>
+              <span style="font-family:'IBM Plex Mono';font-size:11px;color:#00682C;display:inline-flex;align-items:center;gap:3px;font-weight:500;"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M7 14l5-5 5 5"></path></svg>{{ sDelta }}</span>
+            </div>
+            <div style="font-family:'IBM Plex Sans Condensed';font-weight:700;font-size:34px;letter-spacing:-.02em;color:#0E1A12;line-height:1;margin-top:16px;font-variant-numeric:tabular-nums;">{{ sVal }}</div>
+            <div style="font-size:12.5px;color:#4E5B52;margin-top:6px;">{{ sLabel }}</div>
+          </div>
+        </div>
+
+        <!-- Chart + monitoring -->
+        <div style="display:grid;grid-template-columns:1.62fr 1fr;gap:18px;align-items:start;">
+          <div style="background:#fff;border:1px solid #DCE3DD;border-radius:12px;box-shadow:0 1px 2px rgba(14,26,18,.06);">
+            <div style="display:flex;align-items:center;justify-content:space-between;padding:16px 18px;border-bottom:1px solid #E6EBE6;">
+              <h3 style="margin:0;font-size:15px;font-weight:600;color:#0E1A12;">Emission reductions over time</h3>
+              <div style="display:flex;gap:14px;align-items:center;">
+                <span style="display:inline-flex;align-items:center;gap:6px;font-size:12px;color:#4E5B52;"><i style="{{ monthlySwatchStyle }}"></i>Monthly</span>
+                <span style="display:inline-flex;align-items:center;gap:6px;font-size:12px;color:#4E5B52;"><i style="width:14px;height:3px;border-radius:2px;background:#0E7490;display:inline-block;"></i>Cumulative</span>
+              </div>
+            </div>
+            <div style="padding:14px 18px 16px;">{{ detailChartEl }}</div>
+          </div>
+
+          <sc-if value="{{ showMonitoring }}" hint-placeholder-val="{{ true }}">
+            <div style="background:#fff;border:1px solid #DCE3DD;border-radius:12px;box-shadow:0 1px 2px rgba(14,26,18,.06);">
+              <div style="display:flex;align-items:center;justify-content:space-between;padding:16px 18px;border-bottom:1px solid #E6EBE6;">
+                <h3 style="margin:0;font-size:15px;font-weight:600;color:#0E1A12;">Monitoring health</h3>
+                <span style="display:inline-flex;align-items:center;gap:6px;font-size:11.5px;font-weight:600;color:#00682C;background:#DFF1E5;padding:4px 9px;border-radius:999px;"><i style="width:6px;height:6px;border-radius:50%;background:#008037;display:inline-block;"></i>Healthy</span>
+              </div>
+              <div style="padding:18px;display:flex;flex-direction:column;gap:16px;">
+                <div>
+                  <div style="display:flex;justify-content:space-between;font-size:13px;color:#4E5B52;margin-bottom:7px;">Sites reporting<span style="font-family:'IBM Plex Mono';font-size:12px;color:#0E1A12;">{{ healthReporting }}</span></div>
+                  <div style="height:8px;border-radius:999px;background:#E6EBE6;overflow:hidden;"><i style="{{ reportingFillStyle }}"></i></div>
+                </div>
+                <div>
+                  <div style="display:flex;justify-content:space-between;font-size:13px;color:#4E5B52;margin-bottom:7px;">Crediting period elapsed<span style="font-family:'IBM Plex Mono';font-size:12px;color:#0E1A12;">58%</span></div>
+                  <div style="height:8px;border-radius:999px;background:#E6EBE6;overflow:hidden;"><i style="display:block;height:100%;width:58%;background:#0E7490;border-radius:999px;"></i></div>
+                </div>
+                <div>
+                  <div style="display:flex;justify-content:space-between;font-size:13px;color:#4E5B52;margin-bottom:7px;">Data completeness<span style="font-family:'IBM Plex Mono';font-size:12px;color:#0E1A12;">{{ completenessLabel }}</span></div>
+                  <div style="height:8px;border-radius:999px;background:#E6EBE6;overflow:hidden;"><i style="{{ completenessFillStyle }}"></i></div>
+                </div>
+                <div>
+                  <div style="display:flex;justify-content:space-between;font-size:13px;color:#4E5B52;margin-bottom:7px;">Verification readiness<span style="font-family:'IBM Plex Mono';font-size:12px;color:#0E1A12;">{{ verificationLabel }}</span></div>
+                  <div style="height:8px;border-radius:999px;background:#E6EBE6;overflow:hidden;"><i style="{{ verificationFillStyle }}"></i></div>
+                </div>
+              </div>
+            </div>
+          </sc-if>
+        </div>
+
+        <!-- Component projects table -->
+        <div style="background:#fff;border:1px solid #DCE3DD;border-radius:12px;box-shadow:0 1px 2px rgba(14,26,18,.06);overflow:hidden;">
+          <div style="display:flex;align-items:center;justify-content:space-between;padding:16px 18px;border-bottom:1px solid #E6EBE6;gap:12px;flex-wrap:wrap;">
+            <div style="display:flex;align-items:baseline;gap:10px;">
+              <h3 style="margin:0;font-size:15px;font-weight:600;color:#0E1A12;">Component projects (VPAs)</h3>
+              <span style="font-size:12px;color:#6B786F;">{{ projectCount }} in this scope</span>
+            </div>
+            <button onClick="{{ openModal }}" style="height:34px;padding:0 13px;border:1px solid #008037;border-radius:6px;background:#F1F8F3;color:#00682C;font-family:inherit;font-size:12.5px;font-weight:600;display:flex;align-items:center;gap:6px;cursor:pointer;" style-hover="background:#DFF1E5;">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"></path></svg>
+              Register project
+            </button>
+          </div>
+          <table style="width:100%;border-collapse:collapse;font-size:13px;">
+            <thead>
+              <tr>
+                <th style="text-align:left;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:#6B786F;padding:10px 18px;border-bottom:1px solid #DCE3DD;background:#F7F9F6;white-space:nowrap;">VPA ID</th>
+                <th style="text-align:left;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:#6B786F;padding:10px 16px;border-bottom:1px solid #DCE3DD;background:#F7F9F6;">Project</th>
+                <th style="text-align:left;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:#6B786F;padding:10px 16px;border-bottom:1px solid #DCE3DD;background:#F7F9F6;white-space:nowrap;">Location</th>
+                <th style="text-align:right;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:#6B786F;padding:10px 16px;border-bottom:1px solid #DCE3DD;background:#F7F9F6;white-space:nowrap;">{{ sLabel }}</th>
+                <th style="text-align:right;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:#6B786F;padding:10px 16px;border-bottom:1px solid #DCE3DD;background:#F7F9F6;white-space:nowrap;">tCO₂e</th>
+                <th style="text-align:left;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:#6B786F;padding:10px 18px;border-bottom:1px solid #DCE3DD;background:#F7F9F6;white-space:nowrap;">Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              <sc-for list="{{ projects }}" as="p" hint-placeholder-count="5">
+                <tr style="border-bottom:1px solid #E6EBE6;" style-hover="background:#F7F9F6;">
+                  <td style="padding:13px 18px;font-family:'IBM Plex Mono';font-size:12px;color:#0E1A12;white-space:nowrap;">{{ p.id }}</td>
+                  <td style="padding:13px 16px;color:#0E1A12;font-weight:500;">{{ p.name }}</td>
+                  <td style="padding:13px 16px;color:#4E5B52;white-space:nowrap;">{{ p.loc }}</td>
+                  <td style="padding:13px 16px;text-align:right;font-variant-numeric:tabular-nums;font-family:'IBM Plex Mono';font-size:12px;color:#1C2A22;">{{ p.sites }}</td>
+                  <td style="padding:13px 16px;text-align:right;font-variant-numeric:tabular-nums;font-family:'IBM Plex Mono';font-size:12px;color:#0E1A12;">{{ p.red }}</td>
+                  <td style="padding:13px 18px;"><span style="{{ p.badgeStyle }}"><i style="{{ p.dotStyle }}"></i>{{ p.status }}</span></td>
+                </tr>
+              </sc-for>
+            </tbody>
+          </table>
+        </div>
+
+      </div>
+      </sc-if>
+
+    </div>
+  </div>
+
+  <!-- ===== Register project modal ===== -->
+  <sc-if value="{{ showModal }}" hint-placeholder-val="{{ false }}">
+    <div style="position:fixed;inset:0;background:rgba(14,26,18,.42);display:flex;align-items:center;justify-content:center;z-index:50;padding:24px;" onClick="{{ closeModal }}">
+      <div style="background:#fff;border-radius:14px;box-shadow:0 12px 28px -8px rgba(14,26,18,.18),0 4px 10px -4px rgba(14,26,18,.08);width:100%;max-width:500px;max-height:90vh;overflow-y:auto;" onClick="{{ stop }}">
+        <div style="padding:20px 22px 16px;border-bottom:1px solid #E6EBE6;display:flex;align-items:flex-start;justify-content:space-between;gap:14px;">
+          <div style="display:flex;gap:12px;align-items:center;">
+            <span style="{{ modalIconStyle }}">{{ regIconEl }}</span>
+            <div>
+              <h3 style="margin:0;font-size:17px;font-weight:600;color:#0E1A12;">Register project</h3>
+              <div style="font-size:12.5px;color:#4E5B52;margin-top:3px;">New VPA under <b style="color:#1C2A22;font-weight:600;">{{ regScopeName }}</b></div>
+            </div>
+          </div>
+          <button onClick="{{ closeModal }}" aria-label="Close" style="width:32px;height:32px;border:0;border-radius:7px;background:#EFF3EE;color:#4E5B52;display:flex;align-items:center;justify-content:center;cursor:pointer;flex:none;" style-hover="background:#DCE3DD">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6L6 18M6 6l12 12"></path></svg>
+          </button>
+        </div>
+
+        <div style="padding:20px 22px;display:flex;flex-direction:column;gap:16px;">
+          <div>
+            <label style="display:block;font-size:12.5px;font-weight:600;color:#1C2A22;margin-bottom:6px;">Project name</label>
+            <input value="{{ formName }}" onInput="{{ setName }}" placeholder="e.g. Nakuru institutional cooking" style="width:100%;height:40px;padding:0 12px;font-family:inherit;font-size:13.5px;border:1px solid #BDC6BF;border-radius:6px;background:#fff;color:#0E1A12;outline:none;" style-focus="border-color:#008037;box-shadow:0 0 0 3px rgba(0,128,55,.20);">
+          </div>
+
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
+            <div>
+              <label style="display:block;font-size:12.5px;font-weight:600;color:#1C2A22;margin-bottom:6px;">Location</label>
+              <div style="position:relative;display:flex;align-items:center;">
+                <select value="{{ formCounty }}" onChange="{{ setCounty }}" style="width:100%;height:40px;padding:0 30px 0 12px;font-family:inherit;font-size:13.5px;border:1px solid #BDC6BF;border-radius:6px;background:#fff;color:#0E1A12;outline:none;appearance:none;cursor:pointer;">
+                  <sc-for list="{{ countyOptions }}" as="c" hint-placeholder-count="4">
+                    <option value="{{ c }}">{{ c }}</option>
+                  </sc-for>
+                </select>
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#6B786F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="position:absolute;right:10px;pointer-events:none;"><path d="M6 9l6 6 6-6"></path></svg>
+              </div>
+            </div>
+            <div>
+              <label style="display:block;font-size:12.5px;font-weight:600;color:#1C2A22;margin-bottom:6px;">{{ sLabel }}</label>
+              <input value="{{ formSites }}" onInput="{{ setSites }}" placeholder="0" inputmode="numeric" style="width:100%;height:40px;padding:0 12px;font-family:'IBM Plex Mono';font-size:13.5px;border:1px solid #BDC6BF;border-radius:6px;background:#fff;color:#0E1A12;outline:none;" style-focus="border-color:#008037;box-shadow:0 0 0 3px rgba(0,128,55,.20);">
+            </div>
+          </div>
+
+          <div>
+            <label style="display:block;font-size:12.5px;font-weight:600;color:#1C2A22;margin-bottom:6px;">Estimated annual reductions <span style="color:#6B786F;font-weight:400;">(tCO₂e)</span></label>
+            <input value="{{ formRed }}" onInput="{{ setRed }}" placeholder="0" inputmode="numeric" style="width:100%;height:40px;padding:0 12px;font-family:'IBM Plex Mono';font-size:13.5px;border:1px solid #BDC6BF;border-radius:6px;background:#fff;color:#0E1A12;outline:none;" style-focus="border-color:#008037;box-shadow:0 0 0 3px rgba(0,128,55,.20);">
+          </div>
+
+          <div style="display:flex;align-items:center;gap:9px;padding:11px 13px;background:#F1F8F3;border:1px solid #DFF1E5;border-radius:8px;">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#00682C" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex:none;"><path d="M12 2l8 4v6c0 5-3.5 8-8 10-4.5-2-8-5-8-10V6z"></path><path d="M9 12l2 2 4-4"></path></svg>
+            <span style="font-size:12.5px;color:#1C2A22;">Methodology <b style="font-weight:600;">{{ regMethodology }}</b> applied automatically.</span>
+          </div>
+        </div>
+
+        <div style="padding:16px 22px 20px;border-top:1px solid #E6EBE6;display:flex;justify-content:flex-end;gap:10px;">
+          <button onClick="{{ closeModal }}" style="height:40px;padding:0 16px;border:1px solid #BDC6BF;border-radius:6px;background:#fff;color:#1C2A22;font-family:inherit;font-size:13.5px;font-weight:600;cursor:pointer;" style-hover="background:#EFF3EE;">Cancel</button>
+          <button onClick="{{ submit }}" style="{{ submitStyle }}">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"></path></svg>
+            Register project
+          </button>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;landingView&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;overview&quot;,&quot;energy&quot;,&quot;waste&quot;,&quot;land&quot;],&quot;default&quot;:&quot;overview&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;defaultSector&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;all&quot;,&quot;energy&quot;,&quot;waste&quot;,&quot;land&quot;],&quot;default&quot;:&quot;all&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;showMonitoring&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;},&quot;showActivity&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;}}">
+class Component extends DCLogic {
+  state = { view: null, filterSector: null, showModal: false, regSector: 'energy', form: { name:'', county:'', sites:'', red:'' }, extra: { energy:[], waste:[], land:[] } };
+
+  months = ['Jul','Aug','Sep','Oct','Nov','Dec','Jan','Feb','Mar','Apr','May','Jun'];
+  energy = [7.8,8.9,9.6,10.4,11.2,12.1,11.6,12.8,13.9,14.6,15.7,16.4];
+  waste  = [2.6,2.8,2.9,3.0,3.2,3.3,3.1,3.4,3.6,3.7,3.9,4.0];
+  land   = [2.8,3.0,3.1,3.3,3.4,3.6,3.5,3.7,3.9,4.0,4.1,4.2];
+
+  DATA = {
+    all:    { r:'214,800', rd:'9.6%',  c:'162,400', cd:'14,200', p:'38', pd:'5', s:'4,860', sd:'210' },
+    energy: { r:'128,400', rd:'12.4%', c:'96,000',  cd:'8,200',  p:'16', pd:'3', s:'2,180', sd:'180' },
+    waste:  { r:'41,600',  rd:'6.1%',  c:'34,800',  cd:'3,100',  p:'9',  pd:'1', s:'740',   sd:'24'  },
+    land:   { r:'44,800',  rd:'7.8%',  c:'31,600',  cd:'2,900',  p:'13', pd:'1', s:'1,940', sd:'6'   },
+  };
+
+  EVENTS = [
+    { dot:'#008037', lead:'Monitoring report VPA-12', text:'submitted for verification — AFOLU', time:'2h' },
+    { dot:'#B57711', lead:'8,200 tCO₂e',              text:'issued — Energy demand, vintage 2025',  time:'5h' },
+    { dot:'#0E7490', lead:'Methane capture dip',      text:'flagged at Dandora landfill-gas site',  time:'9h' },
+    { dot:'#C0392B', lead:'37 devices',               text:'flagged: no data > 72h',                time:'1d' },
+    { dot:'#008037', lead:'VPA-15 onboarding',        text:'completed · 620 ha enrolled',           time:'1d' },
+    { dot:'#0E7490', lead:'3,100 tCO₂e',              text:'verified — composting programme',       time:'2d' },
+  ];
+
+  SCOPES = {
+    energy: {
+      name:'Energy demand', tagline:'Clean cooking · EPC & institutional',
+      methodology:'Gold Standard · Metered & Measured', status:'Crediting',
+      accent:'#DD9B1F', accentBg:'#FBEFD2', accentFg:'#B57711', sLabel:'Smart meters',
+      kpi:this.dataRef('energy'),
+      health:{ reporting:'2,065 / 2,180', reportingPct:95, completeness:92, verification:78 },
+      monthly:[7.8,8.9,9.6,10.4,11.2,12.1,11.6,12.8,13.9,14.6,15.7,16.4],
+      counties:['Nairobi','Kiambu','Nakuru','Kisumu','Machakos','Uasin Gishu'],
+      projects:[
+        { id:'VPA-01', name:'NACONEK school cooking — Central', loc:'Central Kenya', sites:'842', red:'34,200', status:'Crediting' },
+        { id:'VPA-02', name:'Nairobi institutional cooking', loc:'Nairobi', sites:'610', red:'28,900', status:'Verified' },
+        { id:'VPA-04', name:'EPC household programme', loc:'Nakuru', sites:'540', red:'22,400', status:'Monitoring' },
+        { id:'VPA-07', name:'Clean cooking for clinics', loc:'Kisumu', sites:'280', red:'14,800', status:'Crediting' },
+        { id:'VPA-09', name:'Machakos boarding schools', loc:'Machakos', sites:'320', red:'12,100', status:'In review' },
+      ],
+    },
+    waste: {
+      name:'Waste management', tagline:'Composting · landfill gas · wastewater',
+      methodology:'CDM AMS-III.F · Composting', status:'Monitoring',
+      accent:'#0E7490', accentBg:'#E2F2F6', accentFg:'#0B5A6B', sLabel:'Facilities',
+      kpi:this.dataRef('waste'),
+      health:{ reporting:'702 / 740', reportingPct:95, completeness:86, verification:71 },
+      monthly:[2.6,2.8,2.9,3.0,3.2,3.3,3.1,3.4,3.6,3.7,3.9,4.0],
+      counties:['Nairobi','Nakuru','Kisumu','Kiambu','Mombasa'],
+      projects:[
+        { id:'VPA-03', name:'Dandora landfill gas capture', loc:'Nairobi', sites:'1', red:'18,600', status:'Crediting' },
+        { id:'VPA-06', name:'Nakuru municipal composting', loc:'Nakuru', sites:'240', red:'9,400', status:'Monitoring' },
+        { id:'VPA-10', name:'Kisumu wastewater treatment', loc:'Kisumu', sites:'12', red:'6,800', status:'Verified' },
+        { id:'VPA-12', name:'Thika organics composting', loc:'Kiambu', sites:'180', red:'6,800', status:'In review' },
+      ],
+    },
+    land: {
+      name:'AFOLU', tagline:'Agriculture, forestry & other land use · ARR + REDD+',
+      methodology:'Verra VM0047 · ARR + REDD+', status:'In review',
+      accent:'#008037', accentBg:'#DFF1E5', accentFg:'#00682C', sLabel:'Hectares',
+      kpi:this.dataRef('land'),
+      health:{ reporting:'1,838 / 1,940', reportingPct:95, completeness:79, verification:66 },
+      monthly:[2.8,3.0,3.1,3.3,3.4,3.6,3.5,3.7,3.9,4.0,4.1,4.2],
+      counties:['Narok','Nyeri','Kakamega','Kilifi','Baringo'],
+      projects:[
+        { id:'VPA-05', name:'Mau forest afforestation', loc:'Narok', sites:'620', red:'16,200', status:'Crediting' },
+        { id:'VPA-08', name:'Aberdare reforestation', loc:'Nyeri', sites:'480', red:'12,400', status:'Monitoring' },
+        { id:'VPA-11', name:'Kakamega REDD+ conservation', loc:'Kakamega', sites:'540', red:'9,800', status:'In review' },
+        { id:'VPA-15', name:'Coastal mangrove ARR', loc:'Kilifi', sites:'300', red:'6,400', status:'Pending' },
+      ],
+    },
+  };
+
+  dataRef(k) { return { r:{energy:'128,400',waste:'41,600',land:'44,800'}[k], rd:{energy:'12.4%',waste:'6.1%',land:'7.8%'}[k], c:{energy:'96,000',waste:'34,800',land:'31,600'}[k], cd:{energy:'8,200',waste:'3,100',land:'2,900'}[k], p:{energy:'16',waste:'9',land:'13'}[k], pd:{energy:'3',waste:'1',land:'1'}[k], s:{energy:'2,180',waste:'740',land:'1,940'}[k], sd:{energy:'180',waste:'24',land:'6'}[k] }; }
+
+  curView() { return this.state.view ?? (this.props.landingView || 'overview'); }
+  curFilter() { return this.state.filterSector ?? (this.props.defaultSector || 'all'); }
+
+  goOverview = () => this.setState({ view: 'overview' });
+  openEnergy = () => this.setState({ view: 'energy' });
+  openWaste  = () => this.setState({ view: 'waste' });
+  openLand   = () => this.setState({ view: 'land' });
+
+  statusStyle(label) {
+    const map = {
+      'Verified':   { bg:'#DFF1E5', fg:'#00682C', dot:'#008037' },
+      'Crediting':  { bg:'#E2F2F6', fg:'#0B5A6B', dot:'#0E7490' },
+      'Monitoring': { bg:'#EFF3EE', fg:'#36433B', dot:'#8C988F' },
+      'In review':  { bg:'#FBEFD2', fg:'#B57711', dot:'#DD9B1F' },
+      'Pending':    { bg:'#EFF3EE', fg:'#4E5B52', dot:'#8C988F' },
+    };
+    const t = map[label] || map['Pending'];
+    return {
+      badge: { display:'inline-flex', alignItems:'center', gap:'6px', fontSize:'11px', fontWeight:600, padding:'4px 9px', borderRadius:'999px', whiteSpace:'nowrap', background:t.bg, color:t.fg },
+      dot: { width:'6px', height:'6px', borderRadius:'50%', flex:'none', display:'inline-block', background:t.dot },
+    };
+  }
+
+  scopeIcon(key, size) {
+    const h = React.createElement;
+    const c = { width:size||24, height:size||24, viewBox:'0 0 24 24', fill:'none', stroke:'currentColor', strokeWidth:2, strokeLinecap:'round', strokeLinejoin:'round' };
+    if (key === 'energy') return h('svg', c, h('path', { d:'M8.5 14.5c0-3 3.5-4 3.5-8 3 2 5 5 5 8a5 5 0 0 1-10 0c0-1 .3-1.7.7-2.4' }));
+    if (key === 'waste') return h('svg', c, h('path', { d:'M3 6h18' }), h('path', { d:'M8 6V4a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v2' }), h('path', { d:'M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6' }), h('path', { d:'M10 11v6M14 11v6' }));
+    return h('svg', c, h('path', { d:'M12 22v-6' }), h('path', { d:'M12 16c-3.5 0-6-2.5-6-6 0-3.5 2.5-7 6-9 3.5 2 6 5.5 6 9 0 3.5-2.5 6-6 6z' }));
+  }
+
+  setField(k, e) { const v = e && e.target ? e.target.value : e; this.setState(s => ({ form: { ...s.form, [k]: v } })); }
+
+  openModal = () => {
+    const sec = this.curView() === 'overview' ? 'energy' : this.curView();
+    this.setState({ showModal: true, regSector: sec, form: { name:'', county: this.SCOPES[sec].counties[0], sites:'', red:'' } });
+  };
+  closeModal = () => this.setState({ showModal: false });
+
+  submit = () => {
+    const sec = this.state.regSector;
+    const f = this.state.form;
+    if (!f.name.trim()) return;
+    const base = this.SCOPES[sec].projects;
+    const extra = this.state.extra[sec] || [];
+    const n = base.length + extra.length + 1;
+    const row = { id:'VPA-'+String(n).padStart(2,'0'), name:f.name.trim(), loc:f.county||this.SCOPES[sec].counties[0], sites:(f.sites||'').trim()||'—', red:(f.red||'').trim()||'0', status:'Pending' };
+    this.setState(s => ({ extra: { ...s.extra, [sec]: [row, ...(s.extra[sec] || [])] }, showModal: false }));
+  };
+
+  buildOverviewChart(filterSector) {
+    const W = 720, H = 240, padL = 44, padB = 30, padT = 14, padR = 10, max = 26, n = 12;
+    const bw = (W - padL - padR) / n;
+    const xc = i => padL + i * bw + bw / 2;
+    const yv = v => padT + (H - padT - padB) * (1 - v / max);
+    const barW = bw * 0.54;
+    const series = [ { key:'energy', data:this.energy, color:'#DD9B1F' }, { key:'waste', data:this.waste, color:'#0E7490' }, { key:'land', data:this.land, color:'#008037' } ];
+    const op = k => (filterSector === 'all' || filterSector === k) ? 1 : 0.16;
+    const h = React.createElement; const kids = [];
+    [0, 6.5, 13, 19.5, 26].forEach((g, gi) => {
+      kids.push(h('line', { key:'gl'+gi, x1:padL, x2:W-padR, y1:yv(g), y2:yv(g), stroke:'#E6EBE6' }));
+      kids.push(h('text', { key:'gt'+gi, x:padL-8, y:yv(g)+4, textAnchor:'end', fontSize:10, fontFamily:'IBM Plex Mono', fill:'#6B786F' }, g + 'k'));
+    });
+    for (let i = 0; i < n; i++) {
+      let baseV = 0;
+      series.forEach(s => { const v = s.data[i]; const y0 = yv(baseV), y1 = yv(baseV + v); kids.push(h('rect', { key:s.key+i, x:xc(i)-barW/2, y:y1, width:barW, height:Math.max(0,y0-y1), fill:s.color, opacity:op(s.key), rx:1.5 })); baseV += v; });
+      kids.push(h('text', { key:'mx'+i, x:xc(i), y:H-10, textAnchor:'middle', fontSize:10, fontFamily:'IBM Plex Mono', fill:'#6B786F' }, this.months[i]));
+    }
+    return h('svg', { viewBox:'0 0 '+W+' '+H, preserveAspectRatio:'xMidYMid meet', style:{ width:'100%', display:'block' }, role:'img', 'aria-label':'Monthly emission reductions by sectoral scope' }, kids);
+  }
+
+  buildDetailChart(scope) {
+    const data = scope.monthly;
+    const W = 720, H = 230, padL = 40, padB = 28, padT = 12, padR = 8, n = data.length;
+    const mx = Math.max(...data); const max = Math.ceil(mx * 1.18);
+    const bw = (W - padL - padR) / n;
+    const xc = i => padL + i * bw + bw / 2;
+    const yv = v => padT + (H - padT - padB) * (1 - v / max);
+    const barW = bw * 0.56; const h = React.createElement; const kids = [];
+    const step = max / 4;
+    for (let g = 0; g <= 4; g++) { const val = +(step*g).toFixed(1); kids.push(h('line', { key:'gl'+g, x1:padL, x2:W-padR, y1:yv(val), y2:yv(val), stroke:'#E6EBE6' })); kids.push(h('text', { key:'gt'+g, x:padL-8, y:yv(val)+4, textAnchor:'end', fontSize:10, fontFamily:'IBM Plex Mono', fill:'#6B786F' }, val+'k')); }
+    data.forEach((v, i) => { kids.push(h('rect', { key:'b'+i, x:xc(i)-barW/2, y:yv(v), width:barW, height:(H-padB)-yv(v), rx:2.5, fill:scope.accent, opacity:i===n-1?1:0.82 })); kids.push(h('text', { key:'x'+i, x:xc(i), y:H-9, textAnchor:'middle', fontSize:10, fontFamily:'IBM Plex Mono', fill:'#6B786F' }, this.months[i])); });
+    let cum = 0; const cumMax = data.reduce((a, d) => a + d, 0);
+    const pts = data.map((d, i) => { cum += d; return [xc(i), padT + (H-padT-padB) * (1 - cum/cumMax)]; });
+    const line = pts.map((p, i) => (i ? 'L' : 'M') + p[0].toFixed(1) + ' ' + p[1].toFixed(1)).join(' ');
+    const area = 'M' + padL + ' ' + (H-padB) + ' ' + pts.map(p => 'L'+p[0].toFixed(1)+' '+p[1].toFixed(1)).join(' ') + ' L' + xc(n-1) + ' ' + (H-padB) + ' Z';
+    kids.push(h('path', { key:'area', d:area, fill:'rgba(14,116,144,0.10)' }));
+    kids.push(h('path', { key:'line', d:line, fill:'none', stroke:'#0E7490', strokeWidth:2.2, strokeLinecap:'round', strokeLinejoin:'round' }));
+    kids.push(h('circle', { key:'dot', cx:pts[n-1][0], cy:pts[n-1][1], r:3.5, fill:'#0E7490' }));
+    return h('svg', { viewBox:'0 0 '+W+' '+H, preserveAspectRatio:'xMidYMid meet', style:{ width:'100%', display:'block' }, role:'img', 'aria-label':'Emission reductions over time' }, kids);
+  }
+
+  navItem(active) {
+    return { display:'flex', alignItems:'center', gap:'11px', padding:'9px 10px', borderRadius:'6px', border:0, cursor:'pointer', width:'100%', textAlign:'left', fontFamily:'inherit', fontSize:'13.5px', fontWeight: active?600:500, background: active?'#008037':'transparent', color: active?'#fff':'#AFC2B5' };
+  }
+
+  renderVals() {
+    const view = this.curView();
+    const isOverview = view === 'overview';
+
+    const common = {
+      showOverview: isOverview, showDetail: !isOverview,
+      goOverview: this.goOverview, openEnergy: this.openEnergy, openWaste: this.openWaste, openLand: this.openLand,
+      openModal: this.openModal, closeModal: this.closeModal, submit: this.submit, stop: (e) => e.stopPropagation(),
+      navDashStyle: this.navItem(isOverview),
+      navScopeStyle: this.navItem(!isOverview),
+      title: isOverview ? 'Programme dashboard' : this.SCOPES[view].name,
+      showMonitoring: this.props.showMonitoring !== false,
+      showActivity: this.props.showActivity !== false,
+      // modal (regSector based)
+      showModal: this.state.showModal,
+      regScopeName: this.SCOPES[this.state.regSector].name,
+      regMethodology: this.SCOPES[this.state.regSector].methodology,
+      regIconEl: this.scopeIcon(this.state.regSector, 22),
+      modalIconStyle: { width:'38px', height:'38px', borderRadius:'9px', display:'flex', alignItems:'center', justifyContent:'center', flex:'none', background:this.SCOPES[this.state.regSector].accentBg, color:this.SCOPES[this.state.regSector].accentFg },
+      countyOptions: this.SCOPES[this.state.regSector].counties,
+      formName: this.state.form.name, formCounty: this.state.form.county, formSites: this.state.form.sites, formRed: this.state.form.red,
+      setName: (e) => this.setField('name', e), setCounty: (e) => this.setField('county', e), setSites: (e) => this.setField('sites', e), setRed: (e) => this.setField('red', e),
+      submitStyle: { height:'40px', padding:'0 16px', border:0, borderRadius:'6px', background: (this.state.form.name||'').trim() ? '#008037' : '#BDC6BF', color:'#fff', fontFamily:'inherit', fontSize:'13.5px', fontWeight:600, display:'flex', alignItems:'center', gap:'7px', cursor: (this.state.form.name||'').trim() ? 'pointer' : 'not-allowed' },
+    };
+
+    if (isOverview) {
+      return { ...common, events: this.EVENTS };
+    }
+
+    const sc = this.SCOPES[view];
+    const d = sc.kpi;
+    const hs = this.statusStyle(sc.status);
+    const projects = sc.projects.concat(this.state.extra[view] || []).map(p => { const st = this.statusStyle(p.status); return { ...p, badgeStyle: st.badge, dotStyle: st.dot }; });
+    return { ...common,
+      scopeName: sc.name, tagline: sc.tagline, methodology: sc.methodology,
+      isWaste: view === 'waste',
+      statusLabel: sc.status, statusStyle: hs.badge, statusDotStyle: hs.dot,
+      scopeIconEl: this.scopeIcon(view, 24),
+      bandStyle: { background:'#fff', border:'1px solid #DCE3DD', borderTopWidth:'3px', borderTopStyle:'solid', borderTopColor:sc.accent, borderRadius:'12px', boxShadow:'0 1px 2px rgba(14,26,18,.06)', padding:'20px 22px', display:'flex', alignItems:'center', justifyContent:'space-between', gap:'18px' },
+      iconChipStyle: { width:'48px', height:'48px', borderRadius:'11px', display:'flex', alignItems:'center', justifyContent:'center', flex:'none', background:sc.accentBg, color:sc.accentFg },
+      monthlySwatchStyle: { width:'10px', height:'10px', borderRadius:'3px', background:sc.accent, display:'inline-block' },
+      sLabel: sc.sLabel,
+      rVal:d.r, rDelta:d.rd, cVal:d.c, cDelta:d.cd, pVal:d.p, pDelta:d.pd, sVal:d.s, sDelta:d.sd,
+      healthReporting: sc.health.reporting,
+      completenessLabel: sc.health.completeness + '%', verificationLabel: sc.health.verification + '%',
+      reportingFillStyle: { display:'block', height:'100%', width:sc.health.reportingPct+'%', background:'#008037', borderRadius:'999px' },
+      completenessFillStyle: { display:'block', height:'100%', width:sc.health.completeness+'%', background:'#DD9B1F', borderRadius:'999px' },
+      verificationFillStyle: { display:'block', height:'100%', width:sc.health.verification+'%', background:'#D86E45', borderRadius:'999px' },
+      detailChartEl: this.buildDetailChart(sc),
+      projects, projectCount: projects.length + ' projects',
+    };
+  }
+}
+</script>
+</body>
+</html>
