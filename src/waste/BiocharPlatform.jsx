@@ -97,16 +97,6 @@ function navFor(role) {
   return defs.map((d, i) => ({ label: d[0], iconEl: icon(d[1], 18), btnStyle: { display: 'flex', alignItems: 'center', gap: '11px', padding: '9px 10px', borderRadius: '6px', border: 0, cursor: 'pointer', width: '100%', textAlign: 'left', fontFamily: 'inherit', fontSize: '13.5px', fontWeight: i === 0 ? 600 : 500, background: i === 0 ? '#008037' : 'transparent', color: i === 0 ? '#fff' : '#AFC2B5' } }));
 }
 
-function tabsFor(role) {
-  const defs = {
-    farmer: [['Home', 'home'], ['Logs', 'chart'], ['Market', 'store'], ['Profile', 'user']],
-    transport: [['Tasks', 'list'], ['Map', 'map'], ['History', 'chart'], ['Profile', 'user']],
-    enumerator: [['Survey', 'map'], ['Farms', 'sprout'], ['Samples', 'flask'], ['Profile', 'user']],
-  }[role] || [];
-  const accent = ROLES[role].accent;
-  return defs.map((d, i) => ({ label: d[0], iconEl: icon(d[1], 22), iconStyle: { display: 'flex', color: i === 0 ? accent : '#8C988F' }, labelStyle: { fontSize: '10.5px', fontWeight: i === 0 ? 600 : 500, color: i === 0 ? accent : '#8C988F' } }));
-}
-
 // ---- charts / maps (ported, React.createElement) ----
 function buildBars(data, labels, color, unitK) {
   const W = 640, H = 200, padL = 38, padB = 26, padT = 10, padR = 8, n = data.length;
@@ -175,14 +165,45 @@ function farmPolygon() {
 }
 const approveModal = (title, subtitle, rows, accent, note) => ({ title, subtitle, rows, note: note || 'This action provisions the account and is recorded in the audit log.', confirm: 'Approve', secondary: 'Reject', accent: accent || '#008037', bg: '#DFF1E5', fg: '#00682C', iconName: 'check' });
 
+// The demo signs in as these two identities for the field roles; the shared
+// collection store connects them to the Site Admin's approvals queue.
+const CURRENT_FARMER = 'Joseph Kamau';
+const CURRENT_OP = 'Daniel Mwangi';
+
+// Collection lifecycle: Pending → (Site Admin approves) Assigned → (Transport
+// records weight) Collected → (Farmer verifies) Verified.
+const SEED_COLLECTIONS = [
+  { id: 'C-1042', farmer: 'Joseph Kamau', material: 'Maize cobs', qty: 120, location: 'Bahati ward · 3.2 km', status: 'Pending', assignedTo: null, recordedKg: null, when: '12 min ago' },
+  { id: 'C-1041', farmer: 'Mary Wairimu', material: 'Rice husks', qty: 85, location: 'Kabatini · 5.1 km', status: 'Assigned', assignedTo: 'Daniel Mwangi', recordedKg: null, when: '40 min ago' },
+  { id: 'C-1039', farmer: 'Samuel Kiptoo', material: 'Coffee pulp', qty: 200, location: 'Lanet · 7.8 km', status: 'Collected', assignedTo: 'Daniel Mwangi', recordedKg: 118, when: '1 h ago' },
+  { id: 'C-1036', farmer: 'Esther Cheruiyot', material: 'Maize cobs', qty: 62, location: 'Free Area · 2.4 km', status: 'Verified', assignedTo: 'Daniel Mwangi', recordedKg: 62, when: '2 h ago' },
+  { id: 'C-1001', farmer: 'Joseph Kamau', material: 'Maize cobs', qty: 140, location: 'Bahati ward · 3.2 km', status: 'Verified', assignedTo: 'Daniel Mwangi', recordedKg: 140, when: '18 Jun 2026' },
+  { id: 'C-0992', farmer: 'Joseph Kamau', material: 'Rice husks', qty: 95, location: 'Bahati ward · 3.2 km', status: 'Verified', assignedTo: 'Daniel Mwangi', recordedKg: 95, when: '09 Jun 2026' },
+];
+
 function BiocharPlatform({ onBack }) {
   const [screen, setScreen] = useState('login');
   const [authTab, setAuthTab] = useState('signin');
   const [applied, setApplied] = useState(false);
   const [modal, setModal] = useState(null);
+  const [collections, setCollections] = useState(SEED_COLLECTIONS);
+  const [nextId, setNextId] = useState(1050);
   const goLogin = () => { setScreen('login'); setApplied(false); setAuthTab('signin'); setModal(null); };
   const openModal = (p) => setModal(p);
   const closeModal = () => setModal(null);
+
+  // store actions — each is visible to every role because state lives here and
+  // survives role switches (sign out only returns to the login screen).
+  const store = {
+    collections,
+    addCollection: ({ material, qty, location }) => {
+      setCollections((cs) => [{ id: 'C-' + nextId, farmer: CURRENT_FARMER, material, qty: Number(qty) || 0, location: location || 'Bahati ward · 3.2 km', status: 'Pending', assignedTo: null, recordedKg: null, when: 'just now' }, ...cs]);
+      setNextId((n) => n + 1);
+    },
+    approveCollection: (id, operator = CURRENT_OP) => setCollections((cs) => cs.map((c) => (c.id === id ? { ...c, status: 'Assigned', assignedTo: operator } : c))),
+    recordWeight: (id, kg) => setCollections((cs) => cs.map((c) => (c.id === id ? { ...c, status: 'Collected', recordedKg: Number(kg) || c.qty } : c))),
+    verifyCollection: (id) => setCollections((cs) => cs.map((c) => (c.id === id ? { ...c, status: 'Verified' } : c))),
+  };
 
   const role = ROLES[screen];
   const isLogin = screen === 'login';
@@ -191,9 +212,9 @@ function BiocharPlatform({ onBack }) {
   return (
     <div className="abap" style={s('height:100%;')}>
       {isLogin && <Login onBack={onBack} authTab={authTab} setAuthTab={setAuthTab} applied={applied} setApplied={setApplied} go={setScreen} />}
-      {isDesktop && <Desktop screen={screen} role={role} goLogin={goLogin} openModal={openModal} closeModal={closeModal} onBack={onBack} />}
-      {!isLogin && !isDesktop && <Field screen={screen} role={role} goLogin={goLogin} openModal={openModal} />}
-      {modal && <ApprovalModal modal={modal} closeModal={closeModal} />}
+      {isDesktop && <Desktop screen={screen} role={role} goLogin={goLogin} openModal={openModal} closeModal={closeModal} store={store} onBack={onBack} />}
+      {!isLogin && !isDesktop && <Field screen={screen} role={role} goLogin={goLogin} openModal={openModal} store={store} />}
+      {modal && <ApprovalModal key={modal.key || modal.title} modal={modal} closeModal={closeModal} />}
     </div>
   );
 }
@@ -314,7 +335,7 @@ function Kpi({ iconBg, iconFg, iconD, delta, value, unit, label }) {
   );
 }
 
-function Desktop({ screen, role, goLogin, openModal }) {
+function Desktop({ screen, role, goLogin, openModal, store }) {
   const nav = navFor(screen);
   const titles = { superadmin: ['Global · all countries', 'Programme overview'], ip: ['Kenya · country programme', 'Country overview'], siteadmin: ['Nakuru Pyrolysis Site', 'Site operations'] }[screen];
   const ctx = { superadmin: { select: true, options: ['All countries', 'Kenya', 'Uganda', 'Tanzania', 'Nigeria', 'Zimbabwe'] }, ip: { static: true, label: 'Kenya · KE' }, siteadmin: { select: true, options: ['Nakuru Pyrolysis Site', 'Nyeri Biochar Hub', 'Kisumu Lakeside Site'] } }[screen];
@@ -351,7 +372,7 @@ function Desktop({ screen, role, goLogin, openModal }) {
           <div style={s('max-width:1180px;margin:0 auto;display:flex;flex-direction:column;gap:18px;')}>
             {screen === 'superadmin' && <SuperContent openModal={openModal} closeModal={() => openModal(null)} />}
             {screen === 'ip' && <IPContent openModal={openModal} closeModal={() => openModal(null)} />}
-            {screen === 'siteadmin' && <SiteContent openModal={openModal} />}
+            {screen === 'siteadmin' && <SiteContent openModal={openModal} store={store} />}
           </div>
         </div>
       </div>
@@ -481,7 +502,7 @@ function IPContent({ openModal, closeModal }) {
   );
 }
 
-function SiteContent({ openModal }) {
+function SiteContent({ openModal, store }) {
   const alerts = [
     { level: 'danger', machine: 'PYR-01', time: '08:12', msg: 'Feed auger jam cleared — 14 min downtime' },
     { level: 'warn', machine: 'PYR-03', time: '06:40', msg: 'Reactor temp dipped to 442°C, below band' },
@@ -489,11 +510,8 @@ function SiteContent({ openModal }) {
     { level: 'ok', machine: 'PYR-02', time: '02:30', msg: 'Telemetry sync OK · all sensors reporting' },
   ];
   const dotColor = { danger: '#C0392B', warn: '#DD9B1F', ok: '#008037' };
-  const reqs = [
-    { farmer: 'Joseph Kamau', qty: '120 kg', location: 'Bahati ward · 3.2 km', time: '12 min ago' },
-    { farmer: 'Mary Wairimu', qty: '85 kg', location: 'Kabatini · 5.1 km', time: '40 min ago' },
-    { farmer: 'Samuel Kiptoo', qty: '200 kg', location: 'Lanet · 7.8 km', time: '1 h ago' },
-  ];
+  // live: requests still awaiting approval, newest first
+  const reqs = store.collections.filter((c) => c.status === 'Pending');
   const enrol = [
     { initials: 'FN', name: 'Faith Nyambura', enumerator: 'Grace Achieng', region: 'Bahati ward' },
     { initials: 'JM', name: 'James Mutua', enumerator: 'Grace Achieng', region: 'Lanet' },
@@ -534,11 +552,12 @@ function SiteContent({ openModal }) {
         <div style={s('padding:16px 18px;display:flex;flex-direction:column;gap:18px;')}>
           <div>
             <div style={s('font-size:11.5px;font-weight:600;text-transform:uppercase;letter-spacing:.07em;color:#6B786F;margin-bottom:10px;')}>Collection requests</div>
-            {reqs.map((r, i) => (
-              <div key={i} style={s('display:flex;align-items:center;gap:14px;padding:11px 13px;border:1px solid #E6EBE6;border-radius:9px;margin-bottom:8px;')}>
+            {reqs.length === 0 && <div style={s('font-size:12.5px;color:#8C988F;padding:8px 2px 4px;')}>No collection requests awaiting approval.</div>}
+            {reqs.map((r) => (
+              <div key={r.id} style={s('display:flex;align-items:center;gap:14px;padding:11px 13px;border:1px solid #E6EBE6;border-radius:9px;margin-bottom:8px;')}>
                 <span style={s('width:36px;height:36px;border-radius:9px;background:#FBE9E1;color:#8F3A1F;display:flex;align-items:center;justify-content:center;flex:none;')}><I d={FLAME} size={18} /></span>
-                <div style={s('flex:1;min-width:0;')}><div style={s('font-size:13.5px;font-weight:600;color:#0E1A12;')}>{r.farmer} · <span style={s("font-family:'IBM Plex Mono';font-weight:500;")}>{r.qty}</span></div><div style={s('font-size:12px;color:#6B786F;margin-top:2px;')}>{r.location} · {r.time}</div></div>
-                <button onClick={() => openModal(approveModal('Approve & assign collection', 'Assign this collection to a transport operator', [{ k: 'Farmer', v: r.farmer }, { k: 'Quantity', v: r.qty }, { k: 'Location', v: r.location }, { k: 'Assign to', v: 'Daniel Mwangi' }], '#008037', 'The transport operator is notified and records actual weight on collection.'))} style={s('height:34px;padding:0 14px;border:0;border-radius:6px;background:#008037;color:#fff;font-family:inherit;font-size:12.5px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:6px;')}><I d="M20 6L9 17l-5-5" size={14} sw={2.4} />Approve &amp; assign</button>
+                <div style={s('flex:1;min-width:0;')}><div style={s('font-size:13.5px;font-weight:600;color:#0E1A12;')}>{r.farmer} · <span style={s("font-family:'IBM Plex Mono';font-weight:500;")}>{r.material} · {r.qty} kg</span></div><div style={s('font-size:12px;color:#6B786F;margin-top:2px;')}>{r.location} · {r.when}</div></div>
+                <button onClick={() => openModal({ ...approveModal('Approve & assign collection', 'Assign this collection to a transport operator', [{ k: 'Farmer', v: r.farmer }, { k: 'Material', v: r.material }, { k: 'Quantity', v: r.qty + ' kg' }, { k: 'Location', v: r.location }, { k: 'Assign to', v: CURRENT_OP }], '#008037', 'The transport operator is notified and records actual weight on collection.'), confirm: 'Approve & assign', onConfirm: () => store.approveCollection(r.id) })} style={s('height:34px;padding:0 14px;border:0;border-radius:6px;background:#008037;color:#fff;font-family:inherit;font-size:12.5px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:6px;')}><I d="M20 6L9 17l-5-5" size={14} sw={2.4} />Approve &amp; assign</button>
               </div>
             ))}
           </div>
@@ -572,8 +591,15 @@ function SiteContent({ openModal }) {
   );
 }
 
-function Field({ screen, role, goLogin, openModal }) {
-  const tabBar = tabsFor(screen);
+const FIELD_TABS = {
+  farmer: [['Home', 'home'], ['Logs', 'chart'], ['Market', 'store'], ['Profile', 'user']],
+  transport: [['Tasks', 'list'], ['Map', 'map'], ['History', 'chart'], ['Profile', 'user']],
+  enumerator: [['Survey', 'map'], ['Farms', 'sprout'], ['Samples', 'flask'], ['Profile', 'user']],
+};
+
+function Field({ screen, role, goLogin, openModal, store }) {
+  const [tab, setTab] = useState(0);
+  const defs = FIELD_TABS[screen] || [];
   return (
     <div data-screen-label="Field role" style={s('height:100vh;display:flex;flex-direction:column;background:#E7EBE6;overflow:hidden;')}>
       <div style={s('height:52px;flex:none;background:#0E1A12;display:flex;align-items:center;justify-content:space-between;padding:0 18px;')}>
@@ -588,12 +614,17 @@ function Field({ screen, role, goLogin, openModal }) {
               <span style={s('display:flex;align-items:center;gap:5px;')}><svg width="16" height="11" viewBox="0 0 18 12" fill="#0E1A12"><rect x="0" y="7" width="3" height="5" rx="1" /><rect x="5" y="4" width="3" height="8" rx="1" /><rect x="10" y="1.5" width="3" height="10.5" rx="1" /><rect x="15" y="0" width="3" height="12" rx="1" opacity="0.3" /></svg><svg width="22" height="11" viewBox="0 0 24 12" fill="none"><rect x="0.5" y="0.5" width="20" height="11" rx="3" stroke="#0E1A12" /><rect x="2" y="2" width="15" height="8" rx="1.5" fill="#0E1A12" /><rect x="21.5" y="4" width="2" height="4" rx="1" fill="#0E1A12" /></svg></span>
             </div>
             <div className="abap-phonescroll" style={s('flex:1;overflow-y:auto;')}>
-              {screen === 'farmer' && <Farmer openModal={openModal} />}
-              {screen === 'transport' && <Transport openModal={openModal} />}
-              {screen === 'enumerator' && <Enumerator openModal={openModal} />}
+              {screen === 'farmer' && <Farmer tab={tab} openModal={openModal} store={store} />}
+              {screen === 'transport' && <Transport tab={tab} openModal={openModal} store={store} />}
+              {screen === 'enumerator' && <Enumerator tab={tab} openModal={openModal} />}
             </div>
             <div style={s('height:64px;flex:none;background:#fff;border-top:1px solid #DCE3DD;display:flex;align-items:center;justify-content:space-around;padding:0 6px 6px;')}>
-              {tabBar.map((tb, i) => <div key={i} style={s('display:flex;flex-direction:column;align-items:center;gap:4px;flex:1;')}><span style={tb.iconStyle}>{tb.iconEl}</span><span style={tb.labelStyle}>{tb.label}</span></div>)}
+              {defs.map((d, i) => { const on = i === tab; const c = on ? role.accent : '#8C988F'; return (
+                <button key={i} onClick={() => setTab(i)} style={s('display:flex;flex-direction:column;align-items:center;gap:4px;flex:1;border:0;background:transparent;cursor:pointer;padding:6px 0;')}>
+                  <span style={{ display: 'flex', color: c }}>{icon(d[1], 22)}</span>
+                  <span style={{ fontSize: '10.5px', fontWeight: on ? 600 : 500, color: c }}>{d[0]}</span>
+                </button>
+              ); })}
             </div>
           </div>
         </div>
@@ -602,81 +633,104 @@ function Field({ screen, role, goLogin, openModal }) {
   );
 }
 
-function Farmer({ openModal }) {
-  const subs = [
-    { material: 'Maize cobs', date: '18 Jun 2026', kg: '140 kg', status: 'Verified' },
-    { material: 'Rice husks', date: '09 Jun 2026', kg: '95 kg', status: 'Verified' },
-    { material: 'Coffee pulp', date: '27 May 2026', kg: '120 kg', status: 'Collected' },
-  ];
-  const market = [
-    { title: 'Biochar manure · 25 kg', sub: 'Nakuru Pyrolysis Site', price: 'KSh 1,250', tag: 'Buyer', iconName: 'leaf', tone: '#DFF1E5|#00682C' },
-    { title: 'Raw biomass · maize', sub: 'Listed by you · 60 kg', price: 'KSh 900', tag: 'Seller', iconName: 'sprout', tone: '#FBE9E1|#8F3A1F' },
-  ];
+// shared field bits
+const Avatar = ({ initials, bg, fg }) => <span style={{ width: '42px', height: '42px', borderRadius: '50%', background: bg, color: fg, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '14px', fontWeight: 600, flex: 'none' }}>{initials}</span>;
+const FieldHead = ({ over, title, initials, bg, fg }) => <div style={s('display:flex;align-items:center;justify-content:space-between;')}><div><div style={s('font-size:13px;color:#6B786F;')}>{over}</div><div style={s('font-size:21px;font-weight:700;color:#0E1A12;letter-spacing:-.01em;')}>{title}</div></div><Avatar initials={initials} bg={bg} fg={fg} /></div>;
+const SectionLabel = ({ children }) => <div style={s('font-size:11.5px;font-weight:600;text-transform:uppercase;letter-spacing:.07em;color:#6B786F;margin:20px 2px 10px;')}>{children}</div>;
+const Empty = ({ children }) => <div style={s('text-align:center;color:#8C988F;font-size:13px;padding:30px 10px;')}>{children}</div>;
+function ProfileCard({ initials, bg, fg, name, role, rows }) {
   return (
     <div style={s('padding:8px 18px 20px;')}>
-      <div style={s('display:flex;align-items:center;justify-content:space-between;')}><div><div style={s('font-size:13px;color:#6B786F;')}>Habari,</div><div style={s('font-size:21px;font-weight:700;color:#0E1A12;letter-spacing:-.01em;')}>Joseph Kamau</div></div><span style={s('width:42px;height:42px;border-radius:50%;background:#FBE9E1;color:#8F3A1F;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:600;')}>JK</span></div>
+      <div style={s('display:flex;flex-direction:column;align-items:center;text-align:center;padding:24px 0 18px;')}>
+        <span style={{ width: '72px', height: '72px', borderRadius: '50%', background: bg, color: fg, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '24px', fontWeight: 700 }}>{initials}</span>
+        <div style={s('font-size:19px;font-weight:700;color:#0E1A12;margin-top:12px;')}>{name}</div>
+        <div style={s('font-size:12.5px;color:#6B786F;margin-top:3px;')}>{role}</div>
+      </div>
+      <div style={s('background:#fff;border:1px solid #DCE3DD;border-radius:12px;padding:4px 14px;')}>{rows.map((r, i) => (
+        <div key={i} style={s('display:flex;align-items:center;justify-content:space-between;padding:12px 0;' + (i ? 'border-top:1px solid #E6EBE6;' : '') + 'gap:14px;')}><span style={s('font-size:12.5px;color:#6B786F;')}>{r[0]}</span><span style={s('font-size:13px;font-weight:600;color:#0E1A12;text-align:right;')}>{r[1]}</span></div>
+      ))}</div>
+    </div>
+  );
+}
+const market = [
+  { title: 'Biochar manure · 25 kg', sub: 'Nakuru Pyrolysis Site', price: 'KSh 1,250', tag: 'Buyer', iconName: 'leaf', tone: '#DFF1E5|#00682C' },
+  { title: 'Raw biomass · maize', sub: 'Listed by you · 60 kg', price: 'KSh 900', tag: 'Seller', iconName: 'sprout', tone: '#FBE9E1|#8F3A1F' },
+];
+const MarketRow = ({ m }) => { const b = badge(m.tag); const [bg, fg] = m.tone.split('|'); return (
+  <div style={s('display:flex;align-items:center;gap:12px;background:#fff;border:1px solid #DCE3DD;border-radius:12px;padding:12px 13px;')}>
+    <span style={{ width: '40px', height: '40px', borderRadius: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center', flex: 'none', background: bg, color: fg }}>{icon(m.iconName, 18)}</span>
+    <div style={s('flex:1;min-width:0;')}><div style={s('font-size:13.5px;font-weight:600;color:#0E1A12;')}>{m.title}</div><div style={s('font-size:11.5px;color:#6B786F;margin-top:2px;')}>{m.sub}</div></div>
+    <div style={s('text-align:right;')}><div style={s("font-family:'IBM Plex Mono';font-size:13px;font-weight:600;color:#0E1A12;")}>{m.price}</div><span style={{ display: 'inline-block', marginTop: '4px', fontSize: '10px', fontWeight: 600, padding: '2px 7px', borderRadius: '999px', background: b.badge.background, color: b.badge.color }}>{m.tag}</span></div>
+  </div>
+); };
+
+function Farmer({ tab, openModal, store }) {
+  const mine = store.collections.filter((c) => c.farmer === CURRENT_FARMER);
+  const active = mine.filter((c) => c.status !== 'Verified');
+  const requestCollection = () => openModal({
+    title: 'Request collection', subtitle: 'Notify the site that biomass is ready',
+    rows: [{ k: 'Material', v: 'Maize cobs' }, { k: 'Pickup', v: 'Bahati ward · 3.2 km' }],
+    input: { label: 'Estimated weight', value: '120', suffix: 'kg' },
+    note: 'Your request goes to the Site Admin for approval, then a transport operator is assigned.',
+    confirm: 'Send request', secondary: 'Cancel', accent: '#BD5230', bg: '#FBE9E1', fg: '#8F3A1F', iconName: 'truck', key: 'req',
+    onConfirm: (kg) => store.addCollection({ material: 'Maize cobs', qty: kg, location: 'Bahati ward · 3.2 km' }),
+  });
+  const statusLine = (c) => c.status === 'Pending' ? 'Awaiting Site Admin approval'
+    : c.status === 'Assigned' ? 'Assigned to ' + c.assignedTo + ' for pickup'
+      : 'Collected ' + c.recordedKg + ' kg — verify the recorded weight';
+
+  if (tab === 3) return <ProfileCard initials="JK" bg="#FBE9E1" fg="#8F3A1F" name="Joseph Kamau" role="Farmer · Bahati ward" rows={[['Phone', '+254 712 004 118'], ['Farm ID', 'F-2291'], ['Site', 'Nakuru Pyrolysis Site'], ['Polygon', 'Locked · 2.4 ha'], ['Marketplace balance', 'KSh 12,200']]} />;
+
+  if (tab === 1) return (
+    <div style={s('padding:8px 18px 20px;')}>
+      <FieldHead over="Submission history" title="Logs" initials="JK" bg="#FBE9E1" fg="#8F3A1F" />
+      <div style={s('background:#fff;border:1px solid #DCE3DD;border-radius:12px;padding:16px;margin-top:18px;')}>
+        <div style={s('display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;')}><div style={s('font-size:14px;font-weight:600;color:#0E1A12;')}>Submission log</div><div style={s("font-family:'IBM Plex Mono';font-size:11px;color:#6B786F;")}>kg / week</div></div>
+        {miniBars([45, 80, 60, 120, 95, 140], ['W1', 'W2', 'W3', 'W4', 'W5', 'W6'], '#BD5230')}
+        <div style={s('display:flex;flex-direction:column;gap:0;margin-top:8px;')}>{mine.map((c) => (
+          <div key={c.id} style={s('display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-top:1px solid #E6EBE6;')}>
+            <div><div style={s('font-size:13px;color:#1C2A22;font-weight:500;')}>{c.material}</div><div style={s("font-family:'IBM Plex Mono';font-size:11px;color:#8C988F;margin-top:2px;")}>{c.when}</div></div>
+            <div style={s('display:flex;align-items:center;gap:9px;')}><span style={s("font-family:'IBM Plex Mono';font-size:13px;font-weight:500;color:#0E1A12;")}>{(c.recordedKg ?? c.qty)} kg</span><Badge status={c.status} /></div>
+          </div>
+        ))}</div>
+      </div>
+    </div>
+  );
+
+  if (tab === 2) return (
+    <div style={s('padding:8px 18px 20px;')}>
+      <FieldHead over="Biochar manure & biomass" title="Market" initials="JK" bg="#FBE9E1" fg="#8F3A1F" />
+      <button onClick={() => openModal({ title: 'Request biochar manure', subtitle: 'Order finished biochar for your farm', rows: [{ k: 'Product', v: 'Biochar manure' }, { k: 'Quantity', v: '25 kg' }, { k: 'Price', v: 'KSh 1,250' }], note: 'Payment is deducted from your marketplace balance on fulfilment.', confirm: 'Place order', secondary: 'Cancel', accent: '#BD5230', bg: '#FBE9E1', fg: '#8F3A1F', iconName: 'leaf', key: 'manure' })} style={s('width:100%;height:46px;border:0;border-radius:12px;background:#BD5230;color:#fff;font-family:inherit;font-size:14px;font-weight:600;display:flex;align-items:center;justify-content:center;gap:9px;cursor:pointer;margin:16px 0 6px;')}>{icon('leaf', 18)}Order biochar manure</button>
+      <SectionLabel>Listings near you</SectionLabel>
+      <div style={s('display:flex;flex-direction:column;gap:10px;')}>{market.map((m, i) => <MarketRow key={i} m={m} />)}</div>
+    </div>
+  );
+
+  // tab 0 — Home
+  return (
+    <div style={s('padding:8px 18px 20px;')}>
+      <FieldHead over="Habari," title="Joseph Kamau" initials="JK" bg="#FBE9E1" fg="#8F3A1F" />
       <div style={s('display:grid;grid-template-columns:1fr 1fr;gap:11px;margin-top:18px;')}>
         <div style={s('background:#fff;border:1px solid #DCE3DD;border-radius:12px;padding:14px;')}><div style={s('font-size:11.5px;color:#6B786F;')}>Received</div><div style={s("font-family:'IBM Plex Sans Condensed';font-weight:700;font-size:22px;color:#00682C;margin-top:5px;font-variant-numeric:tabular-nums;")}>KSh 18,400</div></div>
         <div style={s('background:#fff;border:1px solid #DCE3DD;border-radius:12px;padding:14px;')}><div style={s('font-size:11.5px;color:#6B786F;')}>Spent</div><div style={s("font-family:'IBM Plex Sans Condensed';font-weight:700;font-size:22px;color:#8F3A1F;margin-top:5px;font-variant-numeric:tabular-nums;")}>KSh 6,200</div></div>
       </div>
       <div style={s('display:flex;flex-direction:column;gap:10px;margin-top:16px;')}>
-        <button onClick={() => openModal({ title: 'Request collection', subtitle: 'Notify the site that biomass is ready', rows: [{ k: 'Material', v: 'Maize cobs' }, { k: 'Estimated weight', v: '120 kg' }, { k: 'Pickup', v: 'Bahati ward' }], note: 'Your request goes to the Site Admin for approval, then a transport operator is assigned.', confirm: 'Send request', secondary: 'Cancel', accent: '#BD5230', bg: '#FBE9E1', fg: '#8F3A1F', iconName: 'truck' })} style={s('width:100%;height:52px;border:0;border-radius:12px;background:#BD5230;color:#fff;font-family:inherit;font-size:15px;font-weight:600;display:flex;align-items:center;justify-content:center;gap:9px;cursor:pointer;')}>{icon('truck', 19)}Request collection</button>
-        <button onClick={() => openModal({ title: 'Request biochar manure', subtitle: 'Order finished biochar for your farm', rows: [{ k: 'Product', v: 'Biochar manure' }, { k: 'Quantity', v: '25 kg' }, { k: 'Price', v: 'KSh 1,250' }], note: 'Payment is deducted from your marketplace balance on fulfilment.', confirm: 'Place order', secondary: 'Cancel', accent: '#BD5230', bg: '#FBE9E1', fg: '#8F3A1F', iconName: 'leaf' })} style={s('width:100%;height:48px;border:1px solid #BDC6BF;border-radius:12px;background:#fff;color:#1C2A22;font-family:inherit;font-size:14px;font-weight:600;display:flex;align-items:center;justify-content:center;gap:9px;cursor:pointer;')}><span style={s('color:#36433B;')}>{icon('sprout', 18)}</span>Request biochar manure</button>
+        <button onClick={requestCollection} style={s('width:100%;height:52px;border:0;border-radius:12px;background:#BD5230;color:#fff;font-family:inherit;font-size:15px;font-weight:600;display:flex;align-items:center;justify-content:center;gap:9px;cursor:pointer;')}>{icon('truck', 19)}Request collection</button>
+        <button onClick={() => openModal({ title: 'Request biochar manure', subtitle: 'Order finished biochar for your farm', rows: [{ k: 'Product', v: 'Biochar manure' }, { k: 'Quantity', v: '25 kg' }, { k: 'Price', v: 'KSh 1,250' }], note: 'Payment is deducted from your marketplace balance on fulfilment.', confirm: 'Place order', secondary: 'Cancel', accent: '#BD5230', bg: '#FBE9E1', fg: '#8F3A1F', iconName: 'leaf', key: 'manure' })} style={s('width:100%;height:48px;border:1px solid #BDC6BF;border-radius:12px;background:#fff;color:#1C2A22;font-family:inherit;font-size:14px;font-weight:600;display:flex;align-items:center;justify-content:center;gap:9px;cursor:pointer;')}><span style={s('color:#36433B;')}>{icon('sprout', 18)}</span>Request biochar manure</button>
       </div>
-      <div style={s('background:#FBEFD2;border:1px solid #F3DFB0;border-radius:12px;padding:13px 14px;margin-top:14px;display:flex;align-items:center;gap:11px;')}><span style={s('width:34px;height:34px;border-radius:9px;background:#fff;color:#B57711;display:flex;align-items:center;justify-content:center;flex:none;')}><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="9" /><path d="M12 7v5l3 2" /></svg></span><div style={s('flex:1;min-width:0;')}><div style={s('font-size:13px;font-weight:600;color:#0E1A12;')}>Collection · 120 kg maize cobs</div><div style={s('font-size:11.5px;color:#8A6D2A;margin-top:2px;')}>Awaiting Site Admin approval</div></div><span style={s('font-size:10.5px;font-weight:600;color:#B57711;background:#fff;padding:4px 8px;border-radius:999px;white-space:nowrap;')}>Pending</span></div>
-      <div style={s('background:#fff;border:1px solid #DCE3DD;border-radius:12px;padding:16px;margin-top:16px;')}>
-        <div style={s('display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;')}><div style={s('font-size:14px;font-weight:600;color:#0E1A12;')}>Submission log</div><div style={s("font-family:'IBM Plex Mono';font-size:11px;color:#6B786F;")}>kg / week</div></div>
-        {miniBars([45, 80, 60, 120, 95, 140], ['W1', 'W2', 'W3', 'W4', 'W5', 'W6'], '#BD5230')}
-        <div style={s('display:flex;flex-direction:column;gap:0;margin-top:8px;')}>{subs.map((su, i) => (
-          <div key={i} style={s('display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-top:1px solid #E6EBE6;')}>
-            <div><div style={s('font-size:13px;color:#1C2A22;font-weight:500;')}>{su.material}</div><div style={s("font-family:'IBM Plex Mono';font-size:11px;color:#8C988F;margin-top:2px;")}>{su.date}</div></div>
-            <div style={s('display:flex;align-items:center;gap:9px;')}><span style={s("font-family:'IBM Plex Mono';font-size:13px;font-weight:500;color:#0E1A12;")}>{su.kg}</span><Badge status={su.status} /></div>
-          </div>
-        ))}</div>
-      </div>
-      <div style={s('display:flex;align-items:center;justify-content:space-between;margin:20px 2px 10px;')}><div style={s('font-size:14px;font-weight:600;color:#0E1A12;')}>Marketplace</div><span style={s('font-size:12px;font-weight:600;color:#BD5230;')}>See all</span></div>
-      <div style={s('display:flex;flex-direction:column;gap:10px;')}>{market.map((m, i) => { const b = badge(m.tag); const [bg, fg] = m.tone.split('|'); return (
-        <div key={i} style={s('display:flex;align-items:center;gap:12px;background:#fff;border:1px solid #DCE3DD;border-radius:12px;padding:12px 13px;')}>
-          <span style={{ width: '40px', height: '40px', borderRadius: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center', flex: 'none', background: bg, color: fg }}>{icon(m.iconName, 18)}</span>
-          <div style={s('flex:1;min-width:0;')}><div style={s('font-size:13.5px;font-weight:600;color:#0E1A12;')}>{m.title}</div><div style={s('font-size:11.5px;color:#6B786F;margin-top:2px;')}>{m.sub}</div></div>
-          <div style={s('text-align:right;')}><div style={s("font-family:'IBM Plex Mono';font-size:13px;font-weight:600;color:#0E1A12;")}>{m.price}</div><span style={{ display: 'inline-block', marginTop: '4px', fontSize: '10px', fontWeight: 600, padding: '2px 7px', borderRadius: '999px', background: b.badge.background, color: b.badge.color }}>{m.tag}</span></div>
-        </div>
-      ); })}</div>
-    </div>
-  );
-}
-
-function Transport({ openModal }) {
-  const tasks = [
-    { farmer: 'Joseph Kamau', location: 'Bahati ward · 3.2 km', status: 'Assigned', metaLabel: 'Expected', metaValue: '120 kg', action: 'record' },
-    { farmer: 'Mary Wairimu', location: 'Kabatini · 5.1 km', status: 'Assigned', metaLabel: 'Expected', metaValue: '85 kg', action: 'record' },
-    { farmer: 'Samuel Kiptoo', location: 'Lanet · 7.8 km', status: 'Collected', metaLabel: 'Recorded', metaValue: '118 kg', action: 'view' },
-    { farmer: 'Esther Cheruiyot', location: 'Free Area · 2.4 km', status: 'Collected', metaLabel: 'Recorded', metaValue: '62 kg', action: 'view' },
-  ];
-  return (
-    <div style={s('padding:8px 18px 20px;')}>
-      <div style={s('display:flex;align-items:center;justify-content:space-between;')}><div><div style={s('font-size:13px;color:#6B786F;')}>Today's tasks</div><div style={s('font-size:21px;font-weight:700;color:#0E1A12;letter-spacing:-.01em;')}>4 collections</div></div><span style={s('width:42px;height:42px;border-radius:50%;background:#E2F2F6;color:#0B5A6B;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:600;')}>DM</span></div>
-      <div style={s('display:grid;grid-template-columns:1fr 1fr 1fr;gap:9px;margin-top:18px;')}>
-        {[['2', 'Assigned', '#0E1A12'], ['2', 'Collected', '#00682C'], ['238', 'Logged', '#0E1A12']].map(([v, l, c], i) => (
-          <div key={i} style={s('background:#fff;border:1px solid #DCE3DD;border-radius:12px;padding:12px;text-align:center;')}><div style={{ fontFamily: "'IBM Plex Sans Condensed'", fontWeight: 700, fontSize: '22px', color: c }}>{v}{i === 2 && <span style={s("font-size:11px;color:#6B786F;font-family:'IBM Plex Mono';")}> kg</span>}</div><div style={s('font-size:10.5px;color:#6B786F;margin-top:3px;')}>{l}</div></div>
-        ))}
-      </div>
-      <div style={s('font-size:11.5px;font-weight:600;text-transform:uppercase;letter-spacing:.07em;color:#6B786F;margin:20px 2px 10px;')}>Assigned collections</div>
-      <div style={s('display:flex;flex-direction:column;gap:11px;')}>{tasks.map((t, i) => { const b = badge(t.status); const isRec = t.action === 'record';
-        const onAction = isRec
-          ? () => openModal({ title: 'Record collected weight', subtitle: 'Weight reflects back to ' + t.farmer + ' for verification', rows: [{ k: 'Farmer', v: t.farmer }, { k: 'Location', v: t.location }, { k: 'Expected', v: t.metaValue }, { k: 'Actual weight', v: '— enter on scale —' }], note: 'The farmer verifies the recorded weight before it is logged to the site intake.', confirm: 'Confirm weight', secondary: 'Cancel', accent: '#0B5A6B', bg: '#E2F2F6', fg: '#0B5A6B', iconName: 'truck' })
-          : () => openModal({ title: 'Collection record', subtitle: 'Logged and verified', rows: [{ k: 'Farmer', v: t.farmer }, { k: 'Recorded weight', v: t.metaValue }, { k: 'Status', v: 'Verified by farmer' }], note: 'This collection has been logged to site intake.', confirm: 'Close', secondary: 'Back', accent: '#008037', bg: '#DFF1E5', fg: '#00682C', iconName: 'check' });
-        const aStyle = isRec ? s('height:36px;padding:0 14px;border:0;border-radius:7px;background:#0B5A6B;color:#fff;font-family:inherit;font-size:12.5px;font-weight:600;cursor:pointer;flex:none;') : s('height:36px;padding:0 14px;border:1px solid #BDC6BF;border-radius:7px;background:#fff;color:#36433B;font-family:inherit;font-size:12.5px;font-weight:600;cursor:pointer;flex:none;');
+      <SectionLabel>Your collections</SectionLabel>
+      {active.length === 0 && <Empty>No active collections. Tap “Request collection”.</Empty>}
+      <div style={s('display:flex;flex-direction:column;gap:10px;')}>{active.map((c) => {
+        const tone = c.status === 'Pending' ? '#FBEFD2|#F3DFB0|#B57711' : c.status === 'Assigned' ? '#E2F2F6|#CDE5EC|#0B5A6B' : '#DFF1E5|#BFE6CD|#00682C';
+        const [bg, bd, fg] = tone.split('|');
         return (
-          <div key={i} style={s('background:#fff;border:1px solid #DCE3DD;border-radius:12px;padding:14px;')}>
-            <div style={s('display:flex;align-items:flex-start;justify-content:space-between;gap:10px;')}>
-              <div style={s('min-width:0;')}><div style={s('font-size:14px;font-weight:600;color:#0E1A12;')}>{t.farmer}</div><div style={s('display:flex;align-items:center;gap:5px;font-size:12px;color:#6B786F;margin-top:3px;')}><I d={['M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0z']} size={13} style={s('flex:none;')} />{t.location}</div></div>
-              <Badge status={t.status} />
+          <div key={c.id} style={{ background: bg, border: '1px solid ' + bd, borderRadius: '12px', padding: '13px 14px' }}>
+            <div style={s('display:flex;align-items:center;gap:11px;')}>
+              <span style={{ width: '34px', height: '34px', borderRadius: '9px', background: '#fff', color: fg, display: 'flex', alignItems: 'center', justifyContent: 'center', flex: 'none' }}>{icon('truck', 17)}</span>
+              <div style={s('flex:1;min-width:0;')}><div style={s('font-size:13px;font-weight:600;color:#0E1A12;')}>{c.material} · {(c.recordedKg ?? c.qty)} kg</div><div style={{ fontSize: '11.5px', color: fg, marginTop: '2px' }}>{statusLine(c)}</div></div>
+              <Badge status={c.status} />
             </div>
-            <div style={s('display:flex;align-items:center;justify-content:space-between;margin-top:13px;padding-top:13px;border-top:1px solid #E6EBE6;')}>
-              <div><div style={s('font-size:11px;color:#8C988F;')}>{t.metaLabel}</div><div style={s("font-family:'IBM Plex Mono';font-size:14px;font-weight:600;color:#0E1A12;margin-top:2px;")}>{t.metaValue}</div></div>
-              <button onClick={onAction} style={aStyle}>{isRec ? 'Record weight' : 'View'}</button>
-            </div>
+            {c.status === 'Collected' && <button onClick={() => store.verifyCollection(c.id)} style={s('width:100%;height:38px;border:0;border-radius:8px;background:#008037;color:#fff;font-family:inherit;font-size:13px;font-weight:600;cursor:pointer;margin-top:10px;display:flex;align-items:center;justify-content:center;gap:7px;')}><I d="M20 6L9 17l-5-5" size={15} sw={2.3} />Verify {c.recordedKg} kg</button>}
           </div>
         );
       })}</div>
@@ -684,21 +738,121 @@ function Transport({ openModal }) {
   );
 }
 
-function Enumerator({ openModal }) {
+function Transport({ tab, openModal, store }) {
+  const mine = store.collections.filter((c) => c.assignedTo === CURRENT_OP);
+  const assigned = mine.filter((c) => c.status === 'Assigned');
+  const done = mine.filter((c) => c.status === 'Collected' || c.status === 'Verified');
+  const loggedKg = done.reduce((a, c) => a + (c.recordedKg || 0), 0);
+  const recordWeight = (c) => openModal({
+    title: 'Record collected weight', subtitle: 'Weight reflects back to ' + c.farmer + ' for verification',
+    rows: [{ k: 'Farmer', v: c.farmer }, { k: 'Location', v: c.location }, { k: 'Expected', v: c.qty + ' kg' }],
+    input: { label: 'Actual weight on scale', value: String(c.qty), suffix: 'kg' },
+    note: 'The farmer verifies the recorded weight before it is logged to the site intake.',
+    confirm: 'Confirm weight', secondary: 'Cancel', accent: '#0B5A6B', bg: '#E2F2F6', fg: '#0B5A6B', iconName: 'truck', key: 'rec',
+    onConfirm: (kg) => store.recordWeight(c.id, kg),
+  });
+
+  if (tab === 3) return <ProfileCard initials="DM" bg="#E2F2F6" fg="#0B5A6B" name="Daniel Mwangi" role="Transport · Nakuru" rows={[['Phone', '+254 720 551 902'], ['Vehicle', 'KCA 244Q · 3-tonne'], ['Site', 'Nakuru Pyrolysis Site'], ['Collections logged', String(done.length)], ['Total logged', loggedKg + ' kg']]} />;
+
+  if (tab === 1) return (
+    <div style={s('padding:8px 18px 20px;')}>
+      <FieldHead over="Today's pickups" title="Map" initials="DM" bg="#E2F2F6" fg="#0B5A6B" />
+      <div style={s('background:#fff;border:1px solid #DCE3DD;border-radius:12px;overflow:hidden;margin-top:18px;')}>
+        <svg viewBox="0 0 360 200" preserveAspectRatio="xMidYMid meet" style={s('width:100%;display:block;')} role="img" aria-label="Pickup locations">
+          <rect x="0" y="0" width="360" height="200" fill="#F1F8F3" />
+          {Array.from({ length: 13 }, (_, i) => <line key={'v' + i} x1={i * 30} y1="0" x2={i * 30} y2="200" stroke="#DDEEE2" strokeWidth="1" />)}
+          {Array.from({ length: 7 }, (_, i) => <line key={'h' + i} x1="0" y1={i * 30} x2="360" y2={i * 30} stroke="#DDEEE2" strokeWidth="1" />)}
+          <path d="M40 170 C 120 120, 160 150, 300 40" fill="none" stroke="#0B5A6B" strokeWidth="2.5" strokeDasharray="3 6" strokeLinecap="round" />
+          <circle cx="40" cy="170" r="6" fill="#0B5A6B" stroke="#fff" strokeWidth="2" />
+          <text x="40" y="190" textAnchor="middle" fontSize="10" fontFamily="IBM Plex Mono" fill="#0B5A6B">site</text>
+          {assigned.slice(0, 4).map((c, i) => { const x = 110 + i * 60, y = 140 - i * 30; return <g key={c.id}><circle cx={x} cy={y} r="6" fill="#BD5230" stroke="#fff" strokeWidth="2" /><text x={x} y={y - 10} textAnchor="middle" fontSize="9.5" fontFamily="IBM Plex Sans" fontWeight="600" fill="#1C2A22">{c.farmer.split(' ')[0]}</text></g>; })}
+        </svg>
+      </div>
+      <SectionLabel>Route · {assigned.length} stops</SectionLabel>
+      <div style={s('display:flex;flex-direction:column;gap:8px;')}>{assigned.length === 0 ? <Empty>No assigned pickups.</Empty> : assigned.map((c) => (
+        <div key={c.id} style={s('display:flex;align-items:center;gap:11px;background:#fff;border:1px solid #DCE3DD;border-radius:10px;padding:11px 13px;')}>
+          <span style={s('width:30px;height:30px;border-radius:8px;background:#FBE9E1;color:#8F3A1F;display:flex;align-items:center;justify-content:center;flex:none;')}><I d={['M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0z']} size={15} /></span>
+          <div style={s('flex:1;min-width:0;')}><div style={s('font-size:13px;font-weight:600;color:#0E1A12;')}>{c.farmer}</div><div style={s('font-size:11.5px;color:#6B786F;margin-top:1px;')}>{c.location}</div></div>
+          <span style={s("font-family:'IBM Plex Mono';font-size:12.5px;color:#0E1A12;")}>{c.qty} kg</span>
+        </div>
+      ))}</div>
+    </div>
+  );
+
+  if (tab === 2) return (
+    <div style={s('padding:8px 18px 20px;')}>
+      <FieldHead over="Logged & verified" title="History" initials="DM" bg="#E2F2F6" fg="#0B5A6B" />
+      <SectionLabel>{done.length} collections · {loggedKg} kg</SectionLabel>
+      <div style={s('display:flex;flex-direction:column;gap:10px;')}>{done.length === 0 ? <Empty>No completed collections yet.</Empty> : done.map((c) => (
+        <div key={c.id} style={s('background:#fff;border:1px solid #DCE3DD;border-radius:12px;padding:13px 14px;')}>
+          <div style={s('display:flex;align-items:flex-start;justify-content:space-between;gap:10px;')}>
+            <div style={s('min-width:0;')}><div style={s('font-size:14px;font-weight:600;color:#0E1A12;')}>{c.farmer}</div><div style={s('font-size:12px;color:#6B786F;margin-top:3px;')}>{c.location}</div></div>
+            <Badge status={c.status} />
+          </div>
+          <div style={s('display:flex;align-items:center;justify-content:space-between;margin-top:11px;padding-top:11px;border-top:1px solid #E6EBE6;')}><span style={s('font-size:11px;color:#8C988F;')}>Recorded</span><span style={s("font-family:'IBM Plex Mono';font-size:14px;font-weight:600;color:#0E1A12;")}>{c.recordedKg} kg</span></div>
+        </div>
+      ))}</div>
+    </div>
+  );
+
+  // tab 0 — Tasks
+  return (
+    <div style={s('padding:8px 18px 20px;')}>
+      <FieldHead over="Today's tasks" title={assigned.length + ' to collect'} initials="DM" bg="#E2F2F6" fg="#0B5A6B" />
+      <div style={s('display:grid;grid-template-columns:1fr 1fr 1fr;gap:9px;margin-top:18px;')}>
+        {[[String(assigned.length), 'Assigned', '#0E1A12'], [String(done.length), 'Collected', '#00682C'], [String(loggedKg), 'Logged', '#0E1A12']].map(([v, l, c], i) => (
+          <div key={i} style={s('background:#fff;border:1px solid #DCE3DD;border-radius:12px;padding:12px;text-align:center;')}><div style={{ fontFamily: "'IBM Plex Sans Condensed'", fontWeight: 700, fontSize: '22px', color: c }}>{v}{i === 2 && <span style={s("font-size:11px;color:#6B786F;font-family:'IBM Plex Mono';")}> kg</span>}</div><div style={s('font-size:10.5px;color:#6B786F;margin-top:3px;')}>{l}</div></div>
+        ))}
+      </div>
+      <SectionLabel>Assigned collections</SectionLabel>
+      {assigned.length === 0 && <Empty>Nothing assigned right now. New approvals from the Site Admin appear here.</Empty>}
+      <div style={s('display:flex;flex-direction:column;gap:11px;')}>{assigned.map((c) => (
+        <div key={c.id} style={s('background:#fff;border:1px solid #DCE3DD;border-radius:12px;padding:14px;')}>
+          <div style={s('display:flex;align-items:flex-start;justify-content:space-between;gap:10px;')}>
+            <div style={s('min-width:0;')}><div style={s('font-size:14px;font-weight:600;color:#0E1A12;')}>{c.farmer}</div><div style={s('display:flex;align-items:center;gap:5px;font-size:12px;color:#6B786F;margin-top:3px;')}><I d={['M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0z']} size={13} style={s('flex:none;')} />{c.location}</div></div>
+            <Badge status={c.status} />
+          </div>
+          <div style={s('display:flex;align-items:center;justify-content:space-between;margin-top:13px;padding-top:13px;border-top:1px solid #E6EBE6;')}>
+            <div><div style={s('font-size:11px;color:#8C988F;')}>Expected</div><div style={s("font-family:'IBM Plex Mono';font-size:14px;font-weight:600;color:#0E1A12;margin-top:2px;")}>{c.qty} kg</div></div>
+            <button onClick={() => recordWeight(c)} style={s('height:36px;padding:0 14px;border:0;border-radius:7px;background:#0B5A6B;color:#fff;font-family:inherit;font-size:12.5px;font-weight:600;cursor:pointer;flex:none;')}>Record weight</button>
+          </div>
+        </div>
+      ))}</div>
+    </div>
+  );
+}
+
+function Enumerator({ tab, openModal }) {
+  const farms = [
+    { id: 'F-2291', name: 'Faith Nyambura', region: 'Bahati ward', ha: '2.4 ha', status: 'Verified' },
+    { id: 'F-2288', name: 'Mary Wairimu', region: 'Kabatini', ha: '1.8 ha', status: 'Verified' },
+    { id: 'F-2284', name: 'Samuel Kiptoo', region: 'Lanet', ha: '3.1 ha', status: 'In review' },
+  ];
   const samples = [
     { farm: 'F-2291 · Kamau', ph: '6.2', n: 'Medium', status: 'Verified' },
     { farm: 'F-2288 · Wairimu', ph: '5.8', n: 'Low', status: 'In review' },
     { farm: 'F-2284 · Kiptoo', ph: '6.6', n: 'High', status: 'Verified' },
   ];
-  return (
+  if (tab === 3) return <ProfileCard initials="GA" bg="#F1F8F3" fg="#034A24" name="Grace Achieng" role="Enumerator · Nakuru" rows={[['Phone', '+254 733 887 410'], ['Region', 'Nakuru county'], ['Site', 'Nakuru Pyrolysis Site'], ['Farms enrolled', String(farms.length)], ['Samples taken', String(samples.length)]]} />;
+
+  if (tab === 1) return (
     <div style={s('padding:8px 18px 20px;')}>
-      <div style={s('display:flex;align-items:center;justify-content:space-between;')}><div><div style={s('font-size:13px;color:#6B786F;')}>Field survey · Nakuru</div><div style={s('font-size:21px;font-weight:700;color:#0E1A12;letter-spacing:-.01em;')}>Grace Achieng</div></div><span style={s('width:42px;height:42px;border-radius:50%;background:#F1F8F3;color:#034A24;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:600;')}>GA</span></div>
-      <div style={s('background:#fff;border:1px solid #DCE3DD;border-radius:12px;overflow:hidden;margin-top:18px;')}>
-        <div style={s('display:flex;align-items:center;justify-content:space-between;padding:13px 14px;border-bottom:1px solid #E6EBE6;')}><div style={s('font-size:14px;font-weight:600;color:#0E1A12;')}>Farm boundary · F-2291</div><span style={s('display:inline-flex;align-items:center;gap:5px;font-size:10.5px;font-weight:600;color:#00682C;background:#DFF1E5;padding:4px 8px;border-radius:999px;')}><I d={['M8 11V7a4 4 0 0 1 8 0v4']} size={11} sw={2.4} />Locked</span></div>
-        {farmPolygon()}
-      </div>
-      <button onClick={() => openModal({ title: 'Enrol new farmer', subtitle: 'Submit a surveyed farmer for approval', rows: [{ k: 'Farmer', v: 'Faith Nyambura' }, { k: 'Farm ID', v: 'F-2291' }, { k: 'Polygon', v: 'Locked · 2.4 ha' }, { k: 'Routes to', v: 'Site Admin · Nakuru' }], note: 'Enrolment is sent to the Site Admin for approval before the account is activated.', confirm: 'Submit for approval', secondary: 'Cancel', accent: '#1E9B4E', bg: '#F1F8F3', fg: '#034A24', iconName: 'users' })} style={s('width:100%;height:50px;border:0;border-radius:12px;background:#008037;color:#fff;font-family:inherit;font-size:14.5px;font-weight:600;display:flex;align-items:center;justify-content:center;gap:9px;cursor:pointer;margin-top:14px;')}>{icon('users', 18)}Enrol new farmer</button>
-      <div style={s('font-size:11.5px;font-weight:600;text-transform:uppercase;letter-spacing:.07em;color:#6B786F;margin:20px 2px 10px;')}>Soil samples</div>
+      <FieldHead over="Enrolled farms" title="Farms" initials="GA" bg="#F1F8F3" fg="#034A24" />
+      <SectionLabel>{farms.length} farms surveyed</SectionLabel>
+      <div style={s('display:flex;flex-direction:column;gap:10px;')}>{farms.map((f) => (
+        <div key={f.id} style={s('display:flex;align-items:center;gap:12px;background:#fff;border:1px solid #DCE3DD;border-radius:12px;padding:13px;')}>
+          <span style={s('width:38px;height:38px;border-radius:9px;background:#F1F8F3;color:#034A24;display:flex;align-items:center;justify-content:center;flex:none;')}>{icon('sprout', 18)}</span>
+          <div style={s('flex:1;min-width:0;')}><div style={s('font-size:13.5px;font-weight:600;color:#0E1A12;')}>{f.name}</div><div style={s("font-family:'IBM Plex Mono';font-size:11px;color:#6B786F;margin-top:2px;")}>{f.id} · {f.region} · {f.ha}</div></div>
+          <Badge status={f.status} />
+        </div>
+      ))}</div>
+    </div>
+  );
+
+  if (tab === 2) return (
+    <div style={s('padding:8px 18px 20px;')}>
+      <FieldHead over="Soil samples" title="Samples" initials="GA" bg="#F1F8F3" fg="#034A24" />
+      <SectionLabel>{samples.length} samples logged</SectionLabel>
       <div style={s('display:flex;flex-direction:column;gap:10px;')}>{samples.map((sm, i) => (
         <div key={i} style={s('display:flex;align-items:center;gap:12px;background:#fff;border:1px solid #DCE3DD;border-radius:12px;padding:13px;')}>
           <span style={s('width:38px;height:38px;border-radius:9px;background:#F1F8F3;color:#034A24;display:flex;align-items:center;justify-content:center;flex:none;')}>{icon('flask', 18)}</span>
@@ -708,9 +862,23 @@ function Enumerator({ openModal }) {
       ))}</div>
     </div>
   );
+
+  // tab 0 — Survey
+  return (
+    <div style={s('padding:8px 18px 20px;')}>
+      <FieldHead over="Field survey · Nakuru" title="Grace Achieng" initials="GA" bg="#F1F8F3" fg="#034A24" />
+      <div style={s('background:#fff;border:1px solid #DCE3DD;border-radius:12px;overflow:hidden;margin-top:18px;')}>
+        <div style={s('display:flex;align-items:center;justify-content:space-between;padding:13px 14px;border-bottom:1px solid #E6EBE6;')}><div style={s('font-size:14px;font-weight:600;color:#0E1A12;')}>Farm boundary · F-2291</div><span style={s('display:inline-flex;align-items:center;gap:5px;font-size:10.5px;font-weight:600;color:#00682C;background:#DFF1E5;padding:4px 8px;border-radius:999px;')}><I d={['M8 11V7a4 4 0 0 1 8 0v4']} size={11} sw={2.4} />Locked</span></div>
+        {farmPolygon()}
+      </div>
+      <button onClick={() => openModal({ title: 'Enrol new farmer', subtitle: 'Submit a surveyed farmer for approval', rows: [{ k: 'Farmer', v: 'Faith Nyambura' }, { k: 'Farm ID', v: 'F-2291' }, { k: 'Polygon', v: 'Locked · 2.4 ha' }, { k: 'Routes to', v: 'Site Admin · Nakuru' }], note: 'Enrolment is sent to the Site Admin for approval before the account is activated.', confirm: 'Submit for approval', secondary: 'Cancel', accent: '#1E9B4E', bg: '#F1F8F3', fg: '#034A24', iconName: 'users', key: 'enrol' })} style={s('width:100%;height:50px;border:0;border-radius:12px;background:#008037;color:#fff;font-family:inherit;font-size:14.5px;font-weight:600;display:flex;align-items:center;justify-content:center;gap:9px;cursor:pointer;margin-top:14px;')}>{icon('users', 18)}Enrol new farmer</button>
+    </div>
+  );
 }
 
 function ApprovalModal({ modal, closeModal }) {
+  const [val, setVal] = useState(modal.input ? modal.input.value : '');
+  const confirm = () => { if (modal.onConfirm) modal.onConfirm(val); closeModal(); };
   return (
     <div onClick={closeModal} style={s('position:fixed;inset:0;background:rgba(14,26,18,.45);display:flex;align-items:center;justify-content:center;z-index:60;padding:24px;')}>
       <div className="abap" onClick={(e) => e.stopPropagation()} style={s('background:#fff;border-radius:14px;box-shadow:0 16px 40px -10px rgba(14,26,18,.30);width:100%;max-width:440px;overflow:hidden;')}>
@@ -722,11 +890,20 @@ function ApprovalModal({ modal, closeModal }) {
           <div style={s('background:#F7F9F6;border:1px solid #E6EBE6;border-radius:10px;padding:6px 14px;')}>{(modal.rows || []).map((row, i) => (
             <div key={i} style={s('display:flex;align-items:center;justify-content:space-between;padding:9px 0;border-bottom:1px solid #E6EBE6;gap:14px;')}><span style={s('font-size:12.5px;color:#6B786F;')}>{row.k}</span><span style={s('font-size:13px;font-weight:600;color:#0E1A12;text-align:right;')}>{row.v}</span></div>
           ))}</div>
+          {modal.input && (
+            <div style={s('margin-top:14px;')}>
+              <label style={s('display:block;font-size:12.5px;font-weight:600;color:#1C2A22;margin-bottom:6px;')}>{modal.input.label}</label>
+              <div style={s('position:relative;display:flex;align-items:center;')}>
+                <input type="number" inputMode="numeric" value={val} onChange={(e) => setVal(e.target.value)} autoFocus style={s("width:100%;height:44px;padding:0 46px 0 13px;font-family:'IBM Plex Mono';font-size:16px;font-weight:600;border:1px solid #BDC6BF;border-radius:8px;background:#fff;color:#0E1A12;outline:none;")} />
+                {modal.input.suffix && <span style={s("position:absolute;right:14px;font-family:'IBM Plex Mono';font-size:13px;color:#8C988F;pointer-events:none;")}>{modal.input.suffix}</span>}
+              </div>
+            </div>
+          )}
           {modal.note && <div style={s('display:flex;align-items:center;gap:9px;padding:11px 13px;background:#F1F8F3;border:1px solid #DFF1E5;border-radius:8px;margin-top:14px;')}><I d={['M12 2l8 4v6c0 5-3.5 8-8 10-4.5-2-8-5-8-10V6z', 'M9 12l2 2 4-4']} size={16} stroke="#00682C" style={s('flex:none;')} /><span style={s('font-size:12.5px;color:#1C2A22;')}>{modal.note}</span></div>}
         </div>
         <div style={s('padding:14px 22px 20px;border-top:1px solid #E6EBE6;display:flex;justify-content:flex-end;gap:10px;')}>
           <button onClick={closeModal} style={s('height:40px;padding:0 16px;border:1px solid #BDC6BF;border-radius:6px;background:#fff;color:#1C2A22;font-family:inherit;font-size:13.5px;font-weight:600;cursor:pointer;')}>{modal.secondary || 'Cancel'}</button>
-          <button onClick={closeModal} style={{ height: '40px', padding: '0 16px', border: 0, borderRadius: '6px', background: modal.accent || '#008037', color: '#fff', fontFamily: 'inherit', fontSize: '13.5px', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '7px', cursor: 'pointer' }}><I d="M20 6L9 17l-5-5" size={16} sw={2.3} />{modal.confirm || 'Confirm'}</button>
+          <button onClick={confirm} style={{ height: '40px', padding: '0 16px', border: 0, borderRadius: '6px', background: modal.accent || '#008037', color: '#fff', fontFamily: 'inherit', fontSize: '13.5px', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '7px', cursor: 'pointer' }}><I d="M20 6L9 17l-5-5" size={16} sw={2.3} />{modal.confirm || 'Confirm'}</button>
         </div>
       </div>
     </div>
